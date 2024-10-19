@@ -1,0 +1,114 @@
+/* styles.css */
+/* 全局样式 */
+html, body {
+    height: 100%; 
+    margin: 0; 
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('../../public/images/background.jpg'); 
+    background-size: cover; /* 使背景图像覆盖整个区域 */
+    background-position: center; /* 居中显示背景图像 */
+    color: #333; 
+    display: flex; /* 使 body 为 flex 容器 */
+    flex-direction: column; /* 垂直方向排列子元素 */
+}
+
+/* 容器样式 */
+.container {
+    display: flex;
+    flex: 1; 
+    width: 1200px; 
+    margin: auto; 
+    background-color: rgba(255, 255, 255, 0.9); /* 容器背景透明 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+}
+
+/* 左侧栏样式 */
+.sidebar {
+    width: 200px; 
+    padding: 20px; 
+    background-color: #f4f4f4; 
+    border-right: 1px solid #ddd; 
+}
+
+/* 主要内容样式 */
+.main-content {
+    flex-grow: 1;
+    padding: 20px; 
+    min-width: 0; 
+    margin-left: 20px; 
+}
+
+/* 头像样式 */
+.profile {
+    text-align: center;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px; 
+    border-radius: 50%; 
+}
+
+/* 导航菜单样式 */
+.nav-menu {
+    margin-top: 20px; 
+}
+
+.nav-menu ul {
+    list-style: none; 
+    padding: 0; 
+}
+
+.nav-menu li {
+    margin: 10px 0; 
+}
+
+.nav-menu a {
+    text-decoration: none; /* 去掉下划线 */
+    color: #333; /* 文字颜色 */
+    transition: color 0.3s; /* 颜色变化过渡效果 */
+}
+
+.nav-menu a:hover {
+    color: #007bff; /* 悬停时颜色 */
+}
+
+/* 社交图标样式 */
+.social-icons {
+    margin-top: 20px; 
+    display: flex; 
+    justify-content: space-around; 
+}
+
+.social-icons img {
+    width: 30px; 
+    height: 30px; 
+}
+
+/* 帖子样式 */
+.posts {
+    margin-top: 20px; 
+}
+
+.posts article {
+    margin-bottom: 20px; 
+    padding: 15px; 
+    border: 1px solid #ddd; 
+    border-radius: 5px; 
+}
+
+/* 页脚样式 */
+footer {
+    text-align: center; 
+    padding: 10px; 
+    background-color: #d0d0d0; 
+    color: #000; 
+}
+
+
+
+
+
