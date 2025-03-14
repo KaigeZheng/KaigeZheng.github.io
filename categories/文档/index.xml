@@ -1,0 +1,1321 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>文档 on Kambri's Blog</title><link>https://kaigezheng.github.io/categories/%E6%96%87%E6%A1%A3/</link><description>Recent content in 文档 on Kambri's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 06 Mar 2025 10:23:00 +0800</lastBuildDate><atom:link href="https://kaigezheng.github.io/categories/%E6%96%87%E6%A1%A3/index.xml" rel="self" type="application/rss+xml"/><item><title>2025,新年快乐——</title><link>https://kaigezheng.github.io/p/happy-new-year/</link><pubDate>Wed, 01 Jan 2025 12:00:00 +0800</pubDate><guid>https://kaigezheng.github.io/p/happy-new-year/</guid><description>&lt;img src="https://kaigezheng.github.io/p/happy-new-year/img/cover.jpg" alt="Featured image of post 2025,新年快乐——" />&lt;p>&lt;img src="https://kaigezheng.github.io/p/happy-new-year/img/1.jpg"
+width="1425"
+height="1000"
+srcset="https://kaigezheng.github.io/p/happy-new-year/img/1_hu_12a1c8076846812a.jpg 480w, https://kaigezheng.github.io/p/happy-new-year/img/1_hu_debc30502ba8d27c.jpg 1024w"
+loading="lazy"
+alt="from 梶浦由記"
+class="gallery-image"
+data-flex-grow="142"
+data-flex-basis="342px"
+> &lt;img src="https://kaigezheng.github.io/p/happy-new-year/img/2.jpg"
+width="900"
+height="704"
+srcset="https://kaigezheng.github.io/p/happy-new-year/img/2_hu_331cdb05f25a0967.jpg 480w, https://kaigezheng.github.io/p/happy-new-year/img/2_hu_5bf00afe706428ed.jpg 1024w"
+loading="lazy"
+alt="from Aimer"
+class="gallery-image"
+data-flex-grow="127"
+data-flex-basis="306px"
+>&lt;/p></description></item><item><title>Hello World</title><link>https://kaigezheng.github.io/p/hello-world/</link><pubDate>Sun, 24 Nov 2024 18:54:00 +0800</pubDate><guid>https://kaigezheng.github.io/p/hello-world/</guid><description>&lt;img src="https://kaigezheng.github.io/p/hello-world/img/cover.png" alt="Featured image of post Hello World" />&lt;h1 id="welcome">Welcome——
+&lt;/h1>&lt;p>欢迎来到我的技术&amp;amp;生活博客！本站点建于&lt;code>2024/11/23&lt;/code>，本篇文章写于&lt;code>2024/11/24&lt;/code>的晚上。想写的东西有很多，但到真正要落笔时却有些踌躇不前。&lt;/p>
+&lt;h1 id="关于kambri">关于&lt;em>Kambri&lt;/em>
+&lt;/h1>&lt;p>我是一名国内CS专业大三本科生，研究方向是高性能计算（HPC），未来希望在这个领域深造。希望能在ASC25取得佳绩，明年的推研和实习有个好去处。&lt;/p>
+&lt;p>爱好旅行（想记录旅行过程也是建站的目的之一），希望能在学生时代结束前环游中国；音乐，喜欢梶浦由记（和她的乐队，Kalafina和Fiction Junction）kokia、aimer的歌曲。&lt;/p>
+&lt;h1 id="关于站点">关于站点
+&lt;/h1>&lt;p>该站点由&lt;a class="link" href="https://github.com/gohugoio/hugo" target="_blank" rel="noopener"
+>Hugo&lt;/a>构建，使用&lt;a class="link" href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener"
+>Stack主题&lt;/a>并进行修改，并托管于&lt;a class="link" href="https://pages.github.com/" target="_blank" rel="noopener"
+>GitHub Pages&lt;/a>。&lt;/p>
+&lt;p>建设站点计划TODOLIST：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;input disabled="" type="checkbox"> 配置CDN并绑定域名&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;input checked="" disabled="" type="checkbox"> &lt;del>&lt;em>&lt;del>添加评论系统，可能是&lt;a class="link" href="https://github.com/utterance" target="_blank" rel="noopener"
+>utterances&lt;/a>&lt;/del>&lt;/em>&lt;/del>（Finished，确实是&lt;code>utterances&lt;/code>）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;input checked="" disabled="" type="checkbox"> &lt;del>配置bing、google的站点地图&lt;/del>（目前已经能被&lt;a class="link" href="https://www.bing.com/" target="_blank" rel="noopener"
+>bing&lt;/a>、&lt;a class="link" href="https://google.com/" target="_blank" rel="noopener"
+>google&lt;/a>搜索到）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;input disabled="" type="checkbox"> Last but not least，更多文章&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>博文更新计划TODOLIST：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;input checked="" disabled="" type="checkbox"> MPI、算法导论等学习笔记（迁移）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;input disabled="" type="checkbox"> 运维记录（迁移）&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;input disabled="" type="checkbox"> 旅行回忆录，以往的旅行经历就靠零星的回忆和些许照片还原罢，这或许也不错&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;input disabled="" type="checkbox"> LIVE回忆录&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>如果你喜欢我的博客，欢迎来到&lt;a class="link" href="https://github.com/KaigeZheng/KaigeZheng.github.io" target="_blank" rel="noopener"
+>站点仓库&lt;/a>点一个star，谢谢！&lt;/p>
+&lt;h1 id="寄语">寄语
+&lt;/h1>&lt;p>从我上踏入计算机科学与技术这个专业开始，便一直想拥有一个技术博客。但由于种种原因，比较流行的博客平台如CSDN、博客园、知乎都没有让我特别感兴趣，我也够懒，时至今日才动手搭建属于自己的博客站点。所幸大多精彩的技术知识没有因此错过，它们大多被我记录于OneNote或是Obsidian中，在未来我也会视情况将这些留存的技术文章或是学习笔记迁移到这个站点。&lt;/p>
+&lt;p>随着大学生活的推移，我有了很多足够精彩的经历，但很少在社交媒体发文，因此也愈发希望能够在某个地方记录这些转瞬即逝的想法。在起初的构想中，技术博文和生活随笔放在不同的站点或许会更有利于读者，但想来还是过于折腾，就索性放在一起罢。&lt;/p>
+&lt;p>总之，在这个大雪纷飞的夜晚，Kambri&amp;rsquo;s Blog正式诞生了！&lt;/p>
+&lt;p>&lt;img src="https://kaigezheng.github.io/p/hello-world/img/1.jpg"
+width="1706"
+height="1279"
+srcset="https://kaigezheng.github.io/p/hello-world/img/1_hu_b47380736c7f007f.jpg 480w, https://kaigezheng.github.io/p/hello-world/img/1_hu_ae111b3e5acabc97.jpg 1024w"
+loading="lazy"
+alt="今天的雪"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+> &lt;img src="https://kaigezheng.github.io/p/hello-world/img/2.jpg"
+width="1279"
+height="1706"
+srcset="https://kaigezheng.github.io/p/hello-world/img/2_hu_e3327c92904aefdb.jpg 480w, https://kaigezheng.github.io/p/hello-world/img/2_hu_405d65c32370752b.jpg 1024w"
+loading="lazy"
+alt="和计算机学院楼"
+class="gallery-image"
+data-flex-grow="74"
+data-flex-basis="179px"
+>&lt;/p></description></item><item><title>字符串匹配</title><link>https://kaigezheng.github.io/p/algorithm1/</link><pubDate>Sun, 24 Nov 2024 18:54:00 +0800</pubDate><guid>https://kaigezheng.github.io/p/algorithm1/</guid><description>&lt;img src="https://kaigezheng.github.io/p/algorithm1/img/cover.jpg" alt="Featured image of post 字符串匹配" />&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>此篇博客系补档，写于&lt;code>2023/11/04&lt;/code>至&lt;code>2023/11/14&lt;/code>，最后更新于&lt;code>2023/11/14 16:23&lt;/code>，曾发布于&lt;a class="link" href="https://zhuanlan.zhihu.com/p/665965430" target="_blank" rel="noopener"
+>知乎&lt;/a>。&lt;/p>
+&lt;h2 id="朴素字符串匹配">朴素字符串匹配
+&lt;/h2>&lt;p>朴素字符串匹配算法(Naive-String-Matcher)是通过一个循环找到所有有效偏移，该循环对n-m+1个可能的s值进行检测，看是否满足条件$P[1..m]=T[s+1..s+m]$。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//伪代码NAIVE-STRING-MATCHER(T,P)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">length&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">m&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">length&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">s&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">m&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mf">1.&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">n&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mf">1.&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="n">m&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">print&lt;/span> &lt;span class="s">&amp;#34;Pattern occurs with shift&amp;#34;&lt;/span>&lt;span class="n">s&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>由于不需要预处理，在最坏情况下的时间复杂度为O((n-m+1)m)（对偏移s的n-m+1个可能值比较，或者说对前n-m+1的每个字符做一次长度为m的匹配）。
+KMP算法在最坏情况下比朴素算法好得多，这种匹配算法效率不高，因为当其他无效的s值存在时，它也只关心一个有效的s值，而完全忽略了检测无效s值时获得的文本信息（这种信息可能非常有用）。&lt;/p>
+&lt;h2 id="利用有限自动机进行字符串匹配">利用有限自动机进行字符串匹配
+&lt;/h2>&lt;p>很多字符串匹配算法都要建立一个有限自动机，它时一个处理信息的简单机器，通过对文本字符串T进行扫描，找出模式P的所有出现位置。&lt;/p>
+&lt;h3 id="有限自动机">有限自动机
+&lt;/h3>&lt;p>一个有限自动机$M$是一个五元组( $Q$ , $q$&lt;sub>0&lt;/sub> , $A$ , $\sum$ , $\delta$ )，其中：&lt;/p>
+&lt;ul>
+&lt;li>$Q$是&lt;strong>状态&lt;/strong>的有限集合&lt;/li>
+&lt;li>$q$&lt;sub>0&lt;/sub>$\in$Q是&lt;strong>初始状态&lt;/strong>&lt;/li>
+&lt;li>$A$$\subseteq$Q是一个特殊的&lt;strong>接受状态&lt;/strong>集合&lt;/li>
+&lt;li>$\sum$是有限&lt;strong>输入字母表&lt;/strong>&lt;/li>
+&lt;li>$\delta$是一个从Q$\times$$\sum$到Q的函数，称为$M$的&lt;strong>转移函数&lt;/strong>
+有限自动机开始于状态$q$&lt;sub>0&lt;/sub>，每次读入输入字符串的一个字符。如果有限自动机在状态q时读入了字符a，则它从状态q变为状态$\delta( q , a )$（进行了一次转移）。每当其当前状态$q$属于$A$时，就表明自动机M&lt;strong>接受&lt;/strong>了迄今为止所读入的字符串，没有被接受的输入称为被拒绝的输入。&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>用一个简单的两状态自动机说明
+&lt;img src="https://kaigezheng.github.io/p/algorithm1/img/1.png"
+width="537"
+height="211"
+srcset="https://kaigezheng.github.io/p/algorithm1/img/1_hu_9e6f66d17265530a.png 480w, https://kaigezheng.github.io/p/algorithm1/img/1_hu_552e90204bd04207.png 1024w"
+loading="lazy"
+alt="A simple two-state automaton"
+class="gallery-image"
+data-flex-grow="254"
+data-flex-basis="610px"
+>&lt;br>
+该自动机拥有状态集$Q=${0,1}，开始状态$q$&lt;sub>0&lt;/sub>=0，输入字母表$\sum$={a,b}。
+(a)用表格表示状态函数$\delta$，(b)是一个等价的状态转换图。
+状态1是唯一的被接受状态，有向边代表着转换（例如从状态1到状态0的b边表示$\delta(1,b)=0$。显然，这个自动机接受以奇数个a结尾的字符串。或者说，一个 字符串$x$被接受当且仅当$x=yz$，其中$y=\varepsilon$或$y$以b结尾，并且$z=a$&lt;sup>k&lt;/sup>（k为奇数）。
+例如，对于输入abaaa，包括初始状态，这个自动机输入状态序列为$&amp;lt;0,1,0,1,0,1&amp;gt;$，因而它接受这个输入；对于输入abbaa，自动机输入状态序列为$&amp;lt;0,1,0,0,1,0&amp;gt;$，因而它拒绝这个输入。&lt;/p>&lt;/blockquote>
+&lt;p>有限自动机$M$引入一个函数$\phi$，称为&lt;strong>终态函数&lt;/strong>，它是从$\sum*$到$Q$的函数，满足$\phi(\omega)$是$M$在扫描字符串$\omega$后终止时的状态。因此，当且仅当$\phi(\omega)\in A$时，$M$接受字符串$\omega$。我们可以用转移函数递归定义$\phi$：
+$\phi(\varepsilon)=q$&lt;sub>0&lt;/sub>
+$\phi(\omega a)=\delta(\phi(\omega),a), \omega\in\sum*,a\in\sum$&lt;/p>
+&lt;h3 id="字符串匹配自动机">字符串匹配自动机
+&lt;/h3>&lt;p>对于一个给定的模式P，我们可以在预处理阶段构造出一个字符串匹配自动机，根据模式构造出相应的自动机后，再利用它来搜寻文本字符串。&lt;/p>
+&lt;blockquote>
+&lt;p>定义一个辅助函数$\sigma$，称为对应模式串的后缀函数。
+满足$\sigma(x)$是$x$的后缀与对应模式串P的前缀的最大公共长度：
+$\sigma(x)=$max{k:P&lt;sub>k&lt;/sub>$\sqsupset$ $x$}
+如对于模式串P=ab，有$\sigma$($\varepsilon$)=0，$\sigma$(ccaca)=1，$\sigma$(ccab)=2&lt;/p>&lt;/blockquote>
+&lt;p>给定模式$P[1..m]$，其相应的字符串匹配自动机定义如下：&lt;/p>
+&lt;ul>
+&lt;li>状态集合$Q$为{0,1,&amp;hellip;,m}。开始状态$q$&lt;sub>0&lt;/sub>是0状态，并且只有状态m是唯一被接受的状态&lt;/li>
+&lt;li>对任意的状态$q$和字符$a$，转移函数$\delta$定义为$\delta(q,a)$=$\sigma$$($P&lt;sub>q&lt;/sub>$a$$)$
+我们定义$\delta(q,a)$=$\sigma$$($P&lt;sub>q&lt;/sub>$a$$)$，目的是记录已得到的与模式P匹配的文本呢字符串T的最长前缀。考虑最近一次扫描T的字符，为了使T的一个子串能够和P的某些前缀P&lt;sub>j&lt;/sub>匹配，前缀P&lt;sub>j&lt;/sub>必须是T&lt;sub>i&lt;/sub>的一个后缀。如果自动机处于状态$q$并且读入下一个字符$T[i+1]=a$，那么我们希望这个转换能够指向T&lt;sub>i&lt;/sub>a的后缀状态，它对应着P的最长前缀，即$\sigma$(T&lt;sub>i&lt;/sub>a)。由于P&lt;sub>q&lt;/sub>是P的最长前缀，也就是T&lt;sub>i&lt;/sub>的一个后缀，那么P的最长前缀也就是T&lt;sub>i&lt;/sub>a的一个后缀，即$\sigma$$($T&lt;sub>i&lt;/sub>a$)$=$\sigma$$($P&lt;sub>q&lt;/sub>a$)$（由后缀函数递归引理证明，此处省略）。因此，当自动机处在状态$q$时，我们希望这个在字符a上的转移函数能使自动机转移到状态$\sigma$$($P&lt;sub>q&lt;/sub>a$)$。&lt;/li>
+&lt;/ul>
+&lt;p>考虑两种情况：&lt;/p>
+&lt;ul>
+&lt;li>$a=P[q+1]$，使得字符a继续匹配模式，那么状态前进，即$\delta(q,a)=q+1$&lt;/li>
+&lt;li>$a\ne P[q+1]$，使得字符a不能继续匹配模式，那么回溯到一个更小的字串，它是**P的前缀同时也是T&lt;sub>i&lt;/sub>的后缀。&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;img src="https://kaigezheng.github.io/p/algorithm1/img/2.png"
+width="926"
+height="269"
+srcset="https://kaigezheng.github.io/p/algorithm1/img/2_hu_6e11b265ddf63a65.png 480w, https://kaigezheng.github.io/p/algorithm1/img/2_hu_26a3eb0ad1597cf3.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="344"
+data-flex-basis="826px"
+>&lt;br>
+在这个例子中，状态0是初始状态，状态7是仅有的接受状态。
+图中的自动机有$\delta(5,c)=6$，说明其是第一种情况，匹配继续进行。
+但是，如果自动机在$q=5$状态时读到b，那么P&lt;sub>q&lt;/sub>b=ababab，并且P的最长前缀也是ababab的后缀P&lt;sub>4&lt;/sub>=abab，因此转移到状态$q=5$。&lt;/p>&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//伪代码有限自动机(T,δ,m)
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">length&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">q&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">n&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">q&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="err">δ&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">q&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">q&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">m&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">print&lt;/span> &lt;span class="s">&amp;#34;Pattern occurs with shift&amp;#34;&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">m&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>从有限自动机的简单循环结构可以看出，对于一个长度为n的文本字符串，它的匹配时间为$O(n)$。但是，这一匹配时间没有包括计算转移函数$\delta$所需要的预处理时间。&lt;/p>
+&lt;blockquote>
+&lt;p>定理：如果$\phi$是字符串匹配自动机关于给定模式P的终态函数，T[1..n]是自动机的输入文本，则对i=0,1,&amp;hellip;,n，有$\phi($T&lt;sub>i&lt;/sub>$)$=$\sigma($T&lt;sub>i&lt;/sub>$)$&lt;/p>&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//伪代码计算转移函数
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">m&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">length&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">q&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">m&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">each&lt;/span> &lt;span class="n">charater&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="err">∈&lt;/span> &lt;span class="err">Σ&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">k&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">min&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">m&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">q&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">repeat&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">k&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">k&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">until&lt;/span> &lt;span class="n">Pk是Pqa的后缀&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">δ&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">q&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">a&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">k&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">return&lt;/span> &lt;span class="err">δ&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个过程根据定理直接计算$\delta(q,a)$，在嵌套循环中考察所有的状态$q$和字符a。第4~8行把$\delta(q,a)$置为满足P&lt;sub>k&lt;/sub>$\sqsupset$P&lt;sub>q&lt;/sub>a的最大的k。代码从k的最大可能值$min(m, q+1)$开始，随着过程的执行，k递减至P&lt;sub>k&lt;/sub>$\sqsupset$P&lt;sub>q&lt;/sub>a，这种情况必然会发生，因为P&lt;sub>0&lt;/sub>=$\varepsilon$是每个字符串的一个后缀。&lt;/p>
+&lt;h2 id="kmp算法knuth-morris-pratt-a">KMP算法（Knuth-Morris-Pratt A.）
+&lt;/h2>&lt;p>这个算法无需计算转移函数$\delta$，匹配时间为$O(n)$，只用到辅助函数$\pi$，它在O(m)时间内根据模式预先计算出来，并且存储在数组$\pi$$[1..m]$中。数组$\pi$使得我们可以按需要有效地计算转移函数$\delta$。粗略地说，对任意状态q=0,1,&amp;hellip;,m和任意字符$a\in\sum$，$\pi[q]$的值包含了与a无关但在计算$\delta(q,a)$时需要的信息。由于数组$\pi$只有m个元素，而$\delta$有$O(m\sum)$个值，所以通过预先计算$\pi$而不是$\delta$，可以使计算时间减少一个$\sum$因子。&lt;/p>
+&lt;h3 id="关于模式的前缀函数">关于模式的前缀函数
+&lt;/h3>&lt;p>模式的前缀函数$\pi$包含模式与其自身的偏移进行匹配的信息，这些信息可用在朴素字符串匹配算法中避免对无用偏移的检测，也可以避免在字符串匹配自动机中对整个转移函数$\delta$的预先计算。&lt;/p>
+&lt;p>&lt;img src="https://kaigezheng.github.io/p/algorithm1/img/3.png"
+width="621"
+height="159"
+srcset="https://kaigezheng.github.io/p/algorithm1/img/3_hu_3e2fdf38a19a11d.png 480w, https://kaigezheng.github.io/p/algorithm1/img/3_hu_5d3239bcc7c51ed2.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="390"
+data-flex-basis="937px"
+>&lt;/p>
+&lt;blockquote>
+&lt;p>在这个用模式串P=ababaca匹配文本字符串T的例子中，q=5个字符已经匹配成功，但模式的第6个字符不能匹配。已知的这q个文本字符使我们能够立即确定某些偏移是无效的，如s+1必然是无效的，因为文本字符已知不能与模式的第一个字符a匹配，但能与模式的第二个字符b匹配。因此，如下图所示的$s&amp;rsquo;=s+2$的偏移显然比s+1的偏移更有效率。
+&lt;br>&lt;img src="https://kaigezheng.github.io/p/algorithm1/img/4.png"
+width="609"
+height="157"
+srcset="https://kaigezheng.github.io/p/algorithm1/img/4_hu_e3cbe98bc34ad4c3.png 480w, https://kaigezheng.github.io/p/algorithm1/img/4_hu_eb1a0d28353d338b.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="387"
+data-flex-basis="930px"
+>&lt;br>
+在这里，我们发现P&lt;sub>3&lt;/sub>是能构成P&lt;sub>5&lt;/sub>真后缀的P的最长前缀（如下图所示），这些信息被预先计算出来，并用数组$\pi$表示，即$\pi[5]=3$。我们可以归纳得到，在偏移s有q个字符成功匹配时，则下一个&lt;strong>可能有效&lt;/strong>的偏移为$s&amp;rsquo;=s+(q-\pi[q])$。
+&lt;br>&lt;img src="https://kaigezheng.github.io/p/algorithm1/img/5.png"
+width="249"
+height="133"
+srcset="https://kaigezheng.github.io/p/algorithm1/img/5_hu_30bdfa79658187ac.png 480w, https://kaigezheng.github.io/p/algorithm1/img/5_hu_51194af50c3f2f78.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="187"
+data-flex-basis="449px"
+>&lt;br>&lt;/p>&lt;/blockquote>
+&lt;p>接下来我们来讨论$\pi[q]$从何而来。假设模式字符$P[1..q]$与文本字符$T[s+1..s+q]$匹配，$s&amp;rsquo;$是最小的偏移量，$s&amp;rsquo;&amp;gt;s$，那么对某些k&amp;lt;q，满足$P[q..k]=T[s&amp;rsquo;+1..s&amp;rsquo;+k]$的最小偏移$s&amp;rsquo;$是多少（其中$s&amp;rsquo;+k=s+q$）？
+换句话说，已知P&lt;sub>q&lt;/sub>$\sqsupset$T&lt;sub>s+q&lt;/sub>，我们希望P&lt;sub>q&lt;/sub>的最长真前缀P&lt;sub>k&lt;/sub>也是T&lt;sub>s+q&lt;/sub>的后缀。由于$s&amp;rsquo;+k=s+q$，那么找到的最小偏移$s&amp;rsquo;$等价于找到最长前缀的长度k。我们把P前缀长度范围内的差值$q-k$加入到偏移s中，用于找到新的偏移$s&amp;rsquo;$，使得$s&amp;rsquo;=s+(q-k)$。在最好情况下$k=0$，因此$s&amp;rsquo;=s+q$。总之，在任何情况下，对于新的偏移$s&amp;rsquo;$，&lt;strong>无需把P的前k个字符与T中相应的字符进行比较&lt;/strong>，因为$P[q..k]=T[s&amp;rsquo;+1..s&amp;rsquo;+k]$已经保证它们肯定匹配。&lt;/p>
+&lt;blockquote>
+&lt;p>我们可以用模式与其自身进行比较来预先计算出这些必要的信息，如图所示：
+&lt;img src="https://kaigezheng.github.io/p/algorithm1/img/6.png"
+width="459"
+height="137"
+srcset="https://kaigezheng.github.io/p/algorithm1/img/6_hu_e2f06cb9ca9fcc9f.png 480w, https://kaigezheng.github.io/p/algorithm1/img/6_hu_a6c2fb2eda02b7f5.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="335"
+data-flex-basis="804px"
+>&lt;br>
+$\pi$存储的是模式串P的最长公共前后缀。例如，$\pi[5]=3,\pi[3]=1,\pi[1]=0$，通过迭代可以得到$\pi[\pi[\pi[5]]]=0,\pi[\pi[5]]=1$，可以用$\pi*[5]={3,1,0}$表示。那么，当k为3或1或0时，都会出现偏移$s&amp;rsquo;$满足P的某前缀与P&lt;sub>q&lt;/sub>的后缀匹配，实现更有效率的偏移。&lt;/p>&lt;/blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//伪代码KMP算法
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">n&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">length&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">m&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">length&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">π&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">COMPUTE&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">PREFIX&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">FUNCTION&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">q&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="c1">//number of characters matched
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">n&lt;/span> &lt;span class="c1">//scan the text T
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">while&lt;/span> &lt;span class="n">q&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="n">and&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">q&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">q&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="err">π&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">q&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">q&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">q&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">q&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">q&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">m&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">print&lt;/span> &lt;span class="s">&amp;#34;Pattern occurs with shift&amp;#34;&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">m&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">q&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="err">π&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">q&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">//COMPUTE-PREFIX-FUNCTION
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="n">m&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">length&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">let&lt;/span> &lt;span class="err">π&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mf">1.&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">m&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">a&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">array&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">π&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">k&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">q&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="n">to&lt;/span> &lt;span class="n">m&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="n">k&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="n">and&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">k&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">q&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">k&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="err">π&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">k&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">k&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">P&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">q&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">k&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">k&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">π&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">q&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">k&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">return&lt;/span> &lt;span class="err">π&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>KMP算法通过运用$\pi$而不是$\delta$，可将对模式进行预处理的时间由$O(m \sum)$减为$O(m)$，同时保持实际的匹配时间为$O(n)$（暂时省略证明，以后来补罢）。&lt;/p></description></item><item><title>基本的图算法</title><link>https://kaigezheng.github.io/p/algorithm2/</link><pubDate>Sun, 24 Nov 2024 18:54:00 +0800</pubDate><guid>https://kaigezheng.github.io/p/algorithm2/</guid><description>&lt;img src="https://kaigezheng.github.io/p/algorithm2/img/cover.jpg" alt="Featured image of post 基本的图算法" />&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>此篇博客系补档，写于&lt;code>2023/11/10&lt;/code>至&lt;code>2023/12/07&lt;/code>，最后更新于&lt;code>2023/12/07 21:53&lt;/code>，曾发布于&lt;a class="link" href="https://zhuanlan.zhihu.com/p/670992012" target="_blank" rel="noopener"
+>知乎&lt;/a>。&lt;/p>
+&lt;h2 id="图论graph-theory的基本知识">图论（Graph Theory）的基本知识
+&lt;/h2>&lt;p>我们通常用$G=(V,E)$表示图（Graph，图；Vertices，顶点；Edge，边），一般用邻接矩阵或邻接（链）表来表示，二者都可以存储无向图和有向图。通常我们在稀疏图（$|E|&amp;laquo;|V|^2$）选择邻接表，在稠密图（$|E|$接近$|V|^2$）或需要快速判断任意两个结点之间是否有边相连时选择邻接矩阵。&lt;/p>
+&lt;h3 id="邻接表">邻接表
+&lt;/h3>&lt;p>对于图$G=(V,E)$的邻接表是一个长度为$|V|$的数组$Adj$，其中数组的每个元素都是一条链表，$Adj[u]$中存储有所有与结点$u$&lt;strong>邻接&lt;/strong>的结点。&lt;/p>
+&lt;p>&lt;img src="https://kaigezheng.github.io/p/algorithm2/img/1.png"
+width="1303"
+height="411"
+srcset="https://kaigezheng.github.io/p/algorithm2/img/1_hu_47d9854ed7ec3862.png 480w, https://kaigezheng.github.io/p/algorithm2/img/1_hu_cbfe6889c6c1a9cb.png 1024w"
+loading="lazy"
+alt="邻接表"
+class="gallery-image"
+data-flex-grow="317"
+data-flex-basis="760px"
+>&lt;/p>
+&lt;p>接下来分别在有向图和无向图中讨论邻接表：&lt;/p>
+&lt;ul>
+&lt;li>若$G$是有向图，则对于边$(u,v)$，结点$v$将出现在链表$Adj[u]$里，因此所有邻接链表的长度之和为$|E|$&lt;/li>
+&lt;li>若$G$是无向图，则对于边$(u,v)$，结点$v$将出现在链表$Adj[u]$中，结点$u$将出现在链表$Adj[v]$中，因此所有邻接链表的长度之和为$2|E|$
+不论有向图还是无向图，邻接表的存储空间需求均为$\Theta(V+E)$。
+&lt;strong>优点&lt;/strong>：邻接表的robust很好，可以对其简单修改来支持许多其他的图变种。如权重图，将边$(u,v)\in E$的权重值$\omega(u,v)$存放在结点$u$的邻接链表中即可。
+&lt;strong>缺点&lt;/strong>：无法快速判断一条边$(u,v)$是否是图中的一条边，唯一的办法是在$Adj[u]$中搜索结点$v$，邻接矩阵克服了这一缺陷但付出的代价是更大的空间消耗。&lt;/li>
+&lt;/ul>
+&lt;h3 id="邻接矩阵">邻接矩阵
+&lt;/h3>$$a_{ij}=\begin{cases} 1 ,若(i,j)\in E\\ 0,其他 \end{cases}$$&lt;p>
+不管一个图有多少边，邻接矩阵的空间需求皆为$\Theta(V^2)$。在无向图中，邻接链表是一个堆成矩阵，即$A=A^T$，在某些应用中可以只存对角线及其以上部分而减少一半空间占用。同时，当$a_{ij}=\omega(u,v)$也可以用于表示权重图。&lt;/p>
+&lt;h2 id="广度优先搜索bfs">广度优先搜索（BFS）
+&lt;/h2>&lt;h3 id="算法分析">算法分析
+&lt;/h3>&lt;p>BFS是最简单的图搜索算法之一，Prim的最小生成树算法和Dijkstra的单源最短路径算法都使用了类似BFS的思想。&lt;/p>
+&lt;blockquote>
+&lt;p>在这里先抽象地描述一下广度优先搜索（BFS）和深度优先搜索（DFS）的区别。想象你身处迷宫之中，你的面前有n条路。
+在BFS中，你会使用影分身之术，操纵分身走向每一条路，当其中一个分身抵达终点时，你就找到了抵达终点的最短路。
+在DFS中，你选择其中一条路，一直走到尽头，如果是一条死路，那么你会回到之前的某一个分岔路口，选择另一条路，知道你走完所有能走的路，于是便找到了抵达终点的路。&lt;/p>&lt;/blockquote>
+&lt;p>BFS能够计算从源节点$s$到每个可到达的结点的举例（最少的边数），同时生成一棵“广度优先搜索树”，该树以源结点$s$为根结点，包含所有可以从$s$到达的结点。该算法既可用于有向图，也可用于无向图。
+广度优先搜索得名是因为该算法始终是将已发现结点和未发现结点之间的边界沿其广度方向向外扩展。也就是说，算法需要在发现所有距离源结点$s$为$k$的所有结点后才会发现距离源节点距离为$k+1$的结点。
+在执行广度优先搜索的过程中将构造出一棵广度优先树，一开始，该树仅含有根结点（源结点$s$）作为已发现的结点。在扫描已发现结点$u$的邻接表时，每当发现一个未知结点$v$时，就将结点$u$和边$(u,v)$加入树中。由于每个结点最多被发现一次，因此最多只有一个父结点。&lt;/p>
+&lt;blockquote>
+&lt;p>在《算法导论》中，作者给图$G$中的每个结点定义了三种状态：$WHITE$（未发现结点），$BLACK$（已发现结点），$GRAY$（待发现结点，位于$white$结点与$black$结点之间）。
+假定输入图$G=(V,E)$是以邻接表表示的：
+1.将每个结点$u$的颜色存放在属性$u.color$中；
+2.将$u$的前驱节点（父节点）存放在属性$u.\pi$中（若$u=s$或$u$尚未被发现，则$u.\pi=NULL$）；
+3.将源结点到$u$的距离存放在属性$u.d$中。
+下面给出BFS的伪代码&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="o">//$&lt;/span>&lt;span class="n">BFS&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">G&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">each&lt;/span> &lt;span class="n">vertex&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="n">u&lt;/span>\&lt;span class="ow">in&lt;/span> &lt;span class="n">G&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">V&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">$&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">WHITE&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">$&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">=&lt;/span>\&lt;span class="n">infty&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">$&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="o">.&lt;/span>\&lt;span class="n">pi&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">NULL&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">GRAY&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">.&lt;/span>\&lt;span class="n">pi&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">NULL&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">//&lt;/span>&lt;span class="err">初始化，源节点&lt;/span>&lt;span class="o">$&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="o">$&lt;/span>&lt;span class="err">为待发现结点，距离为&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="err">，无前驱结点&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">//&lt;/span>&lt;span class="err">源节点外的结点都是未发现结点&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="n">Q&lt;/span>&lt;span class="o">=&lt;/span>\&lt;span class="n">varnothing&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">$&lt;/span>&lt;span class="n">ENQUEUE&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Q&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">s&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">while&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="n">Q&lt;/span> \&lt;span class="n">ne&lt;/span> \&lt;span class="n">varnothing&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">$&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DEQUEUE&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Q&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span>&lt;span class="err">出队，并对当前结点的邻接结点遍历，进入待发现状态并入队&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">each&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="n">v&lt;/span> \&lt;span class="ow">in&lt;/span> &lt;span class="n">G&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Adj&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">color&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">WHITE&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">$&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">GRAY&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">$&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">d&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">$&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="o">.&lt;/span>\&lt;span class="n">pi&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">$&lt;/span>&lt;span class="n">ENQUEUE&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Q&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">$&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">color&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">BLACK&lt;/span>&lt;span class="o">$&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">//&lt;/span>&lt;span class="err">遍历结束后，当前结点从待发现结点变为已发现结点&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kaigezheng.github.io/p/algorithm2/img/2.png"
+width="798"
+height="720"
+srcset="https://kaigezheng.github.io/p/algorithm2/img/2_hu_f8653d0346c59dff.png 480w, https://kaigezheng.github.io/p/algorithm2/img/2_hu_a479aa9a7c7f6011.png 1024w"
+loading="lazy"
+alt="BFS"
+class="gallery-image"
+data-flex-grow="110"
+data-flex-basis="266px"
+>&lt;/p>&lt;/blockquote>
+&lt;h3 id="时间复杂度分析">时间复杂度分析
+&lt;/h3>&lt;p>在初始化操作后，BFS不会再给任何点涂上白色，因此&lt;code>if(v.color==WHITE)&lt;/code>保证了每个结点最多入队/出队一次，入队和出队的时间均为$\Theta(1)$，因此对队列进行操作的总时间为$\Theta(V)$。因为BFS只在一个结点出队时才对结点的邻接表进行扫描，因此每个邻接表最多只扫描一次，由于邻接表长度之和为$\Theta(E)$，用于扫描邻接表的总时间为$\Theta(E)$。综上，BFS的总运行时间为$\Theta(V+E)$，是图$G$的邻接表大小的一个线性函数。&lt;/p>
+&lt;h2 id="深度优先搜索dfs">深度优先搜索（DFS）
+&lt;/h2>&lt;h3 id="算法分析-1">算法分析
+&lt;/h3>&lt;p>深度优先搜索总是对最近才发现的结点$v$的出发边进行探索，直到该结点的所有出发边都被发现为止。一旦搜索过程发现的$v$的所有出发边都被发现，则搜索回溯到$v$的前驱结点，该过程一直持续到从源结点可以达到的所有结点都被发现为止。如果还存在尚未发现的结点，则深度优先搜索将从这些未被发现的结点中任选一个作为新的源结点，并重复同样的搜索过程，直到所有结点都被发现为止。
+在DFS中，每当扫描已发现顶点$u$的邻接表，发现新的结点$v$时，令$v$的先辈域$\pi[v]$为$u$（出于回溯的目的，可以通过递归的返回地址巧妙地完成）。与BFS不同的是，DFS生成的先辈子图可以由几棵树组成，因为搜索可能由多个源顶点开始重复进行。&lt;/p>
+&lt;blockquote>
+&lt;p>在《算法导论》中，类似于BFS，DFS也通过对结点着色表示结点的状态。开始时，每个结点都是$WHITE$，在搜索中被发现时置于$GRAY$，在当前搜索结束时（其邻接表被完全搜索后）置于$BALCK$，这可以保证每一顶点在搜索结束时只存在于一棵深度优先树中，因此这些树是不相交的。
+除了创建深度优先森林，DFS同时为每个结点加盖时间戳。每个结点$v$由两个时间戳：当$v$第一次被发现（置于$GRAY$）时记录第一个时间戳$d[v]$，当结束检查$v$的邻接表（置于$BLACK$）时记录的第二个时间戳$f[v]$。显然，$d[v]&amp;lt;f[v]$。我们可以通过时间戳判断某一结点在DFS中的状态：$times&amp;lt;d[v]$时为$WHITE$，$d[v]&amp;lt;times&amp;lt;f[v]$时为$GRAY$，$times&amp;gt;f[v]$时为$BLACK$。
+下面给出DFS的伪代码：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">//$DFS(G)$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">for each vertex $u\in V[G]$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> do $color[u]=WHITE$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> $\pi[u]=NULL$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$times=0$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> //初始化
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> for each vertex $u\in V[G]$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> do if $color[v]=WHITE$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> then $DFS-VISIT(u)$//如果当前结点为被搜索过，那么开搜！
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">//$DFS-VISIT(u)$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$color[u]=GRAY$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$d[u]=time$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">for each $v \in Adj[u]$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> do if $color[v]=WHITE$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> then $\pi[v]=u$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> $DFS-VISIT(v)$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$color[u]=BLACK$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$f[u]=++time$
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kaigezheng.github.io/p/algorithm2/img/3.png"
+width="842"
+height="745"
+srcset="https://kaigezheng.github.io/p/algorithm2/img/3_hu_9e2b537d6200e52d.png 480w, https://kaigezheng.github.io/p/algorithm2/img/3_hu_71f579aa08f4f2dd.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="113"
+data-flex-basis="271px"
+>&lt;/p>&lt;/blockquote>
+&lt;p>DFS的结果可能依赖于DFS的&lt;code>for each&lt;/code>各个结点的访问顺序和DFS-VISIT的&lt;code>for each&lt;/code>对邻接点的访问顺序，但在实践中这些不同的访问顺序往往不会引起什么问题，因为任何DFS结果通常都可以被有效利用，最终结果基本上等价。&lt;/p>
+&lt;h3 id="时间复杂度分析-1">时间复杂度分析
+&lt;/h3>&lt;p>初始化和遍历每个结点进行DFS-VISIT（不包括调用DFS-VISIT）的循环占用时间为$\Theta(V)$。对于每个结点$v\in V$，过程DFS-VISIT仅被调用一次，因为只有对$WHITE$顶点才会调用DFS-VISIT，且DFS-VISIT的第一件事就是将结点置为$GRAY$。在DFS-VISIT($v$)的一次执行过程中，循环被执行了$|Adj[v]|$次，由于$\Sigma |Adj[v]| = \Theta(E)$，故DFS0VUSUT的循环代价为$\Theta(E)$。因此，DFS的运行时间为$\Theta(V+E)$。&lt;/p>
+&lt;h3 id="dfs的性质">DFS的性质
+&lt;/h3>&lt;p>如果把发现结点$u$用左括号&amp;quot;$(u$&amp;ldquo;表示，完成用右括号&amp;rdquo;$u)$&amp;ldquo;表示，那么在各级括号正确嵌套的前提下，发现于完成时间的记载就是一个完善的表达式。&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;img src="https://kaigezheng.github.io/p/algorithm2/img/4.png"
+width="528"
+height="500"
+srcset="https://kaigezheng.github.io/p/algorithm2/img/4_hu_81870e1c51b717b4.png 480w, https://kaigezheng.github.io/p/algorithm2/img/4_hu_6b2c0e37e68a3fb5.png 1024w"
+loading="lazy"
+class="gallery-image"
+data-flex-grow="105"
+data-flex-basis="253px"
+>&lt;/p>&lt;/blockquote>
+&lt;p>&lt;strong>推论（后裔区间的嵌套）&lt;/strong> 在一个（有向/无向）图$G$中的深度优先森林中，结点$v$是结点$u$的后裔，当且仅当$d[u]&amp;lt;d[v]&amp;lt;f[v]&amp;lt;f[u]$（由&lt;strong>括号定理&lt;/strong>证明）。&lt;/p>
+&lt;h3 id="边的分类">边的分类
+&lt;/h3>&lt;p>树边（tree edge）深度优先森林中的边，如果结点$v$是在探寻边$(u,v)$时被首次发现，那么$(u,v)$就是一条树边。
+反向边（$B$,back edge）深度优先树中结点$u$到某一祖先$v$的边（可能产生自环的边）。
+正向边（$F$,forward edge）深度优先树中连接$u$到某后裔$v$的&lt;strong>非树边&lt;/strong>$(u,v)$。
+交叉边（$C$,cross edge）其他类型的边，存在于同一深度优先树种的两个结点（其中一个结点不是另一个结点的祖先）之间或不同深度优先树的结点之间。&lt;/p>
+&lt;h2 id="拓扑排序">拓扑排序
+&lt;/h2>&lt;h3 id="算法分析-2">算法分析
+&lt;/h3>&lt;p>对一个有向无环图（$DAG$）$G=(V,E)$进行拓扑排序后，结果为该图所有结点的一个&lt;strong>线性序列&lt;/strong>，满足若$G$包含边$(u,v)$，则在该序列种$u$出现在$v$的前面（若图有环路则不可能存在这样的线性序列）。简单来看，图的拓扑排序可以看成所有结点沿水平线排列而成的一个序列，其中所有有向边均从左指向右。&lt;/p>
+&lt;blockquote>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">//$TOPOLOGICAL-SORT(G)$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">call $DPS(G)$ to compute finishing times $f[v]$ for rach vertex $v$
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">as each vertex is finished, insert it onto the front of a linked list
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">**return** the linked list of vertices
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/blockquote>
+&lt;p>因为DFS的运行时间为$\Theta(V+E)$，而将$|V|$个结点中的每一结点插入链表所需的时间为$\Theta(1)$，因此拓扑排序的运行时间为$\Theta(V+E)$。&lt;/p>
+&lt;h3 id="应用">应用
+&lt;/h3>&lt;p>给任务排序（Ordering Tasks，UVa 10305)&lt;/p>
+&lt;blockquote>
+&lt;p>假设有$n$个变量，还有$m$个二元组$(u,v)$，分别表示变量$u$小于$v$。那么，所有变量从小到大排列起来应该是什么样子？例如，有4个变量$a,b,c,d$，若已知$a&amp;lt;b$，$c&amp;lt;b$，$d&amp;lt;c$，则这4个变量的排序可能是$a&amp;lt;d&amp;lt;c&amp;lt;b$，找出其中一个可能的答案即可。&lt;/p>&lt;/blockquote>
+&lt;p>&lt;strong>Solution&lt;/strong>：把每个变量看成一个点，“小于”关系看成有向边，则得到了一个有向图，任务转化为对这张图进行拓扑排序。
+这里给出紫书（《算法竞赛入门经典-第二版》-刘汝佳）的代码：
+其中，$c[u]=0$表示从未访问过，$c[u]=1$表示已经访问过且递归访问所有子孙（DFS已返回），$c[u]=-1$表示正在访问（递归调用dfs(u)或正在栈帧中，尚未返回）。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">int&lt;/span> &lt;span class="n">c&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">maxn&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">topo&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">maxn&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">t&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">bool&lt;/span> &lt;span class="nf">dfs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">u&lt;/span>&lt;span class="p">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="c1">//访问标志
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">v&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">v&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">v&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">G&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="p">][&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="p">]){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">c&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nb">false&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="c1">//存在环路，退出
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">c&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="mi">1&lt;/span> &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="o">!&lt;/span>&lt;span class="n">dfs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">v&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nb">false&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="c1">//访问完所有子孙，退出
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">c&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">topo&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">--&lt;/span>&lt;span class="n">t&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">u&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nb">true&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">bool&lt;/span> &lt;span class="nf">toposort&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">t&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">memset&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">c&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">sizeof&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">c&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">u&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">u&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">n&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="n">u&lt;/span>&lt;span class="o">++&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="n">c&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="n">dfs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">u&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nb">false&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nb">true&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item><item><title>高性能集群运维——装机</title><link>https://kaigezheng.github.io/p/ops1/</link><pubDate>Thu, 06 Mar 2025 10:23:00 +0800</pubDate><guid>https://kaigezheng.github.io/p/ops1/</guid><description>&lt;img src="https://kaigezheng.github.io/p/ops1/img/cover.png" alt="Featured image of post 高性能集群运维——装机" />&lt;p>这段时间和机房打交道比较多，所以来总结一下这段时间的运维经验，也方便学弟学妹未来参与搭建集群。&lt;/p>
+&lt;h2 id="硬件">硬件
+&lt;/h2>&lt;h3 id="组装">组装
+&lt;/h3>&lt;p>新采购的整机服务器，硬盘、内存条、网卡都是在的，因此只需要把计算卡插入PCIE插槽即可。务必保证启动时，主电源和备用电源都是亮灯状态。在ASC Final中，硬盘、内存条、网卡都是得自己插的。&lt;/p>
+&lt;p>&lt;img src="https://kaigezheng.github.io/p/ops1/img/1.jpg"
+width="1706"
+height="1279"
+srcset="https://kaigezheng.github.io/p/ops1/img/1_hu_ea9c8e661411dd00.jpg 480w, https://kaigezheng.github.io/p/ops1/img/1_hu_7c3da4ba72857459.jpg 1024w"
+loading="lazy"
+alt="服务器内部"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;h3 id="制作启动盘">制作启动盘
+&lt;/h3>&lt;p>需要准备可引导ISO、烧录软件(&lt;a class="link" href="https://rufus.ie/en/" target="_blank" rel="noopener"
+>Rufus&lt;/a>或&lt;a class="link" href="https://ultraiso.net/" target="_blank" rel="noopener"
+>UltraISO&lt;/a>)和一个U盘(最好是USB3.0)。这里选择服务器端&lt;code>Ubuntu Server 22.04.5 LTS&lt;/code>(上一个Ubuntu Server长期支持版，支持到2027年4月)，在&lt;a class="link" href="https://cn.ubuntu.com/download" target="_blank" rel="noopener"
+>Ubuntu官网&lt;/a>获取可引导ISO文件。&lt;/p>
+&lt;p>&lt;img src="https://kaigezheng.github.io/p/ops1/img/2.png"
+width="1021"
+height="168"
+srcset="https://kaigezheng.github.io/p/ops1/img/2_hu_1b004a5fefe53d96.png 480w, https://kaigezheng.github.io/p/ops1/img/2_hu_4b7261555edc9a.png 1024w"
+loading="lazy"
+alt="ISO文件"
+class="gallery-image"
+data-flex-grow="607"
+data-flex-basis="1458px"
+>&lt;/p>
+&lt;p>接下来用烧录软件写入硬盘镜像，UltraISO注意选择写入方式为&lt;code>USB-HDD+&lt;/code>，Rufus注意选择目标系统类型为&lt;code>BIOS或UEFI&lt;/code>，文件系统和其他设置根据需求配置。格式化U盘后即可写入系统镜像（约2-3分钟）。&lt;/p>
+&lt;p>&lt;img src="https://kaigezheng.github.io/p/ops1/img/3.png"
+width="594"
+height="872"
+srcset="https://kaigezheng.github.io/p/ops1/img/3_hu_91b1460d5a24137c.png 480w, https://kaigezheng.github.io/p/ops1/img/3_hu_9b837a2dae48a8b7.png 1024w"
+loading="lazy"
+alt="Rufus制作启动盘"
+class="gallery-image"
+data-flex-grow="68"
+data-flex-basis="163px"
+> &lt;img src="https://kaigezheng.github.io/p/ops1/img/4.png"
+width="465"
+height="432"
+srcset="https://kaigezheng.github.io/p/ops1/img/4_hu_7e7ff1b598ce2dae.png 480w, https://kaigezheng.github.io/p/ops1/img/4_hu_95f18d9c83408d5d.png 1024w"
+loading="lazy"
+alt="UltraISO制作启动盘"
+class="gallery-image"
+data-flex-grow="107"
+data-flex-basis="258px"
+>&lt;/p>
+&lt;h2 id="软件">软件
+&lt;/h2>&lt;h3 id="网络配置">网络配置
+&lt;/h3>&lt;p>一般在系统安装时先不配置，安装完成后通过&lt;code>ip link show&lt;/code>查看网口名。通过&lt;code>vim /etc/netplan/50-cloud-init.yaml&lt;/code>，配置如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">network:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ethernets:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ens16f0:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> addresses:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - &amp;lt;A.B.C.D&amp;gt;/24
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> nameservers:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> addresses: &lt;span class="o">[]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> search: &lt;span class="o">[]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> routes:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - to: default
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> via: &amp;lt;A.B.C.D&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> version: &lt;span class="m">2&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="设置root密码">设置root密码
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">su root
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">passwd root
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="禁用linux-kernel自动更新">禁用Linux kernel自动更新
+&lt;/h3>&lt;p>如果不禁用的话,每次&lt;code>apt update&lt;/code>后都会提示你是否需要重启服务并更新。修改&lt;code>/etc/apt/apt.conf.d/&lt;/code>下的&lt;code>10periodic&lt;/code>和&lt;code>20auto-upgrades&lt;/code>内的参数为&lt;code>0&lt;/code>即可。&lt;/p>
+&lt;p>&lt;code>sudo vim /etc/apt/apt.conf.d/10periodic&lt;/code>&lt;/p>
+&lt;p>更新为:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">APT::Periodic::Update-Package-Lists &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">APT::Periodic::Download-Upgradeable-Packages &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">APT::Periodic::AutocleanInterval &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>sudo vim /etc/apt/apt.conf.d/20auto-upgrades&lt;/code>&lt;/p>
+&lt;p>更新为:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">APT::Periodic::Update-Package-Lists &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">APT::Periodic::Unattended-Upgrade &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="反向代理">反向代理
+&lt;/h3>&lt;p>由于计算节点不联网，因此把本地作为跳板机进行反向代理。&lt;/p>
+&lt;p>修改本地&lt;code>Users/username/.ssh/config&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">Host &amp;lt;IP&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HostName &amp;lt;IP&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> User &amp;lt;username&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> RemoteForward &amp;lt;Port1&amp;gt; 127.0.0.1:&amp;lt;Port2&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="值得被做的准备">值得被做的准备
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 禁用Linux自动休眠&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;\$nrconf{kernelhints} = 0;&amp;#34;&lt;/span> &amp;gt;&amp;gt; /etc/needrestart/needrestart.conf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;\$nrconf{restart} = &amp;#39;l&amp;#39;;&amp;#34;&lt;/span> &amp;gt;&amp;gt; /etc/needrestart/needrestart.conf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 更新apt和apt-get&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt upgrade
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt-get update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt-get upgrade
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 安装一些必要组件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt install git wget vim curl htop net-tools pciutils build-essential
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="分盘">分盘
+&lt;/h3>&lt;p>如果不识别硬盘，可能在系统安装阶段就报错&lt;code>block probing did not discover any disks&lt;/code>，检查硬盘、RIAD卡是否亮灯。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">lsblk &lt;span class="c1"># 确认新硬盘设备名称(如/dev/sdX)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo pvcreate /dev/sdb /dev/sdc /dev/sdd &lt;span class="c1"># 创建物理卷PV&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vgcreate vg_home /dev/sdb /dev/sdc /dev/sdd &lt;span class="c1"># 创建卷组VG&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">vgdisplay &lt;span class="c1"># 检查卷组信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo lvcreate -l 100%FREE -n lv_home vg_home &lt;span class="c1"># 创建一个逻辑卷，占用卷组的全部空间&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mkfs.ext4 /dev/vg_home/lv_home &lt;span class="c1"># 格式化逻辑卷为ext4文件系统&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mount /dev/vg_home/lv_home /home &lt;span class="c1"># 挂载逻辑卷到/home&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 自动挂载&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo blkid /dev/vg_home/lv_home &lt;span class="c1"># 获取逻辑卷的UUID&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vim /etc/fstab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt;&amp;gt;&amp;gt; &lt;span class="nv">UUID&lt;/span>&lt;span class="o">=&lt;/span>&amp;lt;UUID&amp;gt; /home ext4 defaults &lt;span class="m">0&lt;/span> &lt;span class="m">2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mount -a
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">df -a &lt;span class="c1"># 验证&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="nfs共享文件系统">NFS共享文件系统
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo apt install nfs-kernel-server nfs-common rdma-core &lt;span class="c1"># 所有节点都执行&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="nfs服务器节点">NFS服务器节点
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo mkdir -p /home
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo chmod &lt;span class="m">777&lt;/span> /home
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vim /etc/exports
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt;&amp;gt;&amp;gt; /home *&lt;span class="o">(&lt;/span>rw,sync,no_root_squash&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vim /etc/nfs.conf &lt;span class="c1"># 启用RMDA&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt;&amp;gt;&amp;gt; &lt;span class="o">[&lt;/span>nfsd&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt;&amp;gt;&amp;gt; &lt;span class="nv">rdma&lt;/span>&lt;span class="o">=&lt;/span>y
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo systemctl restart nfs-kernel-server
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo systemctl &lt;span class="nb">enable&lt;/span> nfs-kernel-server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="客户端节点">客户端节点
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo mount -o rdma,vers&lt;span class="o">=&lt;/span>4.2 &amp;lt;server_ip&amp;gt;:/home /home
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">df -h &lt;span class="p">|&lt;/span> grep /home &lt;span class="c1"># 检查挂载是否成功&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vim /etc/fstab &lt;span class="c1"># 设置开机自动挂载&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt;&amp;gt;&amp;gt; &amp;lt;server_ip&amp;gt;:/home /home nfs4 rdma,vers&lt;span class="o">=&lt;/span>4.2 &lt;span class="m">0&lt;/span> &lt;span class="m">0&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>验证RMDA传输:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">mount &lt;span class="p">|&lt;/span> grep /home
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cat /proc/fs/nfsfs/servers &lt;span class="c1"># 看transport列是否为rdma&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="infiniband-driver">InfiniBand Driver
+&lt;/h3>&lt;p>驱动下载：&lt;a class="link" href="https://developer.nvidia.com/networking/infiniband-software" target="_blank" rel="noopener"
+>NVIDIA InfiniBand Software | NVIDIA | NVIDIA Developer&lt;/a>&lt;/p>
+&lt;p>MLNX_OFED：&lt;a class="link" href="https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/" target="_blank" rel="noopener"
+>Linux InfiniBand Drivers&lt;/a>&lt;/p>
+&lt;p>对于旧版本的IB，请务必查看Release Note确认是否支持。&lt;/p>
+&lt;p>查看IB设备：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">lspci &lt;span class="p">|&lt;/span> grep -i mell
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>打开IB的opensm服务：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 如果没有安装&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt update &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> sudo apt upgrad -y
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install opensm infiniband-diags ibutils perftest -y
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo systemctl start opensm
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl status opensm
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo systemctl &lt;span class="nb">enable&lt;/span> opensm &lt;span class="c1"># 开机自启&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>验证能否正常识别IB设备：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">ibv_devinfo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ibstat
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>测试服务器和客户端的ib带宽：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">ibv_devices # 查询设备名称, 如mlx5_0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ib_read_bw -a -d &amp;lt;device_name&amp;gt; --report_gbits # 服务器
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ib_read_bw -a -F &amp;lt;ip_addr&amp;gt; -d &amp;lt;device_name&amp;gt; --report_gbits # 客户端 (-a测试所有消息大小, -F强制使用服务端连接(需要服务端先启动), --report_gbits以Gbps显示带宽结果)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kaigezheng.github.io/p/ops1/img/5.png"
+width="963"
+height="519"
+srcset="https://kaigezheng.github.io/p/ops1/img/5_hu_d3cad993109a1b7e.png 480w, https://kaigezheng.github.io/p/ops1/img/5_hu_6ec2e3973c083777.png 1024w"
+loading="lazy"
+alt="服务端"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="445px"
+> &lt;img src="https://kaigezheng.github.io/p/ops1/img/6.png"
+width="970"
+height="453"
+srcset="https://kaigezheng.github.io/p/ops1/img/6_hu_3faf6763bbb42fc7.png 480w, https://kaigezheng.github.io/p/ops1/img/6_hu_e20ba468fe630783.png 1024w"
+loading="lazy"
+alt="客户端"
+class="gallery-image"
+data-flex-grow="214"
+data-flex-basis="513px"
+>&lt;/p>
+&lt;p>设置IB的MTU（最大传输单元）：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">ifconfig &lt;span class="p">|&lt;/span> grep ib &lt;span class="c1"># 查询&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ifconfig ib0 mtu &lt;span class="m">65520&lt;/span> &lt;span class="c1"># 保证两台机器的IB接口配置相同的MTU&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>简单测试：&lt;code>ibping&lt;/code>和&lt;code>ibping &amp;lt;ip_addr&amp;gt;&lt;/code>即可&lt;/p>&lt;/blockquote>
+&lt;h3 id="cuda">CUDA
+&lt;/h3>&lt;h4 id="禁用卸载nouveau驱动非必要">禁用/卸载Nouveau驱动(非必要)
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo vim /etc/modprobe.d/blacklist.conf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在最后两行加入：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">blacklist nouveau
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">options nouveau &lt;span class="nv">modeset&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="m">0&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>重建initramfs并重启服务器使其生效：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">sudo update-initramfs -u
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo reboot
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>通过&lt;code>lsmod | grep nouveau&lt;/code>验证，若没有输出则禁用成功。&lt;/p>
+&lt;h4 id="安装驱动">安装驱动
+&lt;/h4>&lt;p>查看GPU型号：&lt;code>lspci | grep -i nvidia&lt;/code>&lt;/p>
+&lt;p>驱动下载：&lt;a class="link" href="https://www.nvidia.com/en-us/drivers/" target="_blank" rel="noopener"
+>NVIDIA Driver&lt;/a>&lt;/p>
+&lt;blockquote>
+&lt;p>A800/V100 for CUDA12.6：
+&lt;a class="link" href="https://www.nvidia.com/en-us/drivers/details/231430/" target="_blank" rel="noopener"
+>Data Center Driver for Linux x64 560.35.03 | Linux 64-bit | NVIDIA&lt;/a>&lt;/p>&lt;/blockquote>
+&lt;h4 id="卸载驱动">卸载驱动
+&lt;/h4>&lt;p>&lt;code>sudo /usr/bin/nvidia-uninstall&lt;/code>&lt;/p>
+&lt;h4 id="安装cuda">安装CUDA
+&lt;/h4>&lt;p>CUDA Toolkit：&lt;a class="link" href="https://developer.nvidia.com/cuda-toolkit-archive" target="_blank" rel="noopener"
+>CUDA Toolkit Archive | NVIDIA Developer&lt;/a>&lt;/p>
+&lt;p>CUDA：&lt;a class="link" href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="noopener"
+>CUDA Toolkit 12.6 Update 3 Downloads | NVIDIA Developer&lt;/a>&lt;/p></description></item><item><title>LeetCode刷题记录</title><link>https://kaigezheng.github.io/p/leetcode/</link><pubDate>Thu, 06 Mar 2025 10:23:00 +0800</pubDate><guid>https://kaigezheng.github.io/p/leetcode/</guid><description>&lt;img src="https://kaigezheng.github.io/p/leetcode/img/cover2.png" alt="Featured image of post LeetCode刷题记录" />&lt;h2 id="1相交链表">1.相交链表
+&lt;/h2>&lt;p>&lt;a class="link" href="https://leetcode.cn/problems/intersection-of-two-linked-lists/description/?envType=problem-list-v2&amp;amp;envId=J9S1zwux" target="_blank" rel="noopener"
+>160.相交链表&lt;/a>(Easy):给两个单链表的头节点，找出并返回两个单链表相交的起始节点。（Note:不是值相等，而是内存空间相等）&lt;/p>
+&lt;h3 id="哈希集合">哈希集合
+&lt;/h3>&lt;p>时间复杂度：$\Theta (m+n)$&lt;/p>
+&lt;p>空间复杂度：$\Theta (m)$&lt;/p>
+&lt;p>遍历单链表A并把每个元素（内存地址）存储到集合(&lt;code>unordered_set&lt;/code>)中，遍历单链表B并判断A中是否已经存在(&lt;code>unordered_set.count(..)&lt;/code>)。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C++" data-lang="C++">&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Solution&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ListNode&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">getIntersectionNode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ListNode&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">headA&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ListNode&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">headB&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">unordered_set&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">ListNode&lt;/span> &lt;span class="o">*&amp;gt;&lt;/span> &lt;span class="n">visited&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ListNode&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">temp&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">headA&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">temp&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">visited&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">insert&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">temp&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">temp&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">temp&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">temp&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">headB&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">temp&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">visited&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">count&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">temp&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">temp&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">temp&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">temp&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="双指针">双指针
+&lt;/h3>&lt;p>时间复杂度：$\Theta (m+n)$&lt;/p>
+&lt;p>空间复杂度：$\Theta (1)$&lt;/p>
+&lt;p>使用两个指针分别同时遍历单链表A和单链表B，并在各自遍历完后切换到单链表B和单链表A，如果有相交节点，一定会同时遇到。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-C++" data-lang="C++">&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">Solution&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ListNode&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">getIntersectionNode&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ListNode&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">headA&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ListNode&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">headB&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">ListNode&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">A&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">headA&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">B&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">headB&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">headA&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="k">nullptr&lt;/span> &lt;span class="o">||&lt;/span> &lt;span class="n">headB&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">A&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="n">B&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">A&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">A&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">?&lt;/span> &lt;span class="nl">headB&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="n">A&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">B&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">B&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="o">?&lt;/span> &lt;span class="nl">headA&lt;/span> &lt;span class="p">:&lt;/span> &lt;span class="n">B&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">A&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="2二叉树的最近公共祖先">2.二叉树的最近公共祖先
+&lt;/h2></description></item><item><title>Triton学习——Vector Addition, Fused Softmax</title><link>https://kaigezheng.github.io/p/triton1/</link><pubDate>Thu, 06 Mar 2025 10:23:00 +0800</pubDate><guid>https://kaigezheng.github.io/p/triton1/</guid><description>&lt;img src="https://kaigezheng.github.io/p/triton1/img/cover.jpg" alt="Featured image of post Triton学习——Vector Addition, Fused Softmax" />&lt;h2 id="reference">Reference
+&lt;/h2>&lt;p>&lt;a class="link" href="https://triton.hyper.ai/docs/getting-started/tutorials" target="_blank" rel="noopener"
+>教程 | Triton 中文站&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://triton-lang.org/main/getting-started/tutorials/index.html" target="_blank" rel="noopener"
+>Tutorials — Triton documentation&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://opencamp.cn/InfiniTensor/camp/2024winter/stage/7" target="_blank" rel="noopener"
+>并行编程语言（Triton &amp;amp; 九齿） - 2024 冬季大模型与人工智能系统训练营&lt;/a>&lt;/p>
+&lt;h2 id="vector-addition">Vector Addition
+&lt;/h2>&lt;h3 id="compute-kernel">Compute Kernel
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">torch&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">triton&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">triton.language&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">tl&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">DEVICE&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">device&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;cuda:0&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nd">@triton.jit&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">add_kernel&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x_ptr&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># *Pointer* to first input vector.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="n">y_ptr&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># *Pointer* to second input vector.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="n">output_ptr&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># *Pointer* to output vector.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="n">n_elements&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># Size of the vector.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="n">BLOCK_SIZE&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">constexpr&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># Number of elements each program should process.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="c1"># NOTE: `constexpr` so it can be used as a shape value.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">program_id&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">axis&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>  &lt;span class="c1"># We use a 1D launch grid so axis is 0.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">block_start&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">BLOCK_SIZE&lt;/span> &lt;span class="c1"># Offsets is a list of pointers  &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">offsets&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">block_start&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">arange&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BLOCK_SIZE&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">   
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">mask&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">offsets&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">n_elements&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># Load x and y from DRAM&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x_ptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">offsets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mask&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">mask&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">y_ptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">offsets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mask&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">mask&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">output&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">y&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># Write x + y back to DRAM.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">store&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">output_ptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">offsets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">output&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mask&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">mask&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>编译遇到的第一个报错是&lt;code>AttributeError: 'CudaDriver' object has no attribute 'get_active_torch_device'&lt;/code>，在&lt;a class="link" href="https://github.com/triton-lang/triton/issues/5388" target="_blank" rel="noopener"
+>issue#5388&lt;/a>下找到了原因和解决方案，&lt;code>DEVICE = triton.runtime.driver.active.get_active_torch_device()&lt;/code>似乎对应了旧本版本，用&lt;code>DEVICE = torch.device(&amp;quot;cuda:0&amp;quot;)&lt;/code>可以暂缓燃眉之急。&lt;/p>&lt;/blockquote>
+&lt;p>kernel的实现思路是简单的：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>对于输入&lt;code>(input_x, input_y, output, n, BLOCK_SIZE)&lt;/code>，获取&lt;code>programd_id&lt;/code>，通过&lt;code>pid * BLOCK_SIZE&lt;/code>计算分块索引，通过&lt;code>block_start + tl.arange(0, BLOCK_SIZE)&lt;/code>确定每个元素的索引&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>确定&lt;code>mask&lt;/code>，防止边界溢出&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>加载输入元素，实现向量加法，最后写回DRAM&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>接下来需要一个合适的辅助函数，负责生成&lt;code>output&lt;/code>张量和创建合适的layout&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Tensor&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Tensor&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">output&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">empty_like&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1"># preallocate the output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">assert&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">device&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">DEVICE&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">device&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">DEVICE&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">output&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">device&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">DEVICE&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">n_elements&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">output&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">numel&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">grid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">lambda&lt;/span> &lt;span class="n">meta&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">triton&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cdiv&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">n_elements&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">meta&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;BLOCK_SIZE&amp;#39;&lt;/span>&lt;span class="p">]),&lt;/span> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">add_kernel&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">grid&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">output&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n_elements&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BLOCK_SIZE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1024&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># We return a handle to z but, since `torch.cuda.synchronize()` hasn&amp;#39;t been called, the kernel is still&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># running asynchronously at this point.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">return&lt;/span> &lt;span class="n">output&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>核心只有两行代码，&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>grid = lambda meta: (triton.cdiv(n_elements, meta['BLOCK_SIZE']), )&lt;/code>定义一个grid匿名函数，用&lt;code>triton.cdiv&lt;/code>计算$\lceil\frac{n}{BLOCK_SIZE}\rceil$&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>add_kernel[grid](x, y, output, n_elements, BLOCK_SIZE=1024)&lt;/code>调用&lt;code>grid(meta)&lt;/code>来确定网格大小并启动GPU线程块，并将&lt;code>(x, y, output, n_elements, BLOCK_SIZE=1024)&lt;/code>传递给kernel&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">manual_seed&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">984320000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">device&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DEVICE&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">device&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DEVICE&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">output_torch&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">y&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">output_triton&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">output_torch&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">output_triton&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s1">&amp;#39;The maximum difference between torch and triton is &amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">      &lt;span class="sa">f&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">max&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">abs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">output_torch&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">output_triton&lt;/span>&lt;span class="p">))&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="benchmark">Benchmark
+&lt;/h3>&lt;p>这个设计真的非常喜欢，不用费事去写一些benchmark测试代码了！&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="nd">@triton.testing.perf_report&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">triton&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">testing&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Benchmark&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">x_names&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;size&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span>  &lt;span class="c1"># Argument names to use as an x-axis for the plot. 用作绘图 x 轴的参数名称。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">x_vals&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="o">**&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">12&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">28&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)],&lt;/span>  &lt;span class="c1"># Different possible values for `x_name`. `x_name` 的不同可能值。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">x_log&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">True&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># x axis is logarithmic. x 轴为对数。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">line_arg&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;provider&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># Argument name whose value corresponds to a different line in the plot. 参数名称，其值对应于绘图中的不同线条。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">line_vals&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;triton&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;torch&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span>  &lt;span class="c1"># Possible values for `line_arg`. `line_arg` 的可能值。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">line_names&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;Triton&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;Torch&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span>  &lt;span class="c1"># Label name for the lines. 线条的标签名称。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">styles&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[(&lt;/span>&lt;span class="s1">&amp;#39;blue&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;green&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-&amp;#39;&lt;/span>&lt;span class="p">)],&lt;/span>  &lt;span class="c1"># Line styles. 线条样式。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">ylabel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;GB/s&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># Label name for the y-axis. y 轴标签名称。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">plot_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;vector-add-performance&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># Name for the plot. Used also as a file name for saving the plot. 绘图名称。也用作保存绘图的文件名。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">args&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">{},&lt;/span>  &lt;span class="c1"># Values for function arguments not in `x_names` and `y_name`. 不在 `x_names` 和 `y_name` 中的函数参数值。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">benchmark&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">provider&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">device&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;cuda&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dtype&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">float32&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">device&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;cuda&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dtype&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">float32&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">quantiles&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="mf">0.5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.8&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">if&lt;/span> &lt;span class="n">provider&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s1">&amp;#39;torch&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">ms&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">min_ms&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">max_ms&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">triton&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">testing&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">do_bench&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">lambda&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">quantiles&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">quantiles&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">if&lt;/span> &lt;span class="n">provider&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s1">&amp;#39;triton&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">ms&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">min_ms&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">max_ms&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">triton&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">testing&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">do_bench&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">lambda&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">quantiles&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">quantiles&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">gbps&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">lambda&lt;/span> &lt;span class="n">ms&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">numel&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">element_size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">ms&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">1e-6&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">return&lt;/span> &lt;span class="n">gbps&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ms&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">gbps&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">max_ms&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">gbps&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">min_ms&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">benchmark&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">print_data&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">True&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">show_plots&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">True&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">save_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;./&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>以下是单卡Tesla V100-PCIE-32GB的benchmark结果，可以看出和Torch还是有一些差距的&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">vector-add-performance:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> size Triton Torch
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0 4096.0 9.600000 9.600000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">1 8192.0 19.200000 19.200000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2 16384.0 38.400001 38.400001
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3 32768.0 76.800002 76.800002
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">4 65536.0 127.999995 127.999995
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">5 131072.0 219.428568 219.428568
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">6 262144.0 341.333321 341.333321
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">7 524288.0 472.615390 474.898540
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">8 1048576.0 614.400016 614.400016
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">9 2097152.0 702.171410 702.171410
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">10 4194304.0 756.184613 756.184613
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">11 8388608.0 792.974002 793.173993
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">12 16777216.0 812.429770 815.800825
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">13 33554432.0 822.627612 824.352211
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">14 67108864.0 827.823144 828.695462
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">15 134217728.0 830.445624 831.344043
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="fused-softmax">Fused Softmax
+&lt;/h2>&lt;p>TODO&lt;/p></description></item></channel></rss>

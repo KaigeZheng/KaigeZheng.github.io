@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>AI Infra on Kambri's Blog</title><link>https://kaigezheng.github.io/tags/ai-infra/</link><description>Recent content in AI Infra on Kambri's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Thu, 06 Mar 2025 10:23:00 +0800</lastBuildDate><atom:link href="https://kaigezheng.github.io/tags/ai-infra/index.xml" rel="self" type="application/rss+xml"/><item><title>Triton学习——Vector Addition, Fused Softmax</title><link>https://kaigezheng.github.io/p/triton1/</link><pubDate>Thu, 06 Mar 2025 10:23:00 +0800</pubDate><guid>https://kaigezheng.github.io/p/triton1/</guid><description>&lt;img src="https://kaigezheng.github.io/p/triton1/img/cover.jpg" alt="Featured image of post Triton学习——Vector Addition, Fused Softmax" />&lt;h2 id="reference">Reference
+&lt;/h2>&lt;p>&lt;a class="link" href="https://triton.hyper.ai/docs/getting-started/tutorials" target="_blank" rel="noopener"
+>教程 | Triton 中文站&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://triton-lang.org/main/getting-started/tutorials/index.html" target="_blank" rel="noopener"
+>Tutorials — Triton documentation&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://opencamp.cn/InfiniTensor/camp/2024winter/stage/7" target="_blank" rel="noopener"
+>并行编程语言（Triton &amp;amp; 九齿） - 2024 冬季大模型与人工智能系统训练营&lt;/a>&lt;/p>
+&lt;h2 id="vector-addition">Vector Addition
+&lt;/h2>&lt;h3 id="compute-kernel">Compute Kernel
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">torch&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">triton&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">triton.language&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="nn">tl&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">DEVICE&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">device&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;cuda:0&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nd">@triton.jit&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">add_kernel&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x_ptr&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># *Pointer* to first input vector.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="n">y_ptr&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># *Pointer* to second input vector.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="n">output_ptr&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># *Pointer* to output vector.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="n">n_elements&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># Size of the vector.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="n">BLOCK_SIZE&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">constexpr&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># Number of elements each program should process.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="c1"># NOTE: `constexpr` so it can be used as a shape value.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">               &lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">pid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">program_id&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">axis&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>  &lt;span class="c1"># We use a 1D launch grid so axis is 0.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">block_start&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">pid&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">BLOCK_SIZE&lt;/span> &lt;span class="c1"># Offsets is a list of pointers  &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">offsets&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">block_start&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">arange&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BLOCK_SIZE&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">   
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">mask&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">offsets&lt;/span> &lt;span class="o">&amp;lt;&lt;/span> &lt;span class="n">n_elements&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># Load x and y from DRAM&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x_ptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">offsets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mask&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">mask&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">y_ptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">offsets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mask&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">mask&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">output&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">y&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># Write x + y back to DRAM.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">tl&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">store&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">output_ptr&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">offsets&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">output&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">mask&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">mask&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>编译遇到的第一个报错是&lt;code>AttributeError: 'CudaDriver' object has no attribute 'get_active_torch_device'&lt;/code>，在&lt;a class="link" href="https://github.com/triton-lang/triton/issues/5388" target="_blank" rel="noopener"
+>issue#5388&lt;/a>下找到了原因和解决方案，&lt;code>DEVICE = triton.runtime.driver.active.get_active_torch_device()&lt;/code>似乎对应了旧本版本，用&lt;code>DEVICE = torch.device(&amp;quot;cuda:0&amp;quot;)&lt;/code>可以暂缓燃眉之急。&lt;/p>&lt;/blockquote>
+&lt;p>kernel的实现思路是简单的：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>对于输入&lt;code>(input_x, input_y, output, n, BLOCK_SIZE)&lt;/code>，获取&lt;code>programd_id&lt;/code>，通过&lt;code>pid * BLOCK_SIZE&lt;/code>计算分块索引，通过&lt;code>block_start + tl.arange(0, BLOCK_SIZE)&lt;/code>确定每个元素的索引&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>确定&lt;code>mask&lt;/code>，防止边界溢出&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>加载输入元素，实现向量加法，最后写回DRAM&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>接下来需要一个合适的辅助函数，负责生成&lt;code>output&lt;/code>张量和创建合适的layout&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Tensor&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Tensor&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">output&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">empty_like&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1"># preallocate the output&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">assert&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">device&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">DEVICE&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">device&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">DEVICE&lt;/span> &lt;span class="ow">and&lt;/span> &lt;span class="n">output&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">device&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">DEVICE&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">n_elements&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">output&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">numel&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">grid&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">lambda&lt;/span> &lt;span class="n">meta&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">triton&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">cdiv&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">n_elements&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">meta&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;BLOCK_SIZE&amp;#39;&lt;/span>&lt;span class="p">]),&lt;/span> &lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">add_kernel&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">grid&lt;/span>&lt;span class="p">](&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">output&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">n_elements&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">BLOCK_SIZE&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">1024&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># We return a handle to z but, since `torch.cuda.synchronize()` hasn&amp;#39;t been called, the kernel is still&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="c1"># running asynchronously at this point.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">return&lt;/span> &lt;span class="n">output&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>核心只有两行代码，&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>grid = lambda meta: (triton.cdiv(n_elements, meta['BLOCK_SIZE']), )&lt;/code>定义一个grid匿名函数，用&lt;code>triton.cdiv&lt;/code>计算$\lceil\frac{n}{BLOCK_SIZE}\rceil$&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>add_kernel[grid](x, y, output, n_elements, BLOCK_SIZE=1024)&lt;/code>调用&lt;code>grid(meta)&lt;/code>来确定网格大小并启动GPU线程块，并将&lt;code>(x, y, output, n_elements, BLOCK_SIZE=1024)&lt;/code>传递给kernel&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">manual_seed&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">size&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">984320000&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">device&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DEVICE&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">device&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">DEVICE&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">output_torch&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">y&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">output_triton&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">output_torch&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">output_triton&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s1">&amp;#39;The maximum difference between torch and triton is &amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">      &lt;span class="sa">f&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">max&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">abs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">output_torch&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">output_triton&lt;/span>&lt;span class="p">))&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s1">&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="benchmark">Benchmark
+&lt;/h3>&lt;p>这个设计真的非常喜欢，不用费事去写一些benchmark测试代码了！&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="nd">@triton.testing.perf_report&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">triton&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">testing&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">Benchmark&lt;/span>&lt;span class="p">(&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">x_names&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;size&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span>  &lt;span class="c1"># Argument names to use as an x-axis for the plot. 用作绘图 x 轴的参数名称。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">x_vals&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="o">**&lt;/span>&lt;span class="n">i&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">12&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">28&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)],&lt;/span>  &lt;span class="c1"># Different possible values for `x_name`. `x_name` 的不同可能值。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">x_log&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">True&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># x axis is logarithmic. x 轴为对数。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">line_arg&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;provider&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># Argument name whose value corresponds to a different line in the plot. 参数名称，其值对应于绘图中的不同线条。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">line_vals&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;triton&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;torch&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span>  &lt;span class="c1"># Possible values for `line_arg`. `line_arg` 的可能值。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">line_names&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;Triton&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;Torch&amp;#39;&lt;/span>&lt;span class="p">],&lt;/span>  &lt;span class="c1"># Label name for the lines. 线条的标签名称。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">styles&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[(&lt;/span>&lt;span class="s1">&amp;#39;blue&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-&amp;#39;&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;green&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-&amp;#39;&lt;/span>&lt;span class="p">)],&lt;/span>  &lt;span class="c1"># Line styles. 线条样式。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">ylabel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;GB/s&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># Label name for the y-axis. y 轴标签名称。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">plot_name&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;vector-add-performance&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span>  &lt;span class="c1"># Name for the plot. Used also as a file name for saving the plot. 绘图名称。也用作保存绘图的文件名。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">args&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">{},&lt;/span>  &lt;span class="c1"># Values for function arguments not in `x_names` and `y_name`. 不在 `x_names` 和 `y_name` 中的函数参数值。&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">def&lt;/span> &lt;span class="nf">benchmark&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">provider&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">device&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;cuda&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dtype&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">float32&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">rand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">size&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">device&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;cuda&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dtype&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">torch&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">float32&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">quantiles&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="mf">0.5&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mf">0.8&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">if&lt;/span> &lt;span class="n">provider&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s1">&amp;#39;torch&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">ms&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">min_ms&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">max_ms&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">triton&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">testing&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">do_bench&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">lambda&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">quantiles&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">quantiles&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">if&lt;/span> &lt;span class="n">provider&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="s1">&amp;#39;triton&amp;#39;&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">        &lt;span class="n">ms&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">min_ms&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">max_ms&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">triton&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">testing&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">do_bench&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">lambda&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">add&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">quantiles&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">quantiles&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="n">gbps&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">lambda&lt;/span> &lt;span class="n">ms&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">3&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">numel&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">element_size&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">ms&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="mf">1e-6&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">    &lt;span class="k">return&lt;/span> &lt;span class="n">gbps&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ms&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">gbps&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">max_ms&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">gbps&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">min_ms&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">benchmark&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">run&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">print_data&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">True&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">show_plots&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">True&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">save_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;./&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>以下是单卡Tesla V100-PCIE-32GB的benchmark结果，可以看出和Torch还是有一些差距的&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-text" data-lang="text">&lt;span class="line">&lt;span class="cl">vector-add-performance:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> size Triton Torch
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">0 4096.0 9.600000 9.600000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">1 8192.0 19.200000 19.200000
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2 16384.0 38.400001 38.400001
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3 32768.0 76.800002 76.800002
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">4 65536.0 127.999995 127.999995
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">5 131072.0 219.428568 219.428568
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">6 262144.0 341.333321 341.333321
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">7 524288.0 472.615390 474.898540
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">8 1048576.0 614.400016 614.400016
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">9 2097152.0 702.171410 702.171410
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">10 4194304.0 756.184613 756.184613
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">11 8388608.0 792.974002 793.173993
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">12 16777216.0 812.429770 815.800825
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">13 33554432.0 822.627612 824.352211
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">14 67108864.0 827.823144 828.695462
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">15 134217728.0 830.445624 831.344043
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="fused-softmax">Fused Softmax
+&lt;/h2>&lt;p>TODO&lt;/p></description></item></channel></rss>
