@@ -1,0 +1,402 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="Triton学习笔记（一）"><title>Triton学习——Vector Addition, Fused Softmax</title>
+<link rel=canonical href=https://kaigezheng.github.io/p/triton1/><link rel=stylesheet href=/scss/style.min.91ea4a9e2eb13a6364934b8cc2e3fdb28dcb144a97c289976033f6276ebc3ddd.css><meta property='og:title' content="Triton学习——Vector Addition, Fused Softmax"><meta property='og:description' content="Triton学习笔记（一）"><meta property='og:url' content='https://kaigezheng.github.io/p/triton1/'><meta property='og:site_name' content="Kambri's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='文档'><meta property='article:tag' content='AI Infra'><meta property='article:published_time' content='2025-03-06T10:23:00+08:00'><meta property='article:modified_time' content='2025-03-06T10:23:00+08:00'><meta property='og:image' content='https://kaigezheng.github.io/p/triton1/img/cover.jpg'><meta name=twitter:title content="Triton学习——Vector Addition, Fused Softmax"><meta name=twitter:description content="Triton学习笔记（一）"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://kaigezheng.github.io/p/triton1/img/cover.jpg'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_1eca3395e07e95de.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🫠</span></figure><div class=site-meta><h1 class=site-name><a href=/>Kambri's Blog</a></h1><h2 class=site-description>你好！这里是Kambri的技术&生活博客，我将在这里分享HPC经验和记录生活。</h2></div></header><ol class=menu-social><li><a href=https://github.com/KaigeZheng target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://www.zhihu.com/people/yuan-shen-lin-xu-8/posts target=_blank title=知乎 rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-zhihu"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 6h6v12h-2l-2 2-1-2h-1z"/><path d="M4 12h6.5"/><path d="M10.5 6h-5"/><path d="M6 4c-.5 2.5-1.5 3.5-2.5 4.5"/><path d="M8 6v7c0 4.5-2 5.5-4 7"/><path d="M11 18l-3-5"/></svg></a></li><li><a href=wechat-kambri.jpg target=_blank title=微信(kambri2003) rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-wechat"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M16.5 10c3.038.0 5.5 2.015 5.5 4.5.0 1.397-.778 2.645-2 3.47V20l-1.964-1.178A6.649 6.649.0 0116.5 19c-3.038.0-5.5-2.015-5.5-4.5s2.462-4.5 5.5-4.5z"/><path d="M11.197 15.698c-.69.196-1.43.302-2.197.302a8.008 8.008.0 01-2.612-.432L4 17v-2.801C2.763 13.117 2 11.635 2 10c0-3.314 3.134-6 7-6 3.782.0 6.863 2.57 7 5.785v.233"/><path d="M10 8h.01"/><path d="M7 8h.01"/><path d="M15 14h.01"/><path d="M18 14h.01"/></svg></a></li><li><a href=mailto:kambrikg@outlook.com target=_blank title=邮箱(kambrikg@outlook.com) rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M3 7l9 6 9-6"/></svg></a></li><li><a href=https://kaigezheng.github.io/index.xml target=_blank title=RSS rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-rss"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 19m-1 0a1 1 0 102 0 1 1 0 10-2 0"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页|Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档|Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索|Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友链|Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#reference>Reference</a></li><li><a href=#vector-addition>Vector Addition</a><ol><li><a href=#compute-kernel>Compute Kernel</a></li><li><a href=#benchmark>Benchmark</a></li></ol></li><li><a href=#fused-softmax>Fused Softmax</a><ol><li><a href=#naive-softmax>Naive Softmax</a></li><li><a href=#compute-kernel-1>Compute Kernel</a></li><li><a href=#why-fused-softmax>Why Fused Softmax?</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/triton1/><img src=/p/triton1/img/cover_hu_257559e02c32323.jpg srcset="/p/triton1/img/cover_hu_257559e02c32323.jpg 800w, /p/triton1/img/cover_hu_72841c46e3d54bc6.jpg 1600w" width=800 height=200 loading=lazy alt="Featured image of post Triton学习——Vector Addition, Fused Softmax"></a></div><div class=article-details><header class=article-category><a href=/categories/%E6%96%87%E6%A1%A3/ style=background-color:#2a9d8f;color:#fff>文档
+</a><a href=/categories/ai-infra/ style=background-color:#7b79e6;color:#fff>AI Infra</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/triton1/>Triton学习——Vector Addition, Fused Softmax</a></h2><h3 class=article-subtitle>Triton学习笔记（一）</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Mar 06, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 7 分钟</time></div></footer></div></header><section class=article-content><h2 id=reference>Reference</h2><p><a class=link href=https://triton.hyper.ai/docs/getting-started/tutorials target=_blank rel=noopener>教程 | Triton 中文站</a></p><p><a class=link href=https://triton-lang.org/main/getting-started/tutorials/index.html target=_blank rel=noopener>Tutorials — Triton documentation</a></p><p><a class=link href=https://opencamp.cn/InfiniTensor/camp/2024winter/stage/7 target=_blank rel=noopener>并行编程语言（Triton & 九齿） - 2024 冬季大模型与人工智能系统训练营</a></p><h2 id=vector-addition>Vector Addition</h2><h3 id=compute-kernel>Compute Kernel</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>torch</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>triton</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>triton.language</span> <span class=k>as</span> <span class=nn>tl</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>DEVICE</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>device</span><span class=p>(</span><span class=s2>&#34;cuda:0&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@triton.jit</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>add_kernel</span><span class=p>(</span><span class=n>x_ptr</span><span class=p>,</span>  <span class=c1># *Pointer* to first input vector.</span>
+</span></span><span class=line><span class=cl>               <span class=n>y_ptr</span><span class=p>,</span>  <span class=c1># *Pointer* to second input vector.</span>
+</span></span><span class=line><span class=cl>               <span class=n>output_ptr</span><span class=p>,</span>  <span class=c1># *Pointer* to output vector.</span>
+</span></span><span class=line><span class=cl>               <span class=n>n_elements</span><span class=p>,</span>  <span class=c1># Size of the vector.</span>
+</span></span><span class=line><span class=cl>               <span class=n>BLOCK_SIZE</span><span class=p>:</span> <span class=n>tl</span><span class=o>.</span><span class=n>constexpr</span><span class=p>,</span>  <span class=c1># Number of elements each program should process.</span>
+</span></span><span class=line><span class=cl>               <span class=c1># NOTE: `constexpr` so it can be used as a shape value.</span>
+</span></span><span class=line><span class=cl>               <span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>pid</span> <span class=o>=</span> <span class=n>tl</span><span class=o>.</span><span class=n>program_id</span><span class=p>(</span><span class=n>axis</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>  <span class=c1># We use a 1D launch grid so axis is 0.</span>
+</span></span><span class=line><span class=cl>    <span class=n>block_start</span> <span class=o>=</span> <span class=n>pid</span> <span class=o>*</span> <span class=n>BLOCK_SIZE</span> <span class=c1># Offsets is a list of pointers  </span>
+</span></span><span class=line><span class=cl>    <span class=n>offsets</span> <span class=o>=</span> <span class=n>block_start</span> <span class=o>+</span> <span class=n>tl</span><span class=o>.</span><span class=n>arange</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>BLOCK_SIZE</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>mask</span> <span class=o>=</span> <span class=n>offsets</span> <span class=o>&lt;</span> <span class=n>n_elements</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Load x and y from DRAM</span>
+</span></span><span class=line><span class=cl>    <span class=n>x</span> <span class=o>=</span> <span class=n>tl</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>x_ptr</span> <span class=o>+</span> <span class=n>offsets</span><span class=p>,</span> <span class=n>mask</span><span class=o>=</span><span class=n>mask</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>y</span> <span class=o>=</span> <span class=n>tl</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>y_ptr</span> <span class=o>+</span> <span class=n>offsets</span><span class=p>,</span> <span class=n>mask</span><span class=o>=</span><span class=n>mask</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>output</span> <span class=o>=</span> <span class=n>x</span> <span class=o>+</span> <span class=n>y</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Write x + y back to DRAM.</span>
+</span></span><span class=line><span class=cl>    <span class=n>tl</span><span class=o>.</span><span class=n>store</span><span class=p>(</span><span class=n>output_ptr</span> <span class=o>+</span> <span class=n>offsets</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>mask</span><span class=o>=</span><span class=n>mask</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><blockquote><p>编译遇到的第一个报错是<code>AttributeError: 'CudaDriver' object has no attribute 'get_active_torch_device'</code>，在<a class=link href=https://github.com/triton-lang/triton/issues/5388 target=_blank rel=noopener>issue#5388</a>下找到了原因和解决方案，<code>DEVICE = triton.runtime.driver.active.get_active_torch_device()</code>似乎对应了旧本版本，用<code>DEVICE = torch.device("cuda:0")</code>可以暂缓燃眉之急。</p></blockquote><p>kernel的实现思路是简单的：</p><ul><li><p>对于输入<code>(input_x, input_y, output, n, BLOCK_SIZE)</code>，获取<code>programd_id</code>，通过<code>pid * BLOCK_SIZE</code>计算分块索引，通过<code>block_start + tl.arange(0, BLOCK_SIZE)</code>确定每个元素的索引</p></li><li><p>确定<code>mask</code>，防止边界溢出</p></li><li><p>加载输入元素，实现向量加法，最后写回DRAM</p></li></ul><p>接下来需要一个合适的辅助函数，负责生成<code>output</code>张量和创建合适的layout</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>add</span><span class=p>(</span><span class=n>x</span><span class=p>:</span> <span class=n>torch</span><span class=o>.</span><span class=n>Tensor</span><span class=p>,</span> <span class=n>y</span><span class=p>:</span> <span class=n>torch</span><span class=o>.</span><span class=n>Tensor</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>output</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>empty_like</span><span class=p>(</span><span class=n>x</span><span class=p>)</span> <span class=c1># preallocate the output</span>
+</span></span><span class=line><span class=cl>    <span class=k>assert</span> <span class=n>x</span><span class=o>.</span><span class=n>device</span> <span class=o>==</span> <span class=n>DEVICE</span> <span class=ow>and</span> <span class=n>y</span><span class=o>.</span><span class=n>device</span> <span class=o>==</span> <span class=n>DEVICE</span> <span class=ow>and</span> <span class=n>output</span><span class=o>.</span><span class=n>device</span> <span class=o>==</span> <span class=n>DEVICE</span>
+</span></span><span class=line><span class=cl>    <span class=n>n_elements</span> <span class=o>=</span> <span class=n>output</span><span class=o>.</span><span class=n>numel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>grid</span> <span class=o>=</span> <span class=k>lambda</span> <span class=n>meta</span><span class=p>:</span> <span class=p>(</span><span class=n>triton</span><span class=o>.</span><span class=n>cdiv</span><span class=p>(</span><span class=n>n_elements</span><span class=p>,</span> <span class=n>meta</span><span class=p>[</span><span class=s1>&#39;BLOCK_SIZE&#39;</span><span class=p>]),</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>add_kernel</span><span class=p>[</span><span class=n>grid</span><span class=p>](</span><span class=n>x</span><span class=p>,</span> <span class=n>y</span><span class=p>,</span> <span class=n>output</span><span class=p>,</span> <span class=n>n_elements</span><span class=p>,</span> <span class=n>BLOCK_SIZE</span><span class=o>=</span><span class=mi>1024</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1># We return a handle to z but, since `torch.cuda.synchronize()` hasn&#39;t been called, the kernel is still</span>
+</span></span><span class=line><span class=cl>    <span class=c1># running asynchronously at this point.</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>output</span>
+</span></span></code></pre></td></tr></table></div></div><p>核心只有两行代码，</p><ul><li><p><code>grid = lambda meta: (triton.cdiv(n_elements, meta['BLOCK_SIZE']), )</code>定义一个grid匿名函数，用<code>triton.cdiv</code>计算$\lceil\frac{n}{BLOCKSIZE}\rceil$</p></li><li><p><code>add_kernel[grid](x, y, output, n_elements, BLOCK_SIZE=1024)</code>调用<code>grid(meta)</code>来确定网格大小并启动GPU线程块，并将<code>(x, y, output, n_elements, BLOCK_SIZE=1024)</code>传递给kernel</p></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>torch</span><span class=o>.</span><span class=n>manual_seed</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>size</span> <span class=o>=</span> <span class=mi>984320000</span>
+</span></span><span class=line><span class=cl><span class=n>x</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>rand</span><span class=p>(</span><span class=n>size</span><span class=p>,</span> <span class=n>device</span><span class=o>=</span><span class=n>DEVICE</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>y</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>rand</span><span class=p>(</span><span class=n>size</span><span class=p>,</span> <span class=n>device</span><span class=o>=</span><span class=n>DEVICE</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>output_torch</span> <span class=o>=</span> <span class=n>x</span> <span class=o>+</span> <span class=n>y</span>
+</span></span><span class=line><span class=cl><span class=n>output_triton</span> <span class=o>=</span> <span class=n>add</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>y</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>output_torch</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>output_triton</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;The maximum difference between torch and triton is &#39;</span>
+</span></span><span class=line><span class=cl>      <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>torch</span><span class=o>.</span><span class=n>max</span><span class=p>(</span><span class=n>torch</span><span class=o>.</span><span class=n>abs</span><span class=p>(</span><span class=n>output_torch</span> <span class=o>-</span> <span class=n>output_triton</span><span class=p>))</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=benchmark>Benchmark</h3><p>这个设计真的非常喜欢，不用费事去写一些benchmark测试代码了！</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=nd>@triton.testing.perf_report</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>triton</span><span class=o>.</span><span class=n>testing</span><span class=o>.</span><span class=n>Benchmark</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>x_names</span><span class=o>=</span><span class=p>[</span><span class=s1>&#39;size&#39;</span><span class=p>],</span>  <span class=c1># Argument names to use as an x-axis for the plot. 用作绘图 x 轴的参数名称。</span>
+</span></span><span class=line><span class=cl>        <span class=n>x_vals</span><span class=o>=</span><span class=p>[</span><span class=mi>2</span><span class=o>**</span><span class=n>i</span> <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>12</span><span class=p>,</span> <span class=mi>28</span><span class=p>,</span> <span class=mi>1</span><span class=p>)],</span>  <span class=c1># Different possible values for `x_name`. `x_name` 的不同可能值。</span>
+</span></span><span class=line><span class=cl>        <span class=n>x_log</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span>  <span class=c1># x axis is logarithmic. x 轴为对数。</span>
+</span></span><span class=line><span class=cl>        <span class=n>line_arg</span><span class=o>=</span><span class=s1>&#39;provider&#39;</span><span class=p>,</span>  <span class=c1># Argument name whose value corresponds to a different line in the plot. 参数名称，其值对应于绘图中的不同线条。</span>
+</span></span><span class=line><span class=cl>        <span class=n>line_vals</span><span class=o>=</span><span class=p>[</span><span class=s1>&#39;triton&#39;</span><span class=p>,</span> <span class=s1>&#39;torch&#39;</span><span class=p>],</span>  <span class=c1># Possible values for `line_arg`. `line_arg` 的可能值。</span>
+</span></span><span class=line><span class=cl>        <span class=n>line_names</span><span class=o>=</span><span class=p>[</span><span class=s1>&#39;Triton&#39;</span><span class=p>,</span> <span class=s1>&#39;Torch&#39;</span><span class=p>],</span>  <span class=c1># Label name for the lines. 线条的标签名称。</span>
+</span></span><span class=line><span class=cl>        <span class=n>styles</span><span class=o>=</span><span class=p>[(</span><span class=s1>&#39;blue&#39;</span><span class=p>,</span> <span class=s1>&#39;-&#39;</span><span class=p>),</span> <span class=p>(</span><span class=s1>&#39;green&#39;</span><span class=p>,</span> <span class=s1>&#39;-&#39;</span><span class=p>)],</span>  <span class=c1># Line styles. 线条样式。</span>
+</span></span><span class=line><span class=cl>        <span class=n>ylabel</span><span class=o>=</span><span class=s1>&#39;GB/s&#39;</span><span class=p>,</span>  <span class=c1># Label name for the y-axis. y 轴标签名称。</span>
+</span></span><span class=line><span class=cl>        <span class=n>plot_name</span><span class=o>=</span><span class=s1>&#39;vector-add-performance&#39;</span><span class=p>,</span>  <span class=c1># Name for the plot. Used also as a file name for saving the plot. 绘图名称。也用作保存绘图的文件名。</span>
+</span></span><span class=line><span class=cl>        <span class=n>args</span><span class=o>=</span><span class=p>{},</span>  <span class=c1># Values for function arguments not in `x_names` and `y_name`. 不在 `x_names` 和 `y_name` 中的函数参数值。</span>
+</span></span><span class=line><span class=cl>    <span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>benchmark</span><span class=p>(</span><span class=n>size</span><span class=p>,</span> <span class=n>provider</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>x</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>rand</span><span class=p>(</span><span class=n>size</span><span class=p>,</span> <span class=n>device</span><span class=o>=</span><span class=s1>&#39;cuda&#39;</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>torch</span><span class=o>.</span><span class=n>float32</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>y</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>rand</span><span class=p>(</span><span class=n>size</span><span class=p>,</span> <span class=n>device</span><span class=o>=</span><span class=s1>&#39;cuda&#39;</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>torch</span><span class=o>.</span><span class=n>float32</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>quantiles</span> <span class=o>=</span> <span class=p>[</span><span class=mf>0.5</span><span class=p>,</span> <span class=mf>0.2</span><span class=p>,</span> <span class=mf>0.8</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>provider</span> <span class=o>==</span> <span class=s1>&#39;torch&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>ms</span><span class=p>,</span> <span class=n>min_ms</span><span class=p>,</span> <span class=n>max_ms</span> <span class=o>=</span> <span class=n>triton</span><span class=o>.</span><span class=n>testing</span><span class=o>.</span><span class=n>do_bench</span><span class=p>(</span><span class=k>lambda</span><span class=p>:</span> <span class=n>x</span> <span class=o>+</span> <span class=n>y</span><span class=p>,</span> <span class=n>quantiles</span><span class=o>=</span><span class=n>quantiles</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>provider</span> <span class=o>==</span> <span class=s1>&#39;triton&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>ms</span><span class=p>,</span> <span class=n>min_ms</span><span class=p>,</span> <span class=n>max_ms</span> <span class=o>=</span> <span class=n>triton</span><span class=o>.</span><span class=n>testing</span><span class=o>.</span><span class=n>do_bench</span><span class=p>(</span><span class=k>lambda</span><span class=p>:</span> <span class=n>add</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>y</span><span class=p>),</span> <span class=n>quantiles</span><span class=o>=</span><span class=n>quantiles</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>gbps</span> <span class=o>=</span> <span class=k>lambda</span> <span class=n>ms</span><span class=p>:</span> <span class=mi>3</span> <span class=o>*</span> <span class=n>x</span><span class=o>.</span><span class=n>numel</span><span class=p>()</span> <span class=o>*</span> <span class=n>x</span><span class=o>.</span><span class=n>element_size</span><span class=p>()</span> <span class=o>/</span> <span class=n>ms</span> <span class=o>*</span> <span class=mf>1e-6</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>gbps</span><span class=p>(</span><span class=n>ms</span><span class=p>),</span> <span class=n>gbps</span><span class=p>(</span><span class=n>max_ms</span><span class=p>),</span> <span class=n>gbps</span><span class=p>(</span><span class=n>min_ms</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>benchmark</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>print_data</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>show_plots</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>save_path</span><span class=o>=</span><span class=s1>&#39;./&#39;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>以下是单卡Tesla V100-PCIE-32GB的benchmark结果，可以看出和Torch还是有一些差距的</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>vector-add-performance:
+</span></span><span class=line><span class=cl>           size      Triton       Torch
+</span></span><span class=line><span class=cl>0        4096.0    9.600000    9.600000
+</span></span><span class=line><span class=cl>1        8192.0   19.200000   19.200000
+</span></span><span class=line><span class=cl>2       16384.0   38.400001   38.400001
+</span></span><span class=line><span class=cl>3       32768.0   76.800002   76.800002
+</span></span><span class=line><span class=cl>4       65536.0  127.999995  127.999995
+</span></span><span class=line><span class=cl>5      131072.0  219.428568  219.428568
+</span></span><span class=line><span class=cl>6      262144.0  341.333321  341.333321
+</span></span><span class=line><span class=cl>7      524288.0  472.615390  474.898540
+</span></span><span class=line><span class=cl>8     1048576.0  614.400016  614.400016
+</span></span><span class=line><span class=cl>9     2097152.0  702.171410  702.171410
+</span></span><span class=line><span class=cl>10    4194304.0  756.184613  756.184613
+</span></span><span class=line><span class=cl>11    8388608.0  792.974002  793.173993
+</span></span><span class=line><span class=cl>12   16777216.0  812.429770  815.800825
+</span></span><span class=line><span class=cl>13   33554432.0  822.627612  824.352211
+</span></span><span class=line><span class=cl>14   67108864.0  827.823144  828.695462
+</span></span><span class=line><span class=cl>15  134217728.0  830.445624  831.344043
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/triton1/img/1.png width=640 height=480 srcset="/p/triton1/img/1_hu_a2bd20154971ba0d.png 480w, /p/triton1/img/1_hu_634edcb001d9cef0.png 1024w" loading=lazy alt=V100上向量加的表现 class=gallery-image data-flex-grow=133 data-flex-basis=320px></p><h2 id=fused-softmax>Fused Softmax</h2><h3 id=naive-softmax>Naive Softmax</h3>$$softmax(z_{i})=\frac{e^{z_{i}}}{\Sigma_{j=1}^{n}e^{z_{j}}}=\frac{exp(z_{i})}{\Sigma_{j=1}^{n}exp(z_{j})}$$<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>naive_softmax</span><span class=p>(</span><span class=n>x</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;Compute row-wise softmax of X using native pytorch
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># read  MN elements ; write M  elements</span>
+</span></span><span class=line><span class=cl>    <span class=n>x_max</span> <span class=o>=</span> <span class=n>x</span><span class=o>.</span><span class=n>max</span><span class=p>(</span><span class=n>dim</span><span class=o>=</span><span class=mi>1</span><span class=p>)[</span><span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=c1># read MN + M elements ; write MN elements</span>
+</span></span><span class=line><span class=cl>    <span class=n>z</span> <span class=o>=</span> <span class=n>x</span> <span class=o>-</span> <span class=n>x_max</span><span class=p>[:,</span> <span class=kc>None</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=c1># read  MN elements ; write MN elements</span>
+</span></span><span class=line><span class=cl>    <span class=n>numerator</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>exp</span><span class=p>(</span><span class=n>z</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1># read  MN elements ; write M  elements</span>
+</span></span><span class=line><span class=cl>    <span class=n>denominator</span> <span class=o>=</span> <span class=n>numerator</span><span class=o>.</span><span class=n>sum</span><span class=p>(</span><span class=n>dim</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1># read MN + M elements ; write MN elements</span>
+</span></span><span class=line><span class=cl>    <span class=n>ret</span> <span class=o>=</span> <span class=n>numerator</span> <span class=o>/</span> <span class=n>denominator</span><span class=p>[:,</span> <span class=kc>None</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=c1># in total: read 5MN + 2M elements ; wrote 3MN + 2M elements</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>ret</span>
+</span></span></code></pre></td></tr></table></div></div><blockquote>$$softmax(x)=softmax(x+c)$$</blockquote><p>对于naive的softmax实现，需要从DRAM中读取$5MN+2M$个元素，并写回$3MN+2M$个元素，IO共需要$8MN+4M$个单位，显然是不理想的。理想情况下，只读写一次并完成所有计算，因此可以得到理想加速约为4倍（$\frac{8MN+4M}{2MN}$）。</p><h3 id=compute-kernel-1>Compute Kernel</h3><p>softmax kernel需要补充的内容都写在注释里了：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=nd>@triton.jit</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>softmax_kernel</span><span class=p>(</span><span class=n>output_ptr</span><span class=p>,</span> <span class=n>input_ptr</span><span class=p>,</span> <span class=n>input_row_stride</span><span class=p>,</span> <span class=n>output_row_stride</span><span class=p>,</span> <span class=n>n_rows</span><span class=p>,</span> <span class=n>n_cols</span><span class=p>,</span> <span class=n>BLOCK_SIZE</span><span class=p>:</span> <span class=n>tl</span><span class=o>.</span><span class=n>constexpr</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                   <span class=n>num_stages</span><span class=p>:</span> <span class=n>tl</span><span class=o>.</span><span class=n>constexpr</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=c1># kernel思路 : 让多个program并行处理不同的行</span>
+</span></span><span class=line><span class=cl>    <span class=n>row_start</span> <span class=o>=</span> <span class=n>tl</span><span class=o>.</span><span class=n>program_id</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>    <span class=c1># program ID</span>
+</span></span><span class=line><span class=cl>    <span class=n>row_step</span> <span class=o>=</span> <span class=n>tl</span><span class=o>.</span><span class=n>num_programs</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>   <span class=c1># program 数量</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 遍历每一行, tl.range(..)行索引list</span>
+</span></span><span class=line><span class=cl>    <span class=c1>## 线程0处理:[0, row_step, 2 * row_step, ...]</span>
+</span></span><span class=line><span class=cl>    <span class=c1>## 线程1处理:[1, 1 + row_step, 1 + 2 * row_step, ...]</span>
+</span></span><span class=line><span class=cl>    <span class=c1>## 线程2处理:[2, 2 + row_step, 2 + 2 * row_step, ...]</span>
+</span></span><span class=line><span class=cl>    <span class=c1>## ... **实现了不同program处理不同row**</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>row_idx</span> <span class=ow>in</span> <span class=n>tl</span><span class=o>.</span><span class=n>range</span><span class=p>(</span><span class=n>row_start</span><span class=p>,</span> <span class=n>n_rows</span><span class=p>,</span> <span class=n>row_step</span><span class=p>,</span> <span class=n>num_stages</span><span class=o>=</span><span class=n>num_stages</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># row_start_ptr指向当前行的首个元素</span>
+</span></span><span class=line><span class=cl>        <span class=n>row_start_ptr</span> <span class=o>=</span> <span class=n>input_ptr</span> <span class=o>+</span> <span class=n>row_idx</span> <span class=o>*</span> <span class=n>input_row_stride</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 计算列索引</span>
+</span></span><span class=line><span class=cl>        <span class=n>col_offsets</span> <span class=o>=</span> <span class=n>tl</span><span class=o>.</span><span class=n>arange</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>BLOCK_SIZE</span><span class=p>)</span>      <span class=c1># 列偏移, 生成[0, BLOCK_SIZE - 1]</span>
+</span></span><span class=line><span class=cl>        <span class=n>input_ptrs</span> <span class=o>=</span> <span class=n>row_start_ptr</span> <span class=o>+</span> <span class=n>col_offsets</span>    <span class=c1># 当前行首 + 列偏移</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 计算mask</span>
+</span></span><span class=line><span class=cl>        <span class=n>mask</span> <span class=o>=</span> <span class=n>col_offsets</span> <span class=o>&lt;</span> <span class=n>n_cols</span> <span class=c1># 注意是用列偏移和列数生成的mask</span>
+</span></span><span class=line><span class=cl>        <span class=n>row</span> <span class=o>=</span> <span class=n>tl</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>input_ptrs</span><span class=p>,</span> <span class=n>mask</span><span class=o>=</span><span class=n>mask</span><span class=p>,</span> <span class=n>other</span><span class=o>=-</span><span class=nb>float</span><span class=p>(</span><span class=s1>&#39;inf&#39;</span><span class=p>))</span>   <span class=c1># 根据mask读取内存, 超出n_cols的部分填充为-∞</span>
+</span></span><span class=line><span class=cl>        <span class=n>row_minus_max</span> <span class=o>=</span> <span class=n>row</span> <span class=o>-</span> <span class=n>tl</span><span class=o>.</span><span class=n>max</span><span class=p>(</span><span class=n>row</span><span class=p>,</span> <span class=n>axis</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># softmax</span>
+</span></span><span class=line><span class=cl>        <span class=n>numerator</span> <span class=o>=</span> <span class=n>tl</span><span class=o>.</span><span class=n>exp</span><span class=p>(</span><span class=n>row_minus_max</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>denominator</span> <span class=o>=</span> <span class=n>tl</span><span class=o>.</span><span class=n>sum</span><span class=p>(</span><span class=n>numerator</span><span class=p>,</span> <span class=n>axis</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>softmax_output</span> <span class=o>=</span> <span class=n>numerator</span> <span class=o>/</span> <span class=n>denominator</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Write back output to DRAM</span>
+</span></span><span class=line><span class=cl>        <span class=n>output_row_start_ptr</span> <span class=o>=</span> <span class=n>output_ptr</span> <span class=o>+</span> <span class=n>row_idx</span> <span class=o>*</span> <span class=n>output_row_stride</span> <span class=c1># 计算输出索引</span>
+</span></span><span class=line><span class=cl>        <span class=n>output_ptrs</span> <span class=o>=</span> <span class=n>output_row_start_ptr</span> <span class=o>+</span> <span class=n>col_offsets</span>                <span class=c1># 计算输出内存地址</span>
+</span></span><span class=line><span class=cl>        <span class=n>tl</span><span class=o>.</span><span class=n>store</span><span class=p>(</span><span class=n>output_ptrs</span><span class=p>,</span> <span class=n>softmax_output</span><span class=p>,</span> <span class=n>mask</span><span class=o>=</span><span class=n>mask</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>认真看完源码后，会发现softmax kernel的实现思路并不难，每个program处理输入矩阵的一<strong>组</strong>行（按program数量跨步处理），执行完softmax操作后写回DRAM。</p><blockquote><p>Note: Triton的一个重要限制是<strong>BLOCK_SIZE</strong>必须是$2^n$的元素</p></blockquote><p>同样，我们需要一个辅助函数。在此之前，<code>triton.runtime.driver.active.utils.get_device_properties(torch.cuda.current_device())</code>非常有用，能够帮助我们收集必要的计算卡硬件信息。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>device</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>cuda</span><span class=o>.</span><span class=n>current_device</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>properties</span> <span class=o>=</span> <span class=n>driver</span><span class=o>.</span><span class=n>active</span><span class=o>.</span><span class=n>utils</span><span class=o>.</span><span class=n>get_device_properties</span><span class=p>(</span><span class=n>device</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>NUM_SM</span> <span class=o>=</span> <span class=n>properties</span><span class=p>[</span><span class=s2>&#34;multiprocessor_count&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>NUM_REGS</span> <span class=o>=</span> <span class=n>properties</span><span class=p>[</span><span class=s2>&#34;max_num_regs&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>SIZE_SMEM</span> <span class=o>=</span> <span class=n>properties</span><span class=p>[</span><span class=s2>&#34;max_shared_mem&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>WARP_SIZE</span> <span class=o>=</span> <span class=n>properties</span><span class=p>[</span><span class=s2>&#34;warpSize&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>target</span> <span class=o>=</span> <span class=n>triton</span><span class=o>.</span><span class=n>runtime</span><span class=o>.</span><span class=n>driver</span><span class=o>.</span><span class=n>active</span><span class=o>.</span><span class=n>get_current_target</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>kernels</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span></code></pre></td></tr></table></div></div><p>Tesla V100-PCIE-32GB的输出如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>{
+</span></span><span class=line><span class=cl>    &#39;max_shared_mem&#39;: 98304,          # 共享内存
+</span></span><span class=line><span class=cl>    &#39;max_num_regs&#39;: 65536,            # 最大寄存器数
+</span></span><span class=line><span class=cl>    &#39;multiprocessor_count&#39;: 80,       # SM 数量
+</span></span><span class=line><span class=cl>    &#39;warpSize&#39;: 32,                   # WARP 大小
+</span></span><span class=line><span class=cl>    &#39;sm_clock_rate&#39;: 1380000,         # SM 频率 (Hz)
+</span></span><span class=line><span class=cl>    &#39;mem_clock_rate&#39;: 877000,         # 内存频率 (Hz)
+</span></span><span class=line><span class=cl>    &#39;mem_bus_width&#39;: 4096             # 内存总线宽度 (bit)
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p>辅助函数如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>softmax</span><span class=p>(</span><span class=n>x</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>n_rows</span><span class=p>,</span> <span class=n>n_cols</span> <span class=o>=</span> <span class=n>x</span><span class=o>.</span><span class=n>shape</span>
+</span></span><span class=line><span class=cl>    <span class=c1># BLOCK_SIZE是大于矩阵列数的最小二次幂</span>
+</span></span><span class=line><span class=cl>    <span class=n>BLOCK_SIZE</span> <span class=o>=</span> <span class=n>triton</span><span class=o>.</span><span class=n>next_power_of_2</span><span class=p>(</span><span class=n>n_cols</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>num_warps</span> <span class=o>=</span> <span class=mi>8</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 如果 GPU 共享内存（SMEM）足够大（&gt;200KB），就用 4 个流水线阶段，否则用 2 个</span>
+</span></span><span class=line><span class=cl>    <span class=n>num_stages</span> <span class=o>=</span> <span class=mi>4</span> <span class=k>if</span> <span class=n>SIZE_SMEM</span> <span class=o>&gt;</span> <span class=mi>200000</span> <span class=k>else</span> <span class=mi>2</span>
+</span></span><span class=line><span class=cl>    <span class=c1># Allocate output</span>
+</span></span><span class=line><span class=cl>    <span class=n>y</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>empty_like</span><span class=p>(</span><span class=n>x</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># pre-compile kernel to get register usage and compute thread occupancy.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 预编译内核以获取寄存器使用情况并计算线程占用情况。</span>
+</span></span><span class=line><span class=cl>    <span class=n>kernel</span><span class=p>,</span> <span class=n>num_programs</span> <span class=o>=</span> <span class=n>kernels</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>BLOCK_SIZE</span><span class=p>,</span> <span class=p>(</span><span class=kc>None</span><span class=p>,</span> <span class=mi>0</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>kernel</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>kernel</span> <span class=o>=</span> <span class=n>softmax_kernel</span><span class=o>.</span><span class=n>warmup</span><span class=p>(</span><span class=n>y</span><span class=p>,</span> <span class=n>x</span><span class=p>,</span> <span class=n>x</span><span class=o>.</span><span class=n>stride</span><span class=p>(</span><span class=mi>0</span><span class=p>),</span> <span class=n>y</span><span class=o>.</span><span class=n>stride</span><span class=p>(</span><span class=mi>0</span><span class=p>),</span> <span class=n>n_rows</span><span class=p>,</span> <span class=n>n_cols</span><span class=p>,</span> <span class=n>BLOCK_SIZE</span><span class=o>=</span><span class=n>BLOCK_SIZE</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                       <span class=n>num_stages</span><span class=o>=</span><span class=n>num_stages</span><span class=p>,</span> <span class=n>num_warps</span><span class=o>=</span><span class=n>num_warps</span><span class=p>,</span> <span class=n>grid</span><span class=o>=</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=n>kernel</span><span class=o>.</span><span class=n>_init_handles</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>n_regs</span> <span class=o>=</span> <span class=n>kernel</span><span class=o>.</span><span class=n>n_regs</span>
+</span></span><span class=line><span class=cl>        <span class=n>size_smem</span> <span class=o>=</span> <span class=n>kernel</span><span class=o>.</span><span class=n>metadata</span><span class=o>.</span><span class=n>shared</span>
+</span></span><span class=line><span class=cl>        <span class=n>occupancy</span> <span class=o>=</span> <span class=n>NUM_REGS</span> <span class=o>//</span> <span class=p>(</span><span class=n>n_regs</span> <span class=o>*</span> <span class=n>WARP_SIZE</span> <span class=o>*</span> <span class=n>num_warps</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>occupancy</span> <span class=o>=</span> <span class=nb>min</span><span class=p>(</span><span class=n>occupancy</span><span class=p>,</span> <span class=n>SIZE_SMEM</span> <span class=o>//</span> <span class=n>size_smem</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>num_programs</span> <span class=o>=</span> <span class=n>NUM_SM</span> <span class=o>*</span> <span class=n>occupancy</span>
+</span></span><span class=line><span class=cl>        <span class=n>kernels</span><span class=p>[</span><span class=n>BLOCK_SIZE</span><span class=p>]</span> <span class=o>=</span> <span class=p>(</span><span class=n>kernel</span><span class=p>,</span> <span class=n>num_programs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>num_programs</span> <span class=o>=</span> <span class=nb>min</span><span class=p>(</span><span class=n>num_programs</span><span class=p>,</span> <span class=n>n_rows</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Create a number of persistent programs.</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 创建一些持久化程序。</span>
+</span></span><span class=line><span class=cl>    <span class=n>kernel</span><span class=p>[(</span><span class=n>num_programs</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>1</span><span class=p>)](</span>
+</span></span><span class=line><span class=cl>        <span class=n>y</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>x</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>x</span><span class=o>.</span><span class=n>stride</span><span class=p>(</span><span class=mi>0</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>        <span class=n>y</span><span class=o>.</span><span class=n>stride</span><span class=p>(</span><span class=mi>0</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>        <span class=n>n_rows</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>n_cols</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>y</span>
+</span></span></code></pre></td></tr></table></div></div><p>在预编译kernel前需要确定<code>BLOCK_SIZE</code>大小、warp数量、流水线阶段并分配输出tensor空间。更多的流水线阶段可以提高并行效率，但会消耗更多的shared memory。</p><p>在预编译阶段，<code>softmax_kernel.warmup(...)</code>预编译softmax kernel，用于获取寄存器使用情况、shared memory使用量、线程占用率，并通过<code>kernel._init_handles()</code>初始化kernel的CUDA句柄。最终计算<code>num_programs</code>（SM数量×线程占用率）并保证安全运行kernel。</p><p><img src=/p/triton1/img/2.png width=640 height=480 srcset="/p/triton1/img/2_hu_5cbeebfb792975d2.png 480w, /p/triton1/img/2_hu_e6e2b6e453b8ed4.png 1024w" loading=lazy alt=V100上softmax的表现 class=gallery-image data-flex-grow=133 data-flex-basis=320px></p><h3 id=why-fused-softmax>Why Fused Softmax?</h3><p>读完<a class=link href=https://triton-lang.org/main/getting-started/tutorials/02-fused-softmax.html target=_blank rel=noopener>Fused Softmax Tutorial</a>的代码后，我不太理解为什么这个kernel被成为融合Softmax（Fused Softmax），为什么将原本$\Theta(8MN+4M)$的IO开销缩减到了一次读写，为什么能够比PyTorch的实现更快（明明softmax的步骤是一样的）。</p><p>除了用到了pipelining优化了计算流程，主要是在PyTorch传统softmax实现中，涉及多个kernel启动并在全局现存（global memory）之间频繁读写数据，导致了额外的内存访问开销和kernel启动开销（计算最大值，计算指数函数，行归一化，输出）。而用Triton写的Fused Softmax kernel编写了一个自定义CUDA kernel，在单个kernel内部完成了所有计算的步骤，也可以更好地利用shared memory和registers。</p></section><footer class=article-footer><section class=article-tags><a href=/tags/%E6%96%87%E6%A1%A3/>文档</a>
+<a href=/tags/ai-infra/>AI Infra</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=document.querySelector(".main-article");renderMathInElement(e,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/p/ai1/><div class=article-image><img src=/img/cover.jpg loading=lazy data-key=AI1 data-hash=/img/cover.jpg></div><div class=article-details><h2 class=article-title>AI</h2></div></a></article><article class=has-image><a href=/p/leetcode/><div class=article-image><img src=/p/leetcode/img/cover.d2fe94e5e7e29dcffa4043487de65d88_hu_8636c4dabac28b9f.png width=250 height=150 loading=lazy alt="Featured image of post LeetCode刷题记录" data-key=leetcode data-hash="md5-0v6U5efinc/6QENIfeZdiA=="></div><div class=article-details><h2 class=article-title>LeetCode刷题记录</h2></div></a></article><article class=has-image><a href=/p/ops1/><div class=article-image><img src=/p/ops1/img/cover.77bed8a766ebc514409b8f590553740d_hu_5d2894421b650739.png width=250 height=150 loading=lazy alt="Featured image of post 高性能集群运维——装机" data-key=Ops1 data-hash="md5-d77Yp2brxRRAm49ZBVN0DQ=="></div><div class=article-details><h2 class=article-title>高性能集群运维——装机</h2></div></a></article><article class=has-image><a href=/p/happy-new-year/><div class=article-image><img src=/p/happy-new-year/img/cover.1a214a12a58cbbddc31283c15d44c2a0_hu_646bdf3ba8c096ab.jpg width=250 height=150 loading=lazy alt="Featured image of post 2025,新年快乐——" data-key=happy-new-year data-hash="md5-GiFKEqWMu93DEoPBXUTCoA=="></div><div class=article-details><h2 class=article-title>2025,新年快乐——</h2></div></a></article><article class=has-image><a href=/p/hello-world/><div class=article-image><img src=/p/hello-world/img/cover.dd5b4996d30f16de0dfec2744cf48ff9_hu_7dac7a6ff4eb93f2.png width=250 height=150 loading=lazy alt="Featured image of post Hello World" data-key=hello-world data-hash="md5-3VtJltMPFt4N/sJ0TPSP+Q=="></div><div class=article-details><h2 class=article-title>Hello World</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=KaigeZheng/KaigeZheng.github.io issue-term=pathname crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2024 -
+2025 Kambri's Blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
