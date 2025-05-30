@@ -1,0 +1,538 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="大模型学习笔记（一）"><title>从Transformer开始探索BERT</title><link rel=canonical href=https://kaigezheng.github.io/p/bert/><link rel=stylesheet href=/scss/style.min.2fbdc9471cd5bbaa3a0cb8abfb63c984845457c0c3bfda807d2a806305907811.css><meta property='og:title' content="从Transformer开始探索BERT"><meta property='og:description' content="大模型学习笔记（一）"><meta property='og:url' content='https://kaigezheng.github.io/p/bert/'><meta property='og:site_name' content="Kambri's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='文档'><meta property='article:tag' content='AI Infra'><meta property='article:published_time' content='2025-05-28T23:48:00+08:00'><meta property='article:modified_time' content='2025-05-28T23:48:00+08:00'><meta property='og:image' content='https://kaigezheng.github.io/p/bert/img/cover.png'><meta name=twitter:title content="从Transformer开始探索BERT"><meta name=twitter:description content="大模型学习笔记（一）"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://kaigezheng.github.io/p/bert/img/cover.png'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_1eca3395e07e95de.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🫠</span></figure><div class=site-meta><h1 class=site-name><a href=/>Kambri's Blog</a></h1><h2 class=site-description>你好！这里是Kambri的技术&生活博客，我将在这里分享技术经验和记录生活。</h2></div></header><ol class=menu-social><li><a href=https://github.com/KaigeZheng target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=mailto:kambrikg@outlook.com target=_blank title=邮箱(kambrikg@outlook.com) rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M3 7l9 6 9-6"/></svg></a></li><li><a href=https://kaigezheng.github.io/index.xml target=_blank title=RSS rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-rss"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 19m-1 0a1 1 0 102 0 1 1 0 10-2 0"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页|Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档|Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索|Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友链|Links</span></a></li><li><a href=/devlog/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logs"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12h.01"/><path d="M4 6h.01"/><path d="M4 18h.01"/><path d="M8 18h2"/><path d="M8 12h2"/><path d="M8 6h2"/><path d="M14 6h6"/><path d="M14 12h6"/><path d="M14 18h6"/></svg>
+<span>日志|Logs</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#reference>Reference</a></li><li><a href=#bert-architecture>BERT Architecture</a><ol><li><a href=#total-summary>Total Summary</a></li><li><a href=#a-simple-demo>A Simple Demo</a><ol><li><a href=#modelconfig>model.config</a></li><li><a href=#rules-on-tokenizer>Rules on Tokenizer</a></li><li><a href=#parameter>Parameter</a></li><li><a href=#output>Output</a></li></ol></li><li><a href=#embedding>Embedding</a></li><li><a href=#self-attention>Self-Attention</a></li><li><a href=#add--norm>Add & Norm</a></li><li><a href=#pooler>Pooler</a></li></ol></li><li><a href=#masked-language-model>Masked Language Model</a><ol><li><a href=#cls-layer>CLS Layer</a></li><li><a href=#masking>Masking</a></li><li><a href=#computing-process>Computing Process</a></li><li><a href=#loss--translate>Loss & Translate</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/bert/><img src=/p/bert/img/cover_hu_d6e16dfd87ad8512.png srcset="/p/bert/img/cover_hu_d6e16dfd87ad8512.png 800w, /p/bert/img/cover_hu_acbe7756143f0788.png 1600w" width=800 height=291 loading=lazy alt="Featured image of post 从Transformer开始探索BERT"></a></div><div class=article-details><header class=article-category><a href=/categories/%E6%96%87%E6%A1%A3/ style=background-color:#2a9d8f;color:#fff>文档
+</a><a href=/categories/ai-infra/ style=background-color:#7b79e6;color:#fff>AI Infra</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/bert/>从Transformer开始探索BERT</a></h2><h3 class=article-subtitle>大模型学习笔记（一）</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>May 28, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 10 分钟</time></div></footer></div></header><section class=article-content><h2 id=reference>Reference</h2><p><a class=link href=https://arxiv.org/abs/1810.04805 target=_blank rel=noopener>BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding</a></p><p><a class=link href=https://huggingface.co/docs/transformers/model_doc/bert#transformers.BertModel target=_blank rel=noopener>Huggingface-BERT文档</a></p><p><a class=link href="https://search.bilibili.com/all?vt=69025821&amp;keyword=%E4%BA%94%E9%81%93%E5%8F%A3%E7%BA%B3%E4%BB%80&amp;from_source=webtop_search&amp;spm_id_from=333.1007&amp;search_source=5" target=_blank rel=noopener>bilibili-五道口纳什-BERT、T5、GPT合集</a></p><p><a class=link href=https://mccormickml.com/2019/07/22/BERT-fine-tuning/ target=_blank rel=noopener>Chris McCormick&rsquo;s Blog</a></p><hr><h2 id=bert-architecture>BERT Architecture</h2><h3 id=total-summary>Total Summary</h3><p>BERT的模型架构完全基于Transformer架构的编码器（Encoder）堆叠（原文使用12层或24层Transformer Layer），每个Encoder包括<strong>多头自注意力机制</strong>（MHA，Multi-Head Self-Attention，支持双向上下文理解）、<strong>前馈神经网络</strong>（FFN，Feed-Forward Network，对注意力输出进行非线性变换），<strong>参差连接和层归一化</strong>（Add & Norm，提升训练稳定性）。</p><figure><img src=/p/bert/img/1.png width='400px"'><figcaption><h4>Transformer Model Architecture</h4></figcaption></figure><h3 id=a-simple-demo>A Simple Demo</h3><p>这里以一个Huggingface发布的用于英文句子情感二分类的蒸馏BERT<a class=link href=https://huggingface.co/distilbert/distilbert-base-uncased-finetuned-sst-2-english target=_blank rel=noopener>DistilBERT (distilbert-base-uncased-finetuned-sst-2-english) 66M</a>为例，使用transformers库实现加载并推理。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>huggingface-cli download distilbert/distilbert-base-uncased-finetuned-sst-2-english --local-dir distilbert-base-uncased-finetuned-sst-2-english
+</span></span></code></pre></td></tr></table></div></div><p>下载模型后，即可通过<code>AutoTokenizer</code>和<code>AutoModelForSequenceClassification</code>导入模型。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>torch.nn.functional</span> <span class=k>as</span> <span class=nn>F</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>transformers</span> <span class=kn>import</span> <span class=n>AutoTokenizer</span><span class=p>,</span> <span class=n>AutoModelForSequenceClassification</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 加载tokenizer和model</span>
+</span></span><span class=line><span class=cl><span class=n>model_name</span> <span class=o>=</span> <span class=s1>&#39;/path/to/bert-model&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>tokenizer</span> <span class=o>=</span> <span class=n>AutoTokenizer</span><span class=o>.</span><span class=n>from_pretrained</span><span class=p>(</span><span class=n>model_name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>model</span> <span class=o>=</span> <span class=n>AutoModelForSequenceClassification</span><span class=o>.</span><span class=n>from_pretrained</span><span class=p>(</span><span class=n>model_name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># sentence -&gt; tokens</span>
+</span></span><span class=line><span class=cl><span class=n>test_sentences</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;today is not that bad&#39;</span><span class=p>,</span> <span class=s1>&#39;today is so bad&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>batch_input</span> <span class=o>=</span> <span class=n>tokenizer</span><span class=p>(</span><span class=n>test_sentences</span><span class=p>,</span> <span class=n>padding</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>truncation</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>return_tensors</span><span class=o>=</span><span class=s1>&#39;pt&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># inference</span>
+</span></span><span class=line><span class=cl><span class=k>with</span> <span class=n>torch</span><span class=o>.</span><span class=n>no_grad</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>outputs</span> <span class=o>=</span> <span class=n>model</span><span class=p>(</span><span class=o>**</span><span class=n>batch_input</span><span class=p>)</span>              <span class=c1># 解包tokens -&gt; inference result</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;outputs&#34;</span><span class=p>,</span> <span class=n>outputs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>scores</span> <span class=o>=</span> <span class=n>F</span><span class=o>.</span><span class=n>softmax</span><span class=p>(</span><span class=n>outputs</span><span class=o>.</span><span class=n>logits</span><span class=p>,</span> <span class=n>dim</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>   <span class=c1># 对logits(预测分数)对每一行（类别）进行softmax</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;scores&#34;</span><span class=p>,</span> <span class=n>scores</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>labels</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>argmax</span><span class=p>(</span><span class=n>scores</span><span class=p>,</span> <span class=n>dim</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>        <span class=c1># 沿类别维度获取最大值索引</span>
+</span></span><span class=line><span class=cl>    <span class=n>labels</span> <span class=o>=</span> <span class=p>[</span><span class=n>model</span><span class=o>.</span><span class=n>config</span><span class=o>.</span><span class=n>id2label</span><span class=p>[</span><span class=nb>id</span><span class=o>.</span><span class=n>item</span><span class=p>()]</span> <span class=k>for</span> <span class=nb>id</span> <span class=ow>in</span> <span class=n>labels</span><span class=p>]</span>  <span class=c1># 0-&gt;LABEL_0, 1-&gt;LABEL_1</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;labels&#34;</span><span class=p>,</span> <span class=n>labels</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>即可得到以下推理结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>outputs SequenceClassifierOutput<span class=o>(</span><span class=nv>loss</span><span class=o>=</span>None, <span class=nv>logits</span><span class=o>=</span>tensor<span class=o>([[</span>-3.4620,  3.6118<span class=o>]</span>,
+</span></span><span class=line><span class=cl>        <span class=o>[</span> 4.7508, -3.7899<span class=o>]])</span>, <span class=nv>hidden_states</span><span class=o>=</span>None, <span class=nv>attentions</span><span class=o>=</span>None<span class=o>)</span>
+</span></span><span class=line><span class=cl>scores tensor<span class=o>([[</span>8.4632e-04, 9.9915e-01<span class=o>]</span>,
+</span></span><span class=line><span class=cl>        <span class=o>[</span>9.9980e-01, 1.9531e-04<span class=o>]])</span>
+</span></span><span class=line><span class=cl>labels <span class=o>[</span><span class=s1>&#39;POSITIVE&#39;</span>, <span class=s1>&#39;NEGATIVE&#39;</span><span class=o>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>关于<code>with torch.no_grad()</code>和<code>param.requires_grad=False</code>的区别：</p><ul><li><p><code>with torch.no_grad()</code>适用于eval阶段，定义了一个上下文管理器，隐式不进行梯度更新，不会改变requires_grad</p></li><li><p><code>param.requires_grad=False</code>显式地frozen掉一些layer的梯度更新</p></li></ul><p>接下来需要对一些细节进行补充。</p><h4 id=modelconfig>model.config</h4><p><code>model.config</code>用于存储模型架构和训练配置。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>DistilBertConfig {
+</span></span><span class=line><span class=cl>  &#34;activation&#34;: &#34;gelu&#34;,
+</span></span><span class=line><span class=cl>  &#34;architectures&#34;: [
+</span></span><span class=line><span class=cl>    &#34;DistilBertForSequenceClassification&#34;
+</span></span><span class=line><span class=cl>  ],
+</span></span><span class=line><span class=cl>  &#34;attention_dropout&#34;: 0.1,
+</span></span><span class=line><span class=cl>  &#34;dim&#34;: 768,
+</span></span><span class=line><span class=cl>  &#34;dropout&#34;: 0.1,
+</span></span><span class=line><span class=cl>  &#34;finetuning_task&#34;: &#34;sst-2&#34;,
+</span></span><span class=line><span class=cl>  &#34;hidden_dim&#34;: 3072,
+</span></span><span class=line><span class=cl>  &#34;id2label&#34;: {
+</span></span><span class=line><span class=cl>    &#34;0&#34;: &#34;NEGATIVE&#34;,
+</span></span><span class=line><span class=cl>    &#34;1&#34;: &#34;POSITIVE&#34;
+</span></span><span class=line><span class=cl>  },
+</span></span><span class=line><span class=cl>  &#34;initializer_range&#34;: 0.02,
+</span></span><span class=line><span class=cl>  &#34;label2id&#34;: {
+</span></span><span class=line><span class=cl>    &#34;NEGATIVE&#34;: 0,
+</span></span><span class=line><span class=cl>    &#34;POSITIVE&#34;: 1
+</span></span><span class=line><span class=cl>  },
+</span></span><span class=line><span class=cl>  &#34;max_position_embeddings&#34;: 512,
+</span></span><span class=line><span class=cl>  &#34;model_type&#34;: &#34;distilbert&#34;,
+</span></span><span class=line><span class=cl>  &#34;n_heads&#34;: 12,
+</span></span><span class=line><span class=cl>  &#34;n_layers&#34;: 6,
+</span></span><span class=line><span class=cl>  &#34;output_past&#34;: true,
+</span></span><span class=line><span class=cl>  &#34;pad_token_id&#34;: 0,
+</span></span><span class=line><span class=cl>  &#34;qa_dropout&#34;: 0.1,
+</span></span><span class=line><span class=cl>  &#34;seq_classif_dropout&#34;: 0.2,
+</span></span><span class=line><span class=cl>  &#34;sinusoidal_pos_embds&#34;: false,
+</span></span><span class=line><span class=cl>  &#34;tie_weights_&#34;: true,
+</span></span><span class=line><span class=cl>  &#34;torch_dtype&#34;: &#34;float32&#34;,
+</span></span><span class=line><span class=cl>  &#34;transformers_version&#34;: &#34;4.52.3&#34;,
+</span></span><span class=line><span class=cl>  &#34;vocab_size&#34;: 30522
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><h4 id=rules-on-tokenizer>Rules on Tokenizer</h4><p>调用<code>tokenizer</code>即调用<code>tokenizer.__call__</code>或<code>tokenizer.encoder</code>（不完全等价，encoder默认不返回attention_mask），将返回含有<code>input_ids</code>和<code>attention_mask</code>的输入字典（<code>inputs_ids</code>和<code>attention_mask</code>长度一致）。</p><p><code>tokenizer.encoder</code>的调用分为两步，先分词，再编码，所以等价于先调用<code>tokenizer.tokenize</code>再调用<code>tokenizer.convert_tokens_to_ids</code>。</p><p>在句子对编码时，使用<code>tokenizer.encode_plus</code>，在返回字典中除了<code>inputs_ids</code>和<code>attention_mask</code>，还会返回<code>token_type_ids</code>$\in {0, 1}$用于标记第一句话和第二句话。在tokens中，会用[SEQ]分割。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=c1># 编码</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>tokenizer</span><span class=p>(</span><span class=n>test_sentences</span><span class=p>[</span><span class=mi>0</span><span class=p>]))</span>
+</span></span><span class=line><span class=cl><span class=c1># tokenizer.encode = tokenizer.tokenize + tokenizer.convert_tokens_to_ids</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>tokenizer</span><span class=o>.</span><span class=n>encode</span><span class=p>(</span><span class=n>test_sentences</span><span class=p>[</span><span class=mi>0</span><span class=p>],))</span>
+</span></span><span class=line><span class=cl><span class=c1>## tokenize</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>tokenizer</span><span class=o>.</span><span class=n>tokenize</span><span class=p>(</span><span class=n>test_sentences</span><span class=p>[</span><span class=mi>0</span><span class=p>]))</span>
+</span></span><span class=line><span class=cl><span class=c1>## convert_tokens_to_ids</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>tokenizer</span><span class=o>.</span><span class=n>convert_tokens_to_ids</span><span class=p>(</span><span class=n>tokenizer</span><span class=o>.</span><span class=n>tokenize</span><span class=p>(</span><span class=n>test_sentences</span><span class=p>[</span><span class=mi>0</span><span class=p>])))</span>
+</span></span><span class=line><span class=cl><span class=c1># 解码</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>tokenizer</span><span class=o>.</span><span class=n>decode</span><span class=p>([</span><span class=mi>101</span><span class=p>,</span> <span class=mi>2651</span><span class=p>,</span> <span class=mi>2003</span><span class=p>,</span> <span class=mi>2025</span><span class=p>,</span> <span class=mi>2008</span><span class=p>,</span> <span class=mi>2919</span><span class=p>,</span> <span class=mi>102</span><span class=p>]))</span>
+</span></span></code></pre></td></tr></table></div></div><p>可以得到以下结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 编码</span>
+</span></span><span class=line><span class=cl><span class=o>{</span><span class=s1>&#39;input_ids&#39;</span>: <span class=o>[</span>101, 2651, 2003, 2025, 2008, 2919, 102<span class=o>]</span>, <span class=s1>&#39;attention_mask&#39;</span>: <span class=o>[</span>1, 1, 1, 1, 1, 1, 1<span class=o>]}</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>101, 2651, 2003, 2025, 2008, 2919, 102<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=c1>## tokenize</span>
+</span></span><span class=line><span class=cl><span class=o>[</span><span class=s1>&#39;today&#39;</span>, <span class=s1>&#39;is&#39;</span>, <span class=s1>&#39;not&#39;</span>, <span class=s1>&#39;that&#39;</span>, <span class=s1>&#39;bad&#39;</span><span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=c1>## convert_tokens_to_ids</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>2651, 2003, 2025, 2008, 2919<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=c1># 解码</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>CLS<span class=o>]</span> today is not that bad <span class=o>[</span>SEP<span class=o>]</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>tokenizer</code>是根据<code>tokenizer.vocab</code>为依据进行编码的，以下是特殊token表（可以通过<code>tokenizer.special_tokens_map</code>或直接<code>tokenizer</code>查看），tokenizer会尽量避免将词分为[UNK]（存在5828个<code>##</code>开头的后缀词）。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>{&#39;unk_token&#39;: &#39;[UNK]&#39;,      # 100
+</span></span><span class=line><span class=cl> &#39;sep_token&#39;: &#39;[SEP]&#39;,      # 102
+</span></span><span class=line><span class=cl> &#39;pad_token&#39;: &#39;[PAD]&#39;,      # 0
+</span></span><span class=line><span class=cl> &#39;cls_token&#39;: &#39;[CLS]&#39;,      # 101
+</span></span><span class=line><span class=cl> &#39;mask_token&#39;: &#39;[MASK]&#39;     # 103}
+</span></span></code></pre></td></tr></table></div></div><h4 id=parameter>Parameter</h4><p>这里以Google发布的<a class=link href="https://huggingface.co/google-bert/bert-base-uncased?text=Paris+is+the+%5BMASK%5D+of+France." target=_blank rel=noopener>google-bert/bert-base-uncased</a>（12层BertLayer）为例。</p><p>通过<code>model</code>可以看到BERT的架构如下：</p><ul><li><p><strong>Embedding</strong>由word embeddings、position embeddings和token type embedding三部分组成</p></li><li><p><strong>Encoder</strong>由12层BertLayer组成，每层BertLayer都由一次Self Attention和一次FFN组成</p></li><li><p><strong>Pooler</strong>全连接层</p></li><li><p><strong>Output</strong>(optional)作为下游任务的输出层</p></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>BertModel(
+</span></span><span class=line><span class=cl>  (embeddings): BertEmbeddings(
+</span></span><span class=line><span class=cl>    (word_embeddings): Embedding(30522, 768, padding_idx=0)
+</span></span><span class=line><span class=cl>    (position_embeddings): Embedding(512, 768)
+</span></span><span class=line><span class=cl>    (token_type_embeddings): Embedding(2, 768)
+</span></span><span class=line><span class=cl>    (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+</span></span><span class=line><span class=cl>    (dropout): Dropout(p=0.1, inplace=False)
+</span></span><span class=line><span class=cl>  )
+</span></span><span class=line><span class=cl>  (encoder): BertEncoder(
+</span></span><span class=line><span class=cl>    (layer): ModuleList(
+</span></span><span class=line><span class=cl>      (0-11): 12 x BertLayer(
+</span></span><span class=line><span class=cl>        (attention): BertAttention(
+</span></span><span class=line><span class=cl>          (self): BertSdpaSelfAttention(
+</span></span><span class=line><span class=cl>            (query): Linear(in_features=768, out_features=768, bias=True)
+</span></span><span class=line><span class=cl>            (key): Linear(in_features=768, out_features=768, bias=True)
+</span></span><span class=line><span class=cl>            (value): Linear(in_features=768, out_features=768, bias=True)
+</span></span><span class=line><span class=cl>            (dropout): Dropout(p=0.1, inplace=False)
+</span></span><span class=line><span class=cl>          )
+</span></span><span class=line><span class=cl>          (output): BertSelfOutput(
+</span></span><span class=line><span class=cl>            (dense): Linear(in_features=768, out_features=768, bias=True)
+</span></span><span class=line><span class=cl>            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+</span></span><span class=line><span class=cl>            (dropout): Dropout(p=0.1, inplace=False)
+</span></span><span class=line><span class=cl>          )
+</span></span><span class=line><span class=cl>        )
+</span></span><span class=line><span class=cl>        (intermediate): BertIntermediate(
+</span></span><span class=line><span class=cl>          (dense): Linear(in_features=768, out_features=3072, bias=True)
+</span></span><span class=line><span class=cl>          (intermediate_act_fn): GELUActivation()
+</span></span><span class=line><span class=cl>        )
+</span></span><span class=line><span class=cl>        (output): BertOutput(
+</span></span><span class=line><span class=cl>          (dense): Linear(in_features=3072, out_features=768, bias=True)
+</span></span><span class=line><span class=cl>          (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+</span></span><span class=line><span class=cl>          (dropout): Dropout(p=0.1, inplace=False)
+</span></span><span class=line><span class=cl>        )
+</span></span><span class=line><span class=cl>      )
+</span></span><span class=line><span class=cl>    )
+</span></span><span class=line><span class=cl>  )
+</span></span><span class=line><span class=cl>  (pooler): BertPooler(
+</span></span><span class=line><span class=cl>    (dense): Linear(in_features=768, out_features=768, bias=True)
+</span></span><span class=line><span class=cl>    (activation): Tanh()
+</span></span><span class=line><span class=cl>  )
+</span></span><span class=line><span class=cl>)
+</span></span></code></pre></td></tr></table></div></div><p>可以用以下代码计算每一部分的参数量：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>total_params</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>total_learnable_params</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>total_embedding_params</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>total_encoder_params</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>total_pooler_params</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>name</span><span class=p>,</span> <span class=n>param</span> <span class=ow>in</span> <span class=n>model</span><span class=o>.</span><span class=n>named_parameters</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=c1># print(name, &#39;-&gt;&#39;, param.shape, &#39;-&gt;&#39;, param.numel())</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 加上`if param.requires_grad:`可以计算可学习参数量</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=s1>&#39;embedding&#39;</span> <span class=ow>in</span> <span class=n>name</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>total_embedding_params</span> <span class=o>+=</span> <span class=n>param</span><span class=o>.</span><span class=n>numel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=s1>&#39;encoder&#39;</span> <span class=ow>in</span> <span class=n>name</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>total_encoder_params</span> <span class=o>+=</span> <span class=n>param</span><span class=o>.</span><span class=n>numel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=s1>&#39;pooler&#39;</span> <span class=ow>in</span> <span class=n>name</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>total_pooler_params</span> <span class=o>+=</span> <span class=n>param</span><span class=o>.</span><span class=n>numel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>param</span><span class=o>.</span><span class=n>requires_grad</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>total_learnable_params</span> <span class=o>+=</span> <span class=n>param</span><span class=o>.</span><span class=n>numel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>total_params</span> <span class=o>+=</span> <span class=n>param</span><span class=o>.</span><span class=n>numel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>params</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=p>(</span><span class=s2>&#34;total_embedding_params&#34;</span><span class=p>,</span> <span class=n>total_embedding_params</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=p>(</span><span class=s2>&#34;total_encoder_params&#34;</span><span class=p>,</span> <span class=n>total_encoder_params</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=p>(</span><span class=s2>&#34;total_pooler_params&#34;</span><span class=p>,</span> <span class=n>total_pooler_params</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>name</span><span class=p>,</span> <span class=n>param</span> <span class=ow>in</span> <span class=n>params</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>percentage</span> <span class=o>=</span> <span class=p>(</span><span class=n>param</span> <span class=o>/</span> <span class=n>total_params</span><span class=p>)</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s2>: </span><span class=si>{</span><span class=n>percentage</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2> %, </span><span class=si>{</span><span class=n>param</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>得到输出结果：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>total_embedding_params: 21.77 %, <span class=m>23837184</span>
+</span></span><span class=line><span class=cl>total_encoder_params: 77.69 %, <span class=m>85054464</span>
+</span></span><span class=line><span class=cl>total_pooler_params: 0.54 %, <span class=m>590592</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=output>Output</h4><p>在<code>outputs = model(**input)</code>后调用<code>type(outputs)</code>可以发现Bert的输出类型是<code>transformers.modeling_outputs.BaseModelOutputWithPoolingAndCrossAttentions</code>。参考<a class=link href=https://huggingface.co/docs/transformers/model_doc/bert#transformers.BertModel target=_blank rel=noopener>Huggingface-BERT文档</a>，默认情况下长度为2（<code>last_hidden_state</code>和<code>pooler_output</code>）。当定义模型时指定<code>output_hidden_states=True</code>时，还会返回<code>hidden_state</code>，其他参数类似。</p><ul><li><p>output[0] (<code>last_hidden_state</code>), shape = (batch_size, seq_len, hidden_size)</p></li><li><p>output[1] (<code>pooler_output</code>), shape = (batch_size, hidden_size)</p></li></ul><p>最终隐藏状态（classification token, [CLS]的输出）</p><ul><li>output[2] (<code>hidden_states</code>), <strong>tuple</strong>, embedding layer和每个layer的输出（1+12）, shape = 13 * (batch_size, seq_len, hidden_size)</li></ul><p>如<code>model.embeddings(input['input_ids'], input['token_type_ids']) == outputs[2][0]</code>表示Embedding层的输出。</p><h3 id=embedding>Embedding</h3><p>上文提到，BERT的Embedding层由word embeddings、position embeddings和token type embedding三部分组成，以下代码实现了简单的Embedding层：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>transformers</span> <span class=kn>import</span> <span class=n>BertTokenizer</span><span class=p>,</span> <span class=n>BertModel</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>tokenizer</span> <span class=o>=</span> <span class=n>BertTokenizer</span><span class=o>.</span><span class=n>from_pretrained</span><span class=p>(</span><span class=s2>&#34;bert-base-uncased&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>model</span> <span class=o>=</span> <span class=n>BertModel</span><span class=o>.</span><span class=n>from_pretrained</span><span class=p>(</span><span class=s2>&#34;bert-base-uncased&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>input</span> <span class=o>=</span> <span class=n>tokenizer</span><span class=p>(</span><span class=n>sentence</span><span class=p>,</span> <span class=n>return_tensors</span><span class=o>=</span><span class=s1>&#39;pt&#39;</span><span class=p>)</span> <span class=c1># {input_ids, token_type_ids, attention_mask}</span>
+</span></span><span class=line><span class=cl><span class=n>input_ids</span> <span class=o>=</span> <span class=nb>input</span><span class=p>[</span><span class=s1>&#39;input_ids&#39;</span><span class=p>]</span>              <span class=c1># shape = (batch_size, token_len)</span>
+</span></span><span class=line><span class=cl><span class=n>token_type_ids</span> <span class=o>=</span> <span class=nb>input</span><span class=p>[</span><span class=s1>&#39;token_type_ids&#39;</span><span class=p>]</span>    <span class=c1># shape = (batch_size, token_len)</span>
+</span></span><span class=line><span class=cl><span class=n>pos_ids</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>arange</span><span class=p>(</span><span class=n>input_ids</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>1</span><span class=p>])</span>  <span class=c1># shape = (token_len)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 1. Word Embedding</span>
+</span></span><span class=line><span class=cl><span class=n>word_embed</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>embeddings</span><span class=o>.</span><span class=n>word_embeddings</span><span class=p>(</span><span class=n>input_ids</span><span class=p>)</span>            <span class=c1># shape = (batch_size, token_len, embedding_size=768)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 2. Token Type Embedding</span>
+</span></span><span class=line><span class=cl><span class=n>tok_embed</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>embeddings</span><span class=o>.</span><span class=n>token_type_embeddings</span><span class=p>(</span><span class=n>token_type_ids</span><span class=p>)</span>  <span class=c1># shape = (batch_size, token_len, embedding_size=768)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 3. Position Embedding</span>
+</span></span><span class=line><span class=cl><span class=n>pos_embed</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>embeddings</span><span class=o>.</span><span class=n>position_embeddings</span><span class=p>(</span><span class=n>pos_ids</span><span class=p>)</span>           <span class=c1># shape = (token_len, embedding_size=768)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># **Input Embedding**</span>
+</span></span><span class=line><span class=cl><span class=n>input_embed</span> <span class=o>=</span> <span class=n>word_embed</span> <span class=o>+</span> <span class=n>tok_embed</span> <span class=o>+</span> <span class=n>pos_embed</span><span class=o>.</span><span class=n>unsqueeze</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>       <span class=c1># 也可以不unsqueeze, 会broadcast的</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 后处理</span>
+</span></span><span class=line><span class=cl><span class=n>embed</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>embeddings</span><span class=o>.</span><span class=n>LayerNorm</span><span class=p>(</span><span class=n>input_embed</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>embed</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>embeddings</span><span class=o>.</span><span class=n>dropout</span><span class=p>(</span><span class=n>embed</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=self-attention>Self-Attention</h3>$$Attention(Q, K, V)=softmax(\frac{QK^{T}}{\sqrt[]{d_{k}} })V$$<p>接下来是从Embedding层输出到Multi-Head Self-Attention (MHA)的代码实现（first head）：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>att_head_size</span> <span class=o>=</span> <span class=nb>int</span><span class=p>(</span><span class=n>model</span><span class=o>.</span><span class=n>config</span><span class=o>.</span><span class=n>hidden_size</span> <span class=o>/</span> <span class=n>model</span><span class=o>.</span><span class=n>config</span><span class=o>.</span><span class=n>num_attention_heads</span><span class=p>)</span> <span class=c1># 768 / 12 = 64</span>
+</span></span><span class=line><span class=cl><span class=n>emb_output</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>embeddings</span><span class=p>(</span><span class=nb>input</span><span class=p>[</span><span class=s1>&#39;input_ids&#39;</span><span class=p>],</span> <span class=nb>input</span><span class=p>[</span><span class=s1>&#39;token_type_ids&#39;</span><span class=p>])</span> <span class=c1># shape = (batch_size, seq_len, embedding_dim)</span>
+</span></span><span class=line><span class=cl><span class=c1># emb_output[0].shape = (seq_len, embedding_dim)</span>
+</span></span><span class=line><span class=cl><span class=c1>## Why Transpose? 因为PyTorch中的Linear里就是x@A^T（左乘转置）</span>
+</span></span><span class=line><span class=cl><span class=n>Q_first_head_first_layer</span> <span class=o>=</span> <span class=n>emb_output</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>@</span> <span class=n>model</span><span class=o>.</span><span class=n>encoder</span><span class=o>.</span><span class=n>layer</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>attention</span><span class=o>.</span><span class=n>self</span><span class=o>.</span><span class=n>query</span><span class=o>.</span><span class=n>weight</span><span class=o>.</span><span class=n>T</span><span class=p>[:,</span> <span class=p>:</span><span class=n>att_head_size</span><span class=p>]</span> <span class=o>+</span> <span class=n>model</span><span class=o>.</span><span class=n>encoder</span><span class=o>.</span><span class=n>layer</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>attention</span><span class=o>.</span><span class=n>self</span><span class=o>.</span><span class=n>query</span><span class=o>.</span><span class=n>bias</span><span class=p>[:</span><span class=n>att_head_size</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>K_first_head_first_layer</span> <span class=o>=</span> <span class=n>emb_output</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>@</span> <span class=n>model</span><span class=o>.</span><span class=n>encoder</span><span class=o>.</span><span class=n>layer</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>attention</span><span class=o>.</span><span class=n>self</span><span class=o>.</span><span class=n>key</span><span class=o>.</span><span class=n>weight</span><span class=o>.</span><span class=n>T</span><span class=p>[:,</span> <span class=p>:</span><span class=n>att_head_size</span><span class=p>]</span> <span class=o>+</span> <span class=n>model</span><span class=o>.</span><span class=n>encoder</span><span class=o>.</span><span class=n>layer</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>attention</span><span class=o>.</span><span class=n>self</span><span class=o>.</span><span class=n>key</span><span class=o>.</span><span class=n>bias</span><span class=p>[:</span><span class=n>att_head_size</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=c1># (seq_len, att_head_size) @ (seq_len, att_head_size).T -&gt; (seq_len, seq_len)</span>
+</span></span><span class=line><span class=cl><span class=n>attn_scores</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>nn</span><span class=o>.</span><span class=n>Softmax</span><span class=p>(</span><span class=n>dim</span><span class=o>=-</span><span class=mi>1</span><span class=p>)(</span><span class=n>Q_first_head_first_layer</span> <span class=o>@</span> <span class=n>K_first_head_first_layer</span><span class=o>.</span><span class=n>T</span><span class=p>)</span> <span class=o>/</span> <span class=n>math</span><span class=o>.</span><span class=n>sqrt</span><span class=p>(</span><span class=n>att_head_size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>V_first_head_first_layer</span> <span class=o>=</span> <span class=n>emb_output</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>@</span> <span class=n>model</span><span class=o>.</span><span class=n>encoder</span><span class=o>.</span><span class=n>layer</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>attention</span><span class=o>.</span><span class=n>self</span><span class=o>.</span><span class=n>value</span><span class=o>.</span><span class=n>weight</span><span class=o>.</span><span class=n>T</span><span class=p>[:,</span> <span class=p>:</span><span class=n>att_head_size</span><span class=p>]</span> <span class=o>+</span> <span class=n>model</span><span class=o>.</span><span class=n>encoder</span><span class=o>.</span><span class=n>layer</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>attention</span><span class=o>.</span><span class=n>self</span><span class=o>.</span><span class=n>value</span><span class=o>.</span><span class=n>bias</span><span class=p>[:</span><span class=n>att_head_size</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>attn_emb</span> <span class=o>=</span> <span class=n>attn_scores</span> <span class=o>@</span> <span class=n>V_first_head_first_layer</span> <span class=c1># shape = (seq_len, att_head_size)</span>
+</span></span></code></pre></td></tr></table></div></div><p>接下来是关于MHA的公式推导，定义$E$为Embedding层的输出$q$、$k$、$v$分别为同一token对应的query、key、value，$W_q$、$W_k$、$W_v$分别为同一token的权重，$Q$、$K$、$V$分别为整个序列的query、key、value，$W_Q$、$W_K$、$W_V$分别为整个序列的权重。这里省略bias项。</p><p>先从某一token出发，$T$表示序列长度，$d_e$表示Embedding层维度，$d_q$、$d_k$、$d_v$分别表示q、k、v的维度，$E \in \mathbb{R}^{T \times d_e}$，那么：</p>$$E \cdot W_q = q \in \mathbb{R}^{T \times d_q}$$$$E \cdot W_k = k \in \mathbb{R}^{T \times d_k}$$$$E \cdot W_v = v \in \mathbb{R}^{T \times d_v}$$<p>其中$d_q == d_k$，因为后续需要计算$q \cdot k^{T}$，$d_v$则没有要求：</p>$$Attention\ Score = Softmax(\frac{q \cdot k^{T}}{\sqrt{d_k}}) \in \mathbb{R}^{T \times T}$$$$Attention\ Output = Softmax(\frac{q \cdot k^{T}}{\sqrt{d_k}}) \cdot v \in \mathbb{R}^{T \times d_v}$$<p>接下来定义Attention头数为$n$，将单头的情况拓展到多头：</p>\[
+\left[
+\begin{array}{c|c|c|c}
+E\cdot W_{q_1} & E\cdot W_{q_2} & ... & E\cdot W_{q_n} \\
+\end{array}
+\right]=E\cdot \left[
+\begin{array}{c|c|c|c}
+W_{q_1} & W_{q_2} & ... & W_{q_n} \\
+\end{array}
+\right]=E\cdot W_Q=Q \in \mathbb{R}^{T \times n\cdot d_q}
+\]\[
+\left[
+\begin{array}{c|c|c|c}
+E\cdot W_{k_1} & E\cdot W_{k_2} & ... & E\cdot W_{k_n} \\
+\end{array}
+\right]=E\cdot \left[
+\begin{array}{c|c|c|c}
+W_{k_1} & W_{k_2} & ... & W_{k_n} \\
+\end{array}
+\right]=E\cdot W_K=K \in \mathbb{R}^{T \times n\cdot d_k}
+\]\[
+\left[
+\begin{array}{c|c|c|c}
+E\cdot W_{v_1} & E\cdot W_{v_2} & ... & E\cdot W_{v_n} \\
+\end{array}
+\right]=E\cdot \left[
+\begin{array}{c|c|c|c}
+W_{v_1} & W_{v_2} & ... & W_{v_n} \\
+\end{array}
+\right]=E\cdot W_V=V \in \mathbb{R}^{T \times n\cdot d_v}
+\]<p>那么就可以得到完整的MHA了：</p>$$Attention(Q, K, V)=softmax(\frac{QK^{T}}{\sqrt[]{d_{k}} })V \in \mathbb{R}^{T \times n \cdot d_v}$$<h3 id=add--norm>Add & Norm</h3><figure><img src=/p/bert/img/2.png width='200px"'><figcaption><h4>Encoder of Transformer</h4></figcaption></figure><p>在Encoder中共有两次参差连接和层归一化（Add & Norm），第一次发生在MHA中：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>layer</span> <span class=o>=</span> <span class=n>model</span><span class=o>.</span><span class=n>encoder</span><span class=o>.</span><span class=n>layer</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>    <span class=c1># First Layer</span>
+</span></span><span class=line><span class=cl><span class=n>embeddings</span> <span class=o>=</span> <span class=n>model</span><span class=p>(</span><span class=o>**</span><span class=nb>input</span><span class=p>)[</span><span class=mi>2</span><span class=p>][</span><span class=mi>0</span><span class=p>]</span> <span class=c1># Embeddings Layer Output</span>
+</span></span><span class=line><span class=cl><span class=n>mha_output</span> <span class=o>=</span> <span class=n>layer</span><span class=o>.</span><span class=n>attention</span><span class=o>.</span><span class=n>self</span><span class=p>(</span><span class=n>embeddings</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>attn_output</span> <span class=o>=</span> <span class=n>layer</span><span class=o>.</span><span class=n>attention</span><span class=o>.</span><span class=n>output</span><span class=p>(</span><span class=n>mha_output</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=n>embeddings</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>第二次发生在MLP中：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>mlp1</span> <span class=o>=</span> <span class=n>layer</span><span class=o>.</span><span class=n>intermediate</span><span class=p>(</span><span class=n>attn_output</span><span class=p>)</span> <span class=c1># shape = (batch_size, seq_len, 4x768)</span>
+</span></span><span class=line><span class=cl><span class=n>mlp2</span> <span class=o>=</span> <span class=n>layer</span><span class=o>.</span><span class=n>output</span><span class=o>.</span><span class=n>output</span><span class=p>(</span><span class=n>mlp1</span><span class=p>,</span> <span class=n>attn_output</span><span class=p>)</span> <span class=c1># 这个结果和output[2][1]是相同的（layer 1的输出结果）</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>Add & Norm</code>的实现很简单，如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>forward</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>hidden_states</span><span class=p>,</span> <span class=n>input_tensor</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>  <span class=n>hidden_states</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>dense</span><span class=p>(</span><span class=n>hidden_states</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=n>hidden_states</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>dropout</span><span class=p>(</span><span class=n>hidden_states</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=n>hidden_states</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>LayerNorm</span><span class=p>(</span><span class=n>hidden_states</span> <span class=o>+</span> <span class=n>input_tensor</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>hidden_states</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=pooler>Pooler</h3><p>对于<code>output = model(**input)</code>，一般有两个keys，即<code>last_hidden_state</code>(shape=(batch_size, seq_len, emb_dim))和<code>pooler_output</code>(shape=(batch_size, emb_dim))。</p><p>其中<code>pooler_output</code>少了seq_len的维度，观察BERT源码可以发现，<code>pooler_output</code>是BERT encoder只对第一个token（也就是[CLS]）进行了一次全连接和激活的输出。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>forward</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>hidden_states</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>  <span class=c1># We &#34;pool&#34; the model by simply taking the hidden state corresponding</span>
+</span></span><span class=line><span class=cl>  <span class=c1># to the first token.</span>
+</span></span><span class=line><span class=cl>  <span class=n>first_token_tensor</span> <span class=o>=</span> <span class=n>hidden_states</span><span class=p>[:,</span> <span class=mi>0</span><span class=p>]</span> <span class=c1># 第一个元素的hidden_states</span>
+</span></span><span class=line><span class=cl>  <span class=n>pooled_output</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>dense</span><span class=p>(</span><span class=n>first_token_tensor</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=n>pooled_output</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>activation</span><span class=p>(</span><span class=n>pooled_output</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=n>pooled_output</span>
+</span></span></code></pre></td></tr></table></div></div><p>也可以翻译为以下代码：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>first_sentence</span> <span class=o>=</span> <span class=n>output</span><span class=p>[</span><span class=s1>&#39;last_hidden_state&#39;</span><span class=p>][</span><span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>pool_output</span> <span class=o>=</span> <span class=n>bert</span><span class=o>.</span><span class=n>pooler</span><span class=o>.</span><span class=n>dense</span><span class=p>(</span><span class=n>first_sentence</span><span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=p>:])</span>
+</span></span><span class=line><span class=cl><span class=n>pool_output</span> <span class=o>=</span> <span class=n>bert</span><span class=o>.</span><span class=n>pooler</span><span class=o>.</span><span class=n>activation</span><span class=p>(</span><span class=n>pool_output</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>下面的图可以清晰地诠释这一过程：</p><figure><img src=/p/bert/img/4.png width='500px"'><figcaption><h4>Chris McCormick的好图</h4></figcaption></figure><p>这一Pooler Layer可以视为BERT的一个默认head，作为最后BERT的输出。在不同的任务下，一般保留同样的Embedding Layer和中间Layer，只替换最后这一部分。</p><h2 id=masked-language-model>Masked Language Model</h2><p>掩码语言模型（MLM, Masked Language Model）是BERT的一种自监督学习任务，模型的目标是预测输入文本中被随机覆盖（masked）的token（完形填空）。当我们使用<code>BertForMaskedLM</code>加载模型后，观察配置（主要关注最后一层）。</p><h3 id=cls-layer>CLS Layer</h3><p>BERT（base）的最后一层是上一节提到的简单的Pooler Player：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>(pooler): BertPooler(
+</span></span><span class=line><span class=cl>  (dense): Linear(in_features=768, out_features=768, bias=True)
+</span></span><span class=line><span class=cl>  (activation): Tanh()
+</span></span><span class=line><span class=cl>)
+</span></span></code></pre></td></tr></table></div></div><p>而BERT（MLM）的最后一层是一个略微复杂一些的CLS Layer，由transform（全连接+激活+层归一化）和decoder（全连接）两个运算构成：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>(cls): BertOnlyMLMHead(
+</span></span><span class=line><span class=cl>  (predictions): BertLMPredictionHead(
+</span></span><span class=line><span class=cl>    (transform): BertPredictionHeadTransform(
+</span></span><span class=line><span class=cl>      (dense): Linear(in_features=768, out_features=768, bias=True)
+</span></span><span class=line><span class=cl>      (transform_act_fn): GELUActivation()
+</span></span><span class=line><span class=cl>      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+</span></span><span class=line><span class=cl>    )
+</span></span><span class=line><span class=cl>    (decoder): Linear(in_features=768, out_features=30522, bias=True)
+</span></span><span class=line><span class=cl>  )
+</span></span><span class=line><span class=cl>)
+</span></span></code></pre></td></tr></table></div></div><p>经过<code>self.transform</code>运算后，仍然保持shape=(batch_size, seq_len, emb_dim=768)，作用仅仅是做一次同样维度的全连接激活；<code>self.decoder</code>也只是一个简单的全连接，将768维映射到vocab_size=30522维（多分类任务）。</p><h3 id=masking>Masking</h3><p>既然是监督学习，就需要制作Label了。以下代码可以对经过tokenizer的文本进行随机mask并加入label标记原始文本：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>inputs</span> <span class=o>=</span> <span class=n>tokenizer</span><span class=p>(</span><span class=n>text</span><span class=p>,</span> <span class=n>return_tensors</span><span class=o>=</span><span class=s1>&#39;pt&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>inputs</span><span class=p>[</span><span class=s1>&#39;labels&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>inputs</span><span class=p>[</span><span class=s1>&#39;input_ids&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>detach</span><span class=p>()</span><span class=o>.</span><span class=n>clone</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 生成掩码矩阵（序列）</span>
+</span></span><span class=line><span class=cl><span class=n>mask_arr</span> <span class=o>=</span> <span class=p>(</span><span class=n>torch</span><span class=o>.</span><span class=n>rand</span><span class=p>(</span><span class=n>inputs</span><span class=p>[</span><span class=s1>&#39;input_ids&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>shape</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mf>0.15</span><span class=p>)</span> <span class=o>*</span> <span class=p>(</span><span class=n>inputs</span><span class=p>[</span><span class=s1>&#39;input_ids&#39;</span><span class=p>]</span> <span class=o>!=</span> <span class=mi>101</span><span class=p>)</span> <span class=o>*</span> <span class=p>(</span><span class=n>inputs</span><span class=p>[</span><span class=s1>&#39;input_ids&#39;</span><span class=p>]</span> <span class=o>!=</span> <span class=mi>102</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># 筛选掩码列表</span>
+</span></span><span class=line><span class=cl><span class=n>selection</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>flatten</span><span class=p>(</span><span class=n>mask_arr</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>nonzero</span><span class=p>())</span><span class=o>.</span><span class=n>tolist</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=c1># 随机mask</span>
+</span></span><span class=line><span class=cl><span class=n>inputs</span><span class=p>[</span><span class=s1>&#39;input_ids&#39;</span><span class=p>][</span><span class=mi>0</span><span class=p>,</span> <span class=n>selection</span><span class=p>]</span> <span class=o>=</span> <span class=n>tokenizer</span><span class=o>.</span><span class=n>vocab</span><span class=p>[</span><span class=s1>&#39;[MASK]&#39;</span><span class=p>]</span> <span class=c1># or 103</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=computing-process>Computing Process</h3><p>与Base模型的Pooler Layer将最后一层的第一个token的隐藏状态作为输入不同，MLM将最后一层的所有隐藏状态作为输出，即<code>mlm_output = mlm.cls(outputs['hidden_states'][-1])</code>。实际上就是这么个流程：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>mlm</span><span class=o>.</span><span class=n>eval</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>last_hidden_state</span> <span class=o>=</span> <span class=n>outputs</span><span class=p>[</span><span class=s1>&#39;hidden_states&#39;</span><span class=p>][</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>                    <span class=c1># (batch_size, seq_len, emb_dim)</span>
+</span></span><span class=line><span class=cl><span class=k>with</span> <span class=n>torch</span><span class=o>.</span><span class=n>no_grad</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>transformed</span> <span class=o>=</span> <span class=n>mlm</span><span class=o>.</span><span class=n>cls</span><span class=o>.</span><span class=n>predictions</span><span class=o>.</span><span class=n>transform</span><span class=p>(</span><span class=n>last_hidden_state</span><span class=p>)</span>  <span class=c1># (batch_size, seq_len, emb_dim) still</span>
+</span></span><span class=line><span class=cl>    <span class=n>logits</span> <span class=o>=</span> <span class=n>mlm</span><span class=o>.</span><span class=n>cls</span><span class=o>.</span><span class=n>predictions</span><span class=o>.</span><span class=n>decoder</span><span class=p>(</span><span class=n>transformed</span><span class=p>)</span>               <span class=c1># (batch_size, seq_len, vocab_size)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=loss--translate>Loss & Translate</h3><p><code>mlm(**inputs)</code>的返回类型是<code>transformers.modeling_outputs.MaskedLMOutput</code>，即<code>odict_keys(['loss', 'logits', 'hidden_states'])</code>。</p><p><code>output.loss</code>是一个tensor标量，使用CrossEntropy，实现如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>ce</span> <span class=o>=</span> <span class=n>nn</span><span class=o>.</span><span class=n>CrossEntropyLoss</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>outputs</span><span class=o>.</span><span class=n>loss</span> <span class=o>=</span> <span class=n>ce</span><span class=p>(</span><span class=n>logits</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=n>inputs</span><span class=p>[</span><span class=s1>&#39;labels&#39;</span><span class=p>][</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>view</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><p>而翻译也很简单，使用<code>torch.argmax(logits[0], dim=1)</code>找到最大概率分数的索引即可：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=s1>&#39; &#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>tokenizer</span><span class=o>.</span><span class=n>convert_ids_to_tokens</span><span class=p>(</span><span class=n>torch</span><span class=o>.</span><span class=n>argmax</span><span class=p>(</span><span class=n>logits</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=n>dim</span><span class=o>=</span><span class=mi>1</span><span class=p>)))</span>
+</span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-tags><a href=/tags/%E6%96%87%E6%A1%A3/>文档</a>
+<a href=/tags/ai-infra/>AI Infra</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=document.querySelector(".main-article");renderMathInElement(e,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/p/llm1/><div class=article-image><img src=/p/llm1/img/cover.476a6e47d456e530769339129869e375_hu_c5178b381d2afeea.png width=250 height=150 loading=lazy alt="Featured image of post 从Transformer开始探索BERT" data-key=llm1 data-hash="md5-R2puR9RW5TB2kzkSmGnjdQ=="></div><div class=article-details><h2 class=article-title>从Transformer开始探索BERT</h2></div></a></article><article class=has-image><a href=/p/triton1/><div class=article-image><img src=/p/triton1/img/cover.67e39d5f04b0c7d5d295130692a51159_hu_77fc0469d240a9bf.jpg width=250 height=150 loading=lazy alt="Featured image of post Triton学习——Vector Addition, Fused Softmax, Matrix Multiplication" data-key=Triton1 data-hash="md5-Z+OdXwSwx9XSlRMGkqURWQ=="></div><div class=article-details><h2 class=article-title>Triton学习——Vector Addition, Fused Softmax, Matrix Multiplication</h2></div></a></article><article class=has-image><a href=/p/leetcode/><div class=article-image><img src=/p/leetcode/img/cover.9dc3511e0ad1d9770933bce1a88be4f6_hu_b20b56770a1bfe24.png width=250 height=150 loading=lazy alt="Featured image of post LeetCode刷题记录" data-key=leetcode data-hash="md5-ncNRHgrR2XcJM7zhqIvk9g=="></div><div class=article-details><h2 class=article-title>LeetCode刷题记录</h2></div></a></article><article class=has-image><a href=/p/ops2/><div class=article-image><img src=/p/ops2/img/cover2.d5f8171993ade52fb351a98fb568d7cf_hu_1efa6a3692e8cf49.png width=250 height=150 loading=lazy alt="Featured image of post 高性能集群运维——软件环境（Modules、MPI、oneAPI）" data-key=Ops2 data-hash="md5-1fgXGZOt5S+zUamPtWjXzw=="></div><div class=article-details><h2 class=article-title>高性能集群运维——软件环境（Modules、MPI、oneAPI）</h2></div></a></article><article class=has-image><a href=/p/ops1/><div class=article-image><img src=/p/ops1/img/cover.77bed8a766ebc514409b8f590553740d_hu_5d2894421b650739.png width=250 height=150 loading=lazy alt="Featured image of post 高性能集群运维——装机" data-key=Ops1 data-hash="md5-d77Yp2brxRRAm49ZBVN0DQ=="></div><div class=article-details><h2 class=article-title>高性能集群运维——装机</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=KaigeZheng/KaigeZheng.github.io issue-term=pathname crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2024 -
+2025 Kambri's Blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
