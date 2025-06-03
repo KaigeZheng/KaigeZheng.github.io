@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>运维 on Kambri's Blog</title><link>https://kaigezheng.github.io/categories/%E8%BF%90%E7%BB%B4/</link><description>Recent content in 运维 on Kambri's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sun, 11 May 2025 19:47:14 +0800</lastBuildDate><atom:link href="https://kaigezheng.github.io/categories/%E8%BF%90%E7%BB%B4/index.xml" rel="self" type="application/rss+xml"/><item><title>高性能集群运维——装机</title><link>https://kaigezheng.github.io/p/ops1/</link><pubDate>Wed, 23 Apr 2025 20:23:31 +0800</pubDate><guid>https://kaigezheng.github.io/p/ops1/</guid><description>&lt;img src="https://kaigezheng.github.io/p/ops1/img/cover.png" alt="Featured image of post 高性能集群运维——装机" />&lt;p>这段时间和机房打交道比较多，负责对接了来三江源数据分析中心安装新采购机器的工程师和学院的运维老师，所以来总结一下这段时间搭建高性能集群的经验。&lt;/p>
+&lt;h2 id="硬件">硬件
+&lt;/h2>&lt;h3 id="组装">组装
+&lt;/h3>&lt;p>新采购的整机服务器，硬盘、内存条、网卡（Ethernet）、RAID卡都是在的，务必保证启动时，主电源和备用电源都是亮灯状态。机器配置如下，分别是两台Intel双路处理器和两台AMD双路处理器的机器，RDMA网卡是分开采购的Mellanox MT28908（ConnectX-6）。从高性能计算中心借用了8张NVIDIA A800 80GB PCIE，预期拓扑是四机八卡。&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align: center">Server&lt;/th>
+&lt;th style="text-align: center">CPU&lt;/th>
+&lt;th style="text-align: center">Memory&lt;/th>
+&lt;th style="text-align: center">Hard Disk&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align: center">H3C UniServer R4900 G6&lt;/td>
+&lt;td style="text-align: center">Intel(R) Xeon(R) GOLD 6542Y(250w)×2&lt;/td>
+&lt;td style="text-align: center">32G DDR5 5600×8&lt;/td>
+&lt;td style="text-align: center">960G SSD×2 + 4TB SATA×3 + RAID PM8204-2G&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: center">H3C UniServer R4950 G6&lt;/td>
+&lt;td style="text-align: center">AMD EPYC 9654 96-Core Processor(360w)×2&lt;/td>
+&lt;td style="text-align: center">32G DDR5 4800×8&lt;/td>
+&lt;td style="text-align: center">960G SSD×2 + 4TB SATA×3 + RAID PM8204-2G&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>&lt;img src="https://kaigezheng.github.io/p/ops1/img/1.jpg"
+width="1706"
+height="1279"
+srcset="https://kaigezheng.github.io/p/ops1/img/1_hu_ea9c8e661411dd00.jpg 480w, https://kaigezheng.github.io/p/ops1/img/1_hu_7c3da4ba72857459.jpg 1024w"
+loading="lazy"
+alt="服务器内部"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+>&lt;/p>
+&lt;h3 id="制作启动盘">制作启动盘
+&lt;/h3>&lt;p>需要准备可引导ISO、烧录软件(&lt;a class="link" href="https://rufus.ie/en/" target="_blank" rel="noopener"
+>Rufus&lt;/a>或&lt;a class="link" href="https://ultraiso.net/" target="_blank" rel="noopener"
+>UltraISO&lt;/a>)和一个U盘(最好是USB3.0)。这里选择服务器端&lt;code>Ubuntu Server 22.04.5 LTS&lt;/code>(上一个Ubuntu Server长期支持版，支持到2027年4月)，在&lt;a class="link" href="https://cn.ubuntu.com/download" target="_blank" rel="noopener"
+>Ubuntu官网&lt;/a>获取可引导ISO文件。&lt;/p>
+&lt;p>&lt;img src="https://kaigezheng.github.io/p/ops1/img/2.png"
+width="1021"
+height="168"
+srcset="https://kaigezheng.github.io/p/ops1/img/2_hu_1b004a5fefe53d96.png 480w, https://kaigezheng.github.io/p/ops1/img/2_hu_4b7261555edc9a.png 1024w"
+loading="lazy"
+alt="ISO文件"
+class="gallery-image"
+data-flex-grow="607"
+data-flex-basis="1458px"
+>&lt;/p>
+&lt;p>接下来用烧录软件写入硬盘镜像，UltraISO注意选择写入方式为&lt;code>USB-HDD+&lt;/code>，Rufus注意选择目标系统类型为&lt;code>BIOS或UEFI&lt;/code>，文件系统和其他设置根据需求配置。格式化U盘后即可写入系统镜像（约2-3分钟）。&lt;/p>
+&lt;p>&lt;img src="https://kaigezheng.github.io/p/ops1/img/3.png"
+width="594"
+height="872"
+srcset="https://kaigezheng.github.io/p/ops1/img/3_hu_91b1460d5a24137c.png 480w, https://kaigezheng.github.io/p/ops1/img/3_hu_9b837a2dae48a8b7.png 1024w"
+loading="lazy"
+alt="Rufus制作启动盘"
+class="gallery-image"
+data-flex-grow="68"
+data-flex-basis="163px"
+> &lt;img src="https://kaigezheng.github.io/p/ops1/img/4.png"
+width="465"
+height="432"
+srcset="https://kaigezheng.github.io/p/ops1/img/4_hu_7e7ff1b598ce2dae.png 480w, https://kaigezheng.github.io/p/ops1/img/4_hu_95f18d9c83408d5d.png 1024w"
+loading="lazy"
+alt="UltraISO制作启动盘"
+class="gallery-image"
+data-flex-grow="107"
+data-flex-basis="258px"
+>&lt;/p>
+&lt;h2 id="软件">软件
+&lt;/h2>&lt;h3 id="网络配置">网络配置
+&lt;/h3>&lt;p>一般在系统安装时先不配置，安装完成后通过&lt;code>ip link show&lt;/code>查看网口名。通过&lt;code>vim /etc/netplan/50-cloud-init.yaml&lt;/code>，配置如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># ...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">network:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ethernets:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ens16f0:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> addresses:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - &amp;lt;A.B.C.D&amp;gt;/24
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> nameservers:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> addresses: &lt;span class="o">[]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> search: &lt;span class="o">[]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> routes:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> - to: default
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> via: &amp;lt;A.B.C.D&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> version: &lt;span class="m">2&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="设置root密码">设置root密码
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">su root
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">passwd root
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="禁用linux-kernel自动更新">禁用Linux kernel自动更新
+&lt;/h3>&lt;p>如果不禁用的话,每次&lt;code>apt update&lt;/code>后都会提示你是否需要重启服务并更新。修改&lt;code>/etc/apt/apt.conf.d/&lt;/code>下的&lt;code>10periodic&lt;/code>和&lt;code>20auto-upgrades&lt;/code>内的参数为&lt;code>0&lt;/code>即可。&lt;/p>
+&lt;p>&lt;code>sudo vim /etc/apt/apt.conf.d/10periodic&lt;/code>&lt;/p>
+&lt;p>更新为:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">APT::Periodic::Update-Package-Lists &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">APT::Periodic::Download-Upgradeable-Packages &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">APT::Periodic::AutocleanInterval &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>sudo vim /etc/apt/apt.conf.d/20auto-upgrades&lt;/code>&lt;/p>
+&lt;p>更新为:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">APT::Periodic::Update-Package-Lists &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">APT::Periodic::Unattended-Upgrade &lt;span class="s2">&amp;#34;0&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="反向代理">反向代理
+&lt;/h3>&lt;p>由于计算节点不联网，因此把本地作为跳板机进行反向代理。&lt;/p>
+&lt;p>修改本地&lt;code>Users/username/.ssh/config&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">Host &amp;lt;hostname&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HostName &amp;lt;IP&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Port &amp;lt;port&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> User &amp;lt;username&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> RemoteForward &amp;lt;Port1&amp;gt; 127.0.0.1:&amp;lt;Port2&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>补充一点最近刚学到的，在&lt;code>.ssh/config&lt;/code>中通过配置&lt;code>ProxyJump&lt;/code>来实现无缝跳板连接的方法。需要注意的是，如果需要免密的话，需要在destination主机的&lt;code>~/.ssh/authorized_keys&lt;/code>加入&lt;strong>本地&lt;/strong>公钥。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">Host &amp;lt;hostname&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HostName &amp;lt;IP&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Port &amp;lt;port&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> User &amp;lt;username&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> RemoteForward &amp;lt;Port1&amp;gt; 127.0.0.1:&amp;lt;Port2&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Host &amp;lt;destination&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> HostName &amp;lt;IP&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Port &amp;lt;port&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> User &amp;lt;username&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> ProxyJump &amp;lt;hostname&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> RemoteForward &amp;lt;Port1&amp;gt; 127.0.0.1:&amp;lt;Port2&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="值得被做的准备">值得被做的准备
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 禁用Linux自动休眠&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;\$nrconf{kernelhints} = 0;&amp;#34;&lt;/span> &amp;gt;&amp;gt; /etc/needrestart/needrestart.conf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;\$nrconf{restart} = &amp;#39;l&amp;#39;;&amp;#34;&lt;/span> &amp;gt;&amp;gt; /etc/needrestart/needrestart.conf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 更新apt和apt-get&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt upgrade
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt-get update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt-get upgrade
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 安装一些必要组件&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">apt install git wget vim curl htop net-tools pciutils build-essential
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="分盘">分盘
+&lt;/h3>&lt;p>如果不识别硬盘，可能在系统安装阶段就报错&lt;code>block probing did not discover any disks&lt;/code>，检查硬盘、RIAD卡是否亮灯。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">lsblk &lt;span class="c1"># 确认新硬盘设备名称(如/dev/sdX)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo pvcreate /dev/sdb /dev/sdc /dev/sdd &lt;span class="c1"># 创建物理卷PV&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vgcreate vg_home /dev/sdb /dev/sdc /dev/sdd &lt;span class="c1"># 创建卷组VG&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">vgdisplay &lt;span class="c1"># 检查卷组信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo lvcreate -l 100%FREE -n lv_home vg_home &lt;span class="c1"># 创建一个逻辑卷，占用卷组的全部空间&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mkfs.ext4 /dev/vg_home/lv_home &lt;span class="c1"># 格式化逻辑卷为ext4文件系统&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mount /dev/vg_home/lv_home /home &lt;span class="c1"># 挂载逻辑卷到/home&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 自动挂载&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo blkid /dev/vg_home/lv_home &lt;span class="c1"># 获取逻辑卷的UUID&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vim /etc/fstab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt;&amp;gt;&amp;gt; &lt;span class="nv">UUID&lt;/span>&lt;span class="o">=&lt;/span>&amp;lt;UUID&amp;gt; /home ext4 defaults &lt;span class="m">0&lt;/span> &lt;span class="m">2&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mount -a
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">df -a &lt;span class="c1"># 验证&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="nfs共享文件系统">NFS共享文件系统
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo apt install nfs-kernel-server nfs-common rdma-core &lt;span class="c1"># 所有节点都执行&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="nfs服务器节点">NFS服务器节点
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo mkdir -p /home
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo chmod &lt;span class="m">777&lt;/span> /home
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vim /etc/exports
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt;&amp;gt;&amp;gt; /home *&lt;span class="o">(&lt;/span>rw,sync,no_root_squash&lt;span class="o">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vim /etc/nfs.conf &lt;span class="c1"># 启用RMDA&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt;&amp;gt;&amp;gt; &lt;span class="o">[&lt;/span>nfsd&lt;span class="o">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt;&amp;gt;&amp;gt; &lt;span class="nv">rdma&lt;/span>&lt;span class="o">=&lt;/span>y
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo systemctl restart nfs-kernel-server
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo systemctl &lt;span class="nb">enable&lt;/span> nfs-kernel-server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="客户端节点">客户端节点
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo mount -o rdma,vers&lt;span class="o">=&lt;/span>4.2 &amp;lt;server_ip&amp;gt;:/home /home
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">df -h &lt;span class="p">|&lt;/span> grep /home &lt;span class="c1"># 检查挂载是否成功&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo vim /etc/fstab &lt;span class="c1"># 设置开机自动挂载&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt;&amp;gt;&amp;gt; &amp;lt;server_ip&amp;gt;:/home /home nfs4 rdma,vers&lt;span class="o">=&lt;/span>4.2 &lt;span class="m">0&lt;/span> &lt;span class="m">0&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>验证RMDA传输:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">mount &lt;span class="p">|&lt;/span> grep /home
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cat /proc/fs/nfsfs/servers &lt;span class="c1"># 看transport列是否为rdma&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="infiniband-driver">InfiniBand Driver
+&lt;/h3>&lt;p>驱动下载：&lt;a class="link" href="https://developer.nvidia.com/networking/infiniband-software" target="_blank" rel="noopener"
+>NVIDIA InfiniBand Software | NVIDIA | NVIDIA Developer&lt;/a>&lt;/p>
+&lt;p>MLNX_OFED：&lt;a class="link" href="https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/" target="_blank" rel="noopener"
+>Linux InfiniBand Drivers&lt;/a>&lt;/p>
+&lt;p>对于旧版本的IB，请务必查看Release Note确认是否支持。&lt;/p>
+&lt;p>查看IB设备：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">lspci &lt;span class="p">|&lt;/span> grep -i mell
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>打开IB的opensm服务：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 如果没有安装&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt update &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> sudo apt upgrad -y
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install opensm infiniband-diags ibutils perftest -y
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo systemctl start opensm
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl status opensm
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo systemctl &lt;span class="nb">enable&lt;/span> opensm &lt;span class="c1"># 开机自启&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>验证能否正常识别IB设备：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">ibv_devinfo
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ibstat
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>测试服务器和客户端的ib带宽：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">ibv_devices # 查询设备名称, 如mlx5_0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ib_read_bw -a -d &amp;lt;device_name&amp;gt; --report_gbits # 服务器
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ib_read_bw -a -F &amp;lt;ip_addr&amp;gt; -d &amp;lt;device_name&amp;gt; --report_gbits # 客户端 (-a测试所有消息大小, -F强制使用服务端连接(需要服务端先启动), --report_gbits以Gbps显示带宽结果)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;img src="https://kaigezheng.github.io/p/ops1/img/5.png"
+width="963"
+height="519"
+srcset="https://kaigezheng.github.io/p/ops1/img/5_hu_d3cad993109a1b7e.png 480w, https://kaigezheng.github.io/p/ops1/img/5_hu_6ec2e3973c083777.png 1024w"
+loading="lazy"
+alt="服务端"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="445px"
+> &lt;img src="https://kaigezheng.github.io/p/ops1/img/6.png"
+width="970"
+height="453"
+srcset="https://kaigezheng.github.io/p/ops1/img/6_hu_3faf6763bbb42fc7.png 480w, https://kaigezheng.github.io/p/ops1/img/6_hu_e20ba468fe630783.png 1024w"
+loading="lazy"
+alt="客户端"
+class="gallery-image"
+data-flex-grow="214"
+data-flex-basis="513px"
+>&lt;/p>
+&lt;p>设置IB的MTU（最大传输单元）：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">ifconfig &lt;span class="p">|&lt;/span> grep ib &lt;span class="c1"># 查询&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ifconfig ib0 mtu &lt;span class="m">65520&lt;/span> &lt;span class="c1"># 保证两台机器的IB接口配置相同的MTU&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>简单测试：&lt;code>ibping&lt;/code>和&lt;code>ibping &amp;lt;ip_addr&amp;gt;&lt;/code>即可&lt;/p>&lt;/blockquote>
+&lt;h3 id="cuda">CUDA
+&lt;/h3>&lt;h4 id="禁用卸载nouveau驱动非必要">禁用/卸载Nouveau驱动(非必要)
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo vim /etc/modprobe.d/blacklist.conf
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在最后两行加入：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">blacklist nouveau
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">options nouveau &lt;span class="nv">modeset&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="m">0&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>重建initramfs并重启服务器使其生效：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">sudo update-initramfs -u
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo reboot
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>通过&lt;code>lsmod | grep nouveau&lt;/code>验证，若没有输出则禁用成功。&lt;/p>
+&lt;h4 id="安装驱动">安装驱动
+&lt;/h4>&lt;p>查看GPU型号：&lt;code>lspci | grep -i nvidia&lt;/code>&lt;/p>
+&lt;p>驱动下载：&lt;a class="link" href="https://www.nvidia.com/en-us/drivers/" target="_blank" rel="noopener"
+>NVIDIA Driver&lt;/a>&lt;/p>
+&lt;blockquote>
+&lt;p>A800/V100 for CUDA12.6：
+&lt;a class="link" href="https://www.nvidia.com/en-us/drivers/details/231430/" target="_blank" rel="noopener"
+>Data Center Driver for Linux x64 560.35.03 | Linux 64-bit | NVIDIA&lt;/a>&lt;/p>&lt;/blockquote>
+&lt;h4 id="卸载驱动">卸载驱动
+&lt;/h4>&lt;p>&lt;code>sudo /usr/bin/nvidia-uninstall&lt;/code>&lt;/p>
+&lt;h4 id="安装cuda">安装CUDA
+&lt;/h4>&lt;p>CUDA Toolkit：&lt;a class="link" href="https://developer.nvidia.com/cuda-toolkit-archive" target="_blank" rel="noopener"
+>CUDA Toolkit Archive | NVIDIA Developer&lt;/a>&lt;/p>
+&lt;p>CUDA：&lt;a class="link" href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="noopener"
+>CUDA Toolkit 12.6 Update 3 Downloads | NVIDIA Developer&lt;/a>&lt;/p></description></item><item><title>高性能集群运维——软件环境（Modules、MPI、oneAPI）</title><link>https://kaigezheng.github.io/p/ops2/</link><pubDate>Sun, 11 May 2025 19:47:14 +0800</pubDate><guid>https://kaigezheng.github.io/p/ops2/</guid><description>&lt;img src="https://kaigezheng.github.io/p/ops2/img/cover2.png" alt="Featured image of post 高性能集群运维——软件环境（Modules、MPI、oneAPI）" />&lt;p>本篇博文介绍集群常用版本管理软件MODULES，以及MPI的两种实现（UCX+OpenMPI/MPICH）、Intel oneAPI的安装配置。MODULES（最新版的发行版发布自24年11月）的软件依赖繁琐且modulefile需要用TCL写（可以用生成式AI解决），未来有机会学习一下更易用的spack。&lt;/p>
+&lt;h2 id="modules-v540">MODULES (v5.4.0)
+&lt;/h2>&lt;p>&lt;img src="https://kaigezheng.github.io/p/ops2/img/1.png"
+width="423"
+height="135"
+srcset="https://kaigezheng.github.io/p/ops2/img/1_hu_718aff78f6a0b140.png 480w, https://kaigezheng.github.io/p/ops2/img/1_hu_2887afc61c602477.png 1024w"
+loading="lazy"
+alt="ENVIRONMENT MODULES"
+class="gallery-image"
+data-flex-grow="313"
+data-flex-basis="752px"
+>&lt;/p>
+&lt;h3 id="参考">参考
+&lt;/h3>&lt;p>&lt;a class="link" href="https://www.tcl.tk/" target="_blank" rel="noopener"
+>TCL官网&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://modules.readthedocs.io/en/latest/INSTALL.html#installation-instructions" target="_blank" rel="noopener"
+>MODULES安装文档&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://gcc.gnu.org/mirrors.html" target="_blank" rel="noopener"
+>GCC官方镜像站&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://gcc.gnu.org/install/build.html" target="_blank" rel="noopener"
+>GCC构建指南&lt;/a>&lt;/p>
+&lt;hr>
+&lt;p>&lt;a class="link" href="https://www.cnblogs.com/yeungchie/p/16268954.html" target="_blank" rel="noopener"
+>[ Module ] 环境变量管理工具 Modules 安装和使用 - YEUNGCHIE&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://hpc.pku.edu.cn/ug/guide/module/#:~:text=Module%E4%BD%BF%E7%94%A8" target="_blank" rel="noopener"
+>module使用 - 北京大学高性能计算校级公共平台用户文档&lt;/a>&lt;/p>
+&lt;h3 id="安装依赖">安装依赖
+&lt;/h3>&lt;h4 id="tcl-v85">TCL (&amp;gt;=v8.5)
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo wget http://prdownloads.sourceforge.net/tcl/tcl8.6.14-src.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo tar -zxvf tcl8.6.14-src.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> tcl8.6.14/unix
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo ./configure --prefix&lt;span class="o">=&lt;/span>/usr/local
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo make
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo make install
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo whereis tcl
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo ln /usr/local/bin/tclsh8.6 /usr/bin/tclsh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="gmp">GMP
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo wget ftp://ftp.gnu.org/gnu/gmp/gmp-5.0.1.tar.bz2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo tar -vxf gmp-5.0.1.tar.bz2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> gmp-5.0.1/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo ./configure --prefix&lt;span class="o">=&lt;/span>/usr/local/gmp-5.0.1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo make
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo make install
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo make check
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&amp;gt;&amp;gt;&amp;gt; All &lt;span class="m">30&lt;/span> tests passed...
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="mpfr-buggy-but-acceptable">MPFR (buggy but acceptable)
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo wget https://ftp.gnu.org/gnu/mpfr/mpfr-3.1.5.tar.xz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo tar -vxf mpfr-3.1.5.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> mpfr-3.1.5/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo ./configure --prefix&lt;span class="o">=&lt;/span>/usr/local/mpfr-3.1.5 --with-gmp&lt;span class="o">=&lt;/span>/usr/local/gmp-5.0.1
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo make
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo make install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="mpc">MPC
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo wget http://www.multiprecision.org/downloads/mpc-0.9.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo tar -vxf mpc-0.9.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> mpc-0.9/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo ./configure --prefix&lt;span class="o">=&lt;/span>/usr/local/mpc-0.9 --with-gmp&lt;span class="o">=&lt;/span>/usr/local/gmp-5.0.1/ --with-mpfr&lt;span class="o">=&lt;/span>/usr/local/mpfr-3.1.5/
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo make
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo make install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="安装modules">安装MODULES
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">sudo curl -LJO https://github.com/cea-hpc/modules/releases/download/v5.4.0/modules-5.4.0.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo tar xfz modules-5.4.0.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo ./configure --with-tcl&lt;span class="o">=&lt;/span>/usr/local/lib --prefix&lt;span class="o">=&lt;/span>/home/Modules --modulefilesdir&lt;span class="o">=&lt;/span>/home/modulefiles
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo make
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo make install
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo ln -s /home/Modules/init/profile.sh /etc/profile.d/module.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo ln -s /home/Modules/init/profile.csh /etc/profile.d/module.csh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">source&lt;/span> /home/Modules/init/profile.sh &lt;span class="c1"># 建议写入/etc/profile，否则每次进入shell需要手动初始化(`source /home/Modules/init/profile.sh`)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>&lt;strong>Note&lt;/strong>因为某些特殊的原因，我们不得不将MODULES和其他软件安装在&lt;code>/home&lt;/code>目录下
+&lt;code>/home/moduledownload/&lt;/code>暂时存放TCL（8.6）和MODULE（5.4.0）的安装包等
+&lt;code>/home/Module/&lt;/code>存放Module的实际文件，内含初始化文件（已做软链接）
+&lt;code>/home/modulefiles/&lt;/code>存放各个软件的版本文件（modulefile），第二级文件为软件名，第三级文件为版本号文本
+&lt;code>/home/apps/&lt;/code>存放实际软件&lt;/p>&lt;/blockquote>
+&lt;h2 id="mpi">MPI
+&lt;/h2>&lt;h3 id="参考-1">参考
+&lt;/h3>&lt;p>&lt;a class="link" href="https://www.mpich.org/static/downloads/" target="_blank" rel="noopener"
+>MPICH官方镜像站&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.0.tar.gz" target="_blank" rel="noopener"
+>OpenMPI v5.0.0&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://github.com/openucx/ucx" target="_blank" rel="noopener"
+>UCX仓库&lt;/a>&lt;/p>
+&lt;!-- [ucx release v1.15.0](https://github.com/openucx/ucx/releases/download/v1.15.0/ucx-1.15.0.tar.gz)
+[ucx release v1.17.0](https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz) -->
+&lt;hr>
+&lt;p>&lt;a class="link" href="https://cuterwrite.top/p/openmpi-with-ucx/" target="_blank" rel="noopener"
+>编译安装 UCX 1.15.0 与 OpenMPI 5.0.0：详尽指南&lt;/a>&lt;/p>
+&lt;h3 id="安装ucx-optional">安装UCX (optional)
+&lt;/h3>&lt;figure>&lt;img src="https://kaigezheng.github.io/p/ops2/img/2.png" width="200px&amp;#34;">&lt;figcaption>
+&lt;h4>Unified Communication X&lt;/h4>
+&lt;/figcaption>
+&lt;/figure>
+&lt;!-- ![Unified Communication X](img/2.png?w=300) -->
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">wget https://github.com/openucx/ucx/releases/download/v1.15.0/ucx-1.15.0.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tar -xvzf ucx-1.15.0.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> ucx-1.15.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mkdir build &lt;span class="p">&amp;amp;&lt;/span> &lt;span class="nb">cd&lt;/span> build
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">../configure --prefix&lt;span class="o">=&lt;/span>/home/zhengkaige/ucx
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make -j N
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="安装mpich-v422">安装MPICH (v4.2.2)
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">tar -xvzf mpich-4.2.2.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> mpich-4.2.2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./configure --prefix&lt;span class="o">=&lt;/span>/home/apps/MPICH/4.2.2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">make install
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>可能遇到报错：&lt;code>configure: error: UCX installation does not meet minimum version requirement (v1.9.0). Please upgrade your installation, or use --with-ucx=embedded.&lt;/code>&lt;/p>
+&lt;h3 id="安装openmpi-v500">安装OpenMPI (v5.0.0)
+&lt;/h3>&lt;p>&lt;img src="https://kaigezheng.github.io/p/ops2/img/3.png"
+width="1110"
+height="198"
+srcset="https://kaigezheng.github.io/p/ops2/img/3_hu_6df616b713fc64eb.png 480w, https://kaigezheng.github.io/p/ops2/img/3_hu_847b26a31538bf1e.png 1024w"
+loading="lazy"
+alt="OpenMPI"
+class="gallery-image"
+data-flex-grow="560"
+data-flex-basis="1345px"
+>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.0.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">tar -xzvf openmpi-5.0.0.tar.gz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> openmpi-5.0.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mkdir build &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> &lt;span class="nb">cd&lt;/span> build
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;code>vim ~/.bashrc&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">PATH&lt;/span>&lt;span class="o">=&lt;/span>/home/kambri/software/openmpi/5.0.0-ucx-1.15.0/bin:&lt;span class="nv">$PATH&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">LD_LIBRARY_PATH&lt;/span>&lt;span class="o">=&lt;/span>/home/kambri/software/openmpi/5.0.0-ucx-1.15.0/lib:&lt;span class="nv">$LD_LIBRARY_PATH&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="编写modulefile">编写Modulefile
+&lt;/h3>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-TCL" data-lang="TCL">&lt;span class="line">&lt;span class="cl">&lt;span class="c">#%Module
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c">&lt;/span>&lt;span class="k">set&lt;/span> version &lt;span class="mf">4.2&lt;/span>.2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">set&lt;/span> MPI_HOME &lt;span class="o">/&lt;/span>home&lt;span class="o">/&lt;/span>apps&lt;span class="o">/&lt;/span>MPICH&lt;span class="o">/&lt;/span>&lt;span class="mf">4.2&lt;/span>.2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">prepend-path&lt;/span> PATH &lt;span class="s2">&amp;#34;${MPI_HOME}/bin&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">prepend-path&lt;/span> LD_LIBRARY_PATH &lt;span class="s2">&amp;#34;${MPI_HOME}/lib&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nv">prepend-path&lt;/span> MANPATH &lt;span class="s2">&amp;#34;${MPI_HOME}/share/man&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="intel-oneapi">Intel oneAPI
+&lt;/h2>&lt;h3 id="参考-2">参考
+&lt;/h3>&lt;p>&lt;a class="link" href="https://www.intel.cn/content/www/cn/zh/developer/tools/oneapi/toolkits.html" target="_blank" rel="noopener"
+>Developer Toolkits&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.intel.cn/content/www/cn/zh/developer/tools/oneapi/base-toolkit-download.html?packages=oneapi-toolkit&amp;amp;oneapi-toolkit-os=linux&amp;amp;oneapi-lin=offline" target="_blank" rel="noopener"
+>Get the Intel® oneAPI Base Toolkit&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://www.intel.cn/content/www/cn/zh/developer/tools/oneapi/hpc-toolkit-download.html?packages=hpc-toolkit&amp;amp;hpc-toolkit-os=linux&amp;amp;hpc-toolkit-lin=offline" target="_blank" rel="noopener"
+>Get Intel® oneAPI HPC Toolkit&lt;/a>&lt;/p>
+&lt;p>&lt;a class="link" href="https://get.hpc.dev/vault/intel/" target="_blank" rel="noopener"
+>Intel oneAPI镜像站&lt;/a>&lt;/p>
+&lt;h3 id="安装intel-oneapiv20250-including-base-toolkit-and-hpc-toolkit">安装Intel oneAPI(v2025.0 including Base Toolkit and HPC Toolkit)
+&lt;/h3>&lt;p>&lt;img src="https://kaigezheng.github.io/p/ops2/img/4.png"
+width="165"
+height="139"
+srcset="https://kaigezheng.github.io/p/ops2/img/4_hu_eb70781939eacc43.png 480w, https://kaigezheng.github.io/p/ops2/img/4_hu_79ad492307422bab.png 1024w"
+loading="lazy"
+alt="Intel oneAPI"
+class="gallery-image"
+data-flex-grow="118"
+data-flex-basis="284px"
+>&lt;/p>
+&lt;p>按照官方的offline installation方式下载安装即可。需要注意的是Intel更新oneAPI时会移除老版本界面，因此安装老版本时需要靠镜像站等途径。但新版本又不好用，如2025.0的&lt;code>mpiicc&lt;/code>仍然使用&lt;code>icc&lt;/code>作为compiler，但是2025.0（包括2023后期版本和2024.x）的套件里都已不包含&lt;code>icc&lt;/code>了。&lt;code>icc&lt;/code>已在2023下半年发布的oneAPI中被移除。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># install base toolkit&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/dfc4a434-838c-4450-a6fe-2fa903b75aa7/intel-oneapi-base-toolkit-2025.0.1.46_offline.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo sh ./intel-oneapi-base-toolkit-2025.0.1.46_offline.sh -a --silent --cli --eula accept
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># install HPC toolkit&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/b7f71cf2-8157-4393-abae-8cea815509f7/intel-oneapi-hpc-toolkit-2025.0.1.47_offline.sh
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo sh ./intel-oneapi-hpc-toolkit-2025.0.1.47_offline.sh -a --silent --cli --eula accept
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div></description></item></channel></rss>
