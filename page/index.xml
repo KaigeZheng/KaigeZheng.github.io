@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Pages on Kambri's Blog</title><link>https://kaigezheng.github.io/page/</link><description>Recent content in Pages on Kambri's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 03 Jun 2025 22:07:10 +0800</lastBuildDate><atom:link href="https://kaigezheng.github.io/page/index.xml" rel="self" type="application/rss+xml"/><item><title>日志|Logs</title><link>https://kaigezheng.github.io/devlog/</link><pubDate>Tue, 03 Jun 2025 22:07:10 +0800</pubDate><guid>https://kaigezheng.github.io/devlog/</guid><description>&lt;img src="https://kaigezheng.github.io/devlog/img/cover.png" alt="Featured image of post 日志|Logs" />&lt;p>博客上线已半年有余，有必要写个开发日志，记录一下博客建设的过程（将定期更新）。&lt;/p>
+&lt;h2 id="博客开发日志">博客开发日志
+&lt;/h2>&lt;ul>
+&lt;li>&lt;code>2025/04/17&lt;/code> &lt;code>v1.3.2&lt;/code> 经过了两天的debug，修复了一个出现原因未知的bug&lt;/li>
+&lt;/ul>
+&lt;p>&lt;a class="link" href="http://kambri.top/links/" target="_blank" rel="noopener"
+>友链&lt;/a>界面在本地编译时能正常显示右链，但在上线版本却丢失且重定向了搜索界面。查看代码仓库gh-pages分支发现友链界面没有被正常编译（生成）到html文件中。进行了两个操作最终让友链界面正常显示：1，修改.github/update-theme.yml添加在正式编译前清理hugo缓存；2，友链界面应用默认layout。&lt;/p>
+&lt;hr>
+&lt;ul>
+&lt;li>&lt;code>2025/05/12&lt;/code> &lt;code>v1.4.0&lt;/code> 添加了日志支持&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;ul>
+&lt;li>&lt;code>2025/04/16&lt;/code> &lt;code>v1.3.1&lt;/code> 添加了CDN支持&lt;/li>
+&lt;/ul>
+&lt;p>加快了国内IP的访问速度，能够用&lt;a class="link" href="http://kambri.top/" target="_blank" rel="noopener"
+>kambri.top&lt;/a>访问Kambri&amp;rsquo;s Blog了！&lt;/p>
+&lt;hr>
+&lt;ul>
+&lt;li>&lt;code>2025/01/24&lt;/code> &lt;code>v1.3.0&lt;/code> 跟随stack主题版本，从&lt;code>v3.29.0&lt;/code>更新到&lt;code>v3.30.0&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;ul>
+&lt;li>&lt;code>2024/12/09&lt;/code> &lt;code>v1.2.1&lt;/code> 添加了bing和google搜索引擎的站点地图&lt;/li>
+&lt;/ul>
+&lt;p>能够用&lt;a class="link" href="https://www.bing.com/" target="_blank" rel="noopener"
+>edge&lt;/a>和&lt;a class="link" href="https://www.google.com/?hl=zh_CN" target="_blank" rel="noopener"
+>google&lt;/a>浏览器检索到Kambri&amp;rsquo;s Blog了！&lt;/p>
+&lt;hr>
+&lt;ul>
+&lt;li>&lt;code>2024/11/26&lt;/code> &lt;code>v1.2.0&lt;/code> 添加了RSS的跳转支持;添加了评论系统&lt;/li>
+&lt;/ul>
+&lt;p>评论系统由github第三方插件&lt;a class="link" href="https://github.com/utterance/utterances" target="_blank" rel="noopener"
+>utterances&lt;/a>提供支持，能够支持用户登录github account后评论、将评论存储在仓库issues中的功能。&lt;/p>
+&lt;hr>
+&lt;ul>
+&lt;li>&lt;code>2024/11/25&lt;/code> &lt;code>v1.1.0&lt;/code> 增加了更多博文类别标签;丰富了社交媒体icon&lt;/li>
+&lt;/ul>
+&lt;p>icon（github、知乎、微信等）来自&lt;a class="link" href="https://www.iconfont.cn/" target="_blank" rel="noopener"
+>tabler icons&lt;/a>，有非常丰富的免费矢量图资源。&lt;/p>
+&lt;hr>
+&lt;ul>
+&lt;li>&lt;code>2024/11/23&lt;/code> &lt;code>v1.0.0&lt;/code> 使用hugo + stack构建了github仓库，并托管于github pages&lt;/li>
+&lt;/ul>
+&lt;p>参考市面上流行的静态网页生成工具&lt;a class="link" href="https://gohugo.io/" target="_blank" rel="noopener"
+>hugo&lt;/a>、&lt;a class="link" href="https://hexo.io/zh-cn/" target="_blank" rel="noopener"
+>hexo&lt;/a>、&lt;a class="link" href="https://jekyllrb.com/" target="_blank" rel="noopener"
+>jekyll&lt;/a>，最后选择hugo作为生产工具，基于&lt;a class="link" href="https://stack.jimmycai.com/" target="_blank" rel="noopener"
+>stack&lt;/a>主题和&lt;a class="link" href="https://github.com/CaiJimmy/hugo-theme-stack-starter" target="_blank" rel="noopener"
+>官方template&lt;/a>构建&lt;a class="link" href="https://github.com/KaigeZheng/KaigeZheng.github.io" target="_blank" rel="noopener"
+>github仓库&lt;/a>，并托管于github pages。&lt;del>同时也开始对模板进行个性化修改，如头像旋转等功能。&lt;/del>&lt;/p>
+&lt;hr>
+&lt;ul>
+&lt;li>&lt;code>2024/10/19&lt;/code> &lt;code>v0.0.0&lt;/code> 使用html + css设计了第一版博客静态主页&lt;/li>
+&lt;/ul>
+&lt;p>目前代码仓库已迁移至&lt;a class="link" href="https://github.com/KaigeZheng/PersonalBlogTemplate" target="_blank" rel="noopener"
+>这里&lt;/a>。&lt;/p>
+&lt;h2 id="博文更新日志">博文更新日志
+&lt;/h2>&lt;ul>
+&lt;li>
+&lt;p>&lt;code>2025/06/03&lt;/code> 上传了第十四篇博文，&lt;a class="link" href="http://kambri.top/p/llm2/" target="_blank" rel="noopener"
+>《手搓Transformer：深入架构细节T》&lt;/a>，记录了深度学习和手搓Transformer架构代码的过程。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2025/05/28&lt;/code> 上传了第十三篇博文，&lt;a class="link" href="http://kambri.top/p/llm1/" target="_blank" rel="noopener"
+>《从Transformer开始探索BERT》&lt;/a>，记录了学习BERT的过程。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2025/05/11&lt;/code> 上传了第十二篇博文，&lt;a class="link" href="http://kambri.top/p/ops2/" target="_blank" rel="noopener"
+>《高性能集群运维——软件环境（Modules、MPI、oneAPI）》&lt;/a>，记录了配置软件环境的过程。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2025/04/14&lt;/code> 更新了&lt;a class="link" href="http://kambri.top/p/hello-world/" target="_blank" rel="noopener"
+>《Hello World》&lt;/a>，留下了时隔半年的新随笔。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2025/03/14&lt;/code> 上传了第十一篇博文，&lt;a class="link" href="http://kambri.top/p/triton1/" target="_blank" rel="noopener"
+>《Triton学习——Vector Addition, Fused Softmax, Matrix Multiplication》&lt;/a>，记录了学习Triton的笔记。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2025/05/11&lt;/code> 上传了第十篇博文，&lt;a class="link" href="http://kambri.top/p/leetcode/" target="_blank" rel="noopener"
+>《LeetCode刷题记录》&lt;/a>，记录了刷leetcode hot100的过程。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2025/05/06&lt;/code> 上传了第九篇博文，&lt;a class="link" href="http://kambri.top/p/ops1/" target="_blank" rel="noopener"
+>《高性能集群运维——装机》&lt;/a>，记录了一些装机经验。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2025/01/20&lt;/code> 更新了&lt;a class="link" href="http://kambri.top/p/travel1/" target="_blank" rel="noopener"
+>《人生苦旅的起点，也是梦开始的地方——上海》&lt;/a>。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2024/12/17&lt;/code> 上传了第八篇博文，&lt;a class="link" href="http://kambri.top/p/travel3/" target="_blank" rel="noopener"
+>《突然的武汉之旅》&lt;/a>，记录了突然的出差之旅。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2024/12/07&lt;/code> 上传了第六和第七篇博文，&lt;a class="link" href="http://kambri.top/p/algorithm1/" target="_blank" rel="noopener"
+>《字符串匹配》&lt;/a>和&lt;a class="link" href="http://kambri.top/p/algorithm2/" target="_blank" rel="noopener"
+>《基本的图算法》&lt;/a>，内容来自我学习算法导论的笔记。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2024/12/04&lt;/code> 上传了第五篇博文，回忆了一次川渝之旅，由于未施工完毕，因此暂时不可见。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2024/11/30&lt;/code> 上传了第四篇博文，&lt;a class="link" href="http://kambri.top/p/travel1/" target="_blank" rel="noopener"
+>《人生苦旅的起点，也是梦开始的地方——上海》&lt;/a>，作为旅行回忆录的开篇，回忆了我在2019年的一次回忆铭刻灵魂的旅行。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2024/11/27&lt;/code> 上传了第二和第三篇博文，&lt;a class="link" href="http://kambri.top/p/mpi1/" target="_blank" rel="noopener"
+>《MPI学习笔记——消息传递模型和P2P通信》&lt;/a>和&lt;a class="link" href="http://kambri.top/p/mpi2/" target="_blank" rel="noopener"
+>《MPI学习笔记——集合通信》&lt;/a>，内容来自我学习&lt;a class="link" href="https://mpitutorial.com/tutorials/" target="_blank" rel="noopener"
+>MPI Tutorial&lt;/a>的笔记。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>2024/11/24&lt;/code> 上传了第一篇博文&lt;a class="link" href="http://kambri.top/p/hello-world/" target="_blank" rel="noopener"
+>《Hello World》&lt;/a>，这篇博文将永久置顶并长期更新，主要用于介绍作者和站点，并留下随笔和寄语。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="亟待优化的问题">亟待优化的问题
+&lt;/h2>&lt;ul>
+&lt;li>
+&lt;p>&lt;input disabled="" type="checkbox"> &lt;code>Project Building&lt;/code> 从template构建迁移到原生构建&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;input disabled="" type="checkbox"> &lt;code>Tags UI&lt;/code> 博文标签分类不清晰，颜色也比较乱&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;input disabled="" type="checkbox"> &lt;code>Multilingual&lt;/code> 多语言支持&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;input disabled="" type="checkbox"> &lt;code>Github Commit&lt;/code> github commit记录有些粗糙&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;input disabled="" type="checkbox"> &amp;hellip;&lt;/p>
+&lt;/li>
+&lt;/ul></description></item><item><title>归档|Archives</title><link>https://kaigezheng.github.io/archives/</link><pubDate>Sat, 23 Nov 2024 00:00:00 +0000</pubDate><guid>https://kaigezheng.github.io/archives/</guid><description/></item><item><title>搜索|Search</title><link>https://kaigezheng.github.io/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaigezheng.github.io/search/</guid><description/></item><item><title>友链|Links</title><link>https://kaigezheng.github.io/links/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kaigezheng.github.io/links/</guid><description>&lt;p>这里将展示一些友情链接，如有图片失效请联系&lt;code>kambri2003 DOT outlook DOT com&lt;/code>。&lt;/p>
+&lt;p>如需互挂友链，请在&lt;a class="link" href="https://github.com/KaigeZheng/KaigeZheng.github.io/issues" target="_blank" rel="noopener"
+>这里&lt;/a>提issue。&lt;/p></description></item></channel></rss>
