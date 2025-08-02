@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>HPC on Kambri's Blog</title><link>https://kaigezheng.github.io/tags/hpc/</link><description>Recent content in HPC on Kambri's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Wed, 30 Jul 2025 00:23:00 +0800</lastBuildDate><atom:link href="https://kaigezheng.github.io/tags/hpc/index.xml" rel="self" type="application/rss+xml"/><item><title>并发环境下的队列优化——无锁队列</title><link>https://kaigezheng.github.io/p/hpc1/</link><pubDate>Wed, 30 Jul 2025 00:23:00 +0800</pubDate><guid>https://kaigezheng.github.io/p/hpc1/</guid><description>&lt;img src="https://kaigezheng.github.io/p/hpc1/img/cover.png" alt="Featured image of post 并发环境下的队列优化——无锁队列" />&lt;h2 id="前言">前言
+&lt;/h2>&lt;p>有一个多月没写博客了，在网上冲浪时偶然看到关于&lt;em>无锁队列&lt;/em>的blog，突然想到了在ASC25初赛优化hisat-3n-table时面对互斥锁超级加倍的&lt;code>SafeQueue&lt;/code>时的头疼，或许能够使用互斥锁来优化，突然就来了兴致学习，因此这篇blog就诞生了。&lt;/p>
+&lt;h2 id="preliminaries">Preliminaries
+&lt;/h2>&lt;h3 id="cas-compare-and-swap">CAS (Compare-And-Swap)
+&lt;/h3>&lt;p>CAS(Compare-And-Swap, 比较并交换)是并发编程中常用的一种原子操作，广泛用于实现无锁（lock-free）算法，核心思想是：&lt;strong>只有当变量的值是预期值时，才将其更新为新值；否则不做任何操作&lt;/strong>。&lt;/p>
+&lt;p>CAS操作涉及三个操作数：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;code>内存地址V&lt;/code> 需要被更新的变量&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>旧值A&lt;/code> (expected) 当前线程认为变量的值&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>新值B&lt;/code> (new_val) 希望写入的新值&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>计算逻辑如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kt">bool&lt;/span> &lt;span class="n">CAS&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">addr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">new_val&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">addr&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">expected&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">*&lt;/span>&lt;span class="n">addr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">new_val&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nb">true&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">new&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">addr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="nb">false&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在GCC中，通过内建函数&lt;code>__sync_bool_compare_and_swap(&amp;amp;addr, expected, new_val)&lt;/code>来实现；在C++11后，通过原子操作函数&lt;code>atomic_compare_exchange_strong(&amp;amp;addr, &amp;amp;expected, new_val)&lt;/code>（引用&lt;code>expected&lt;/code>，CAS失败时会被更新为当前内存值）来实现。&lt;/p>
+&lt;blockquote>
+&lt;p>weak允许伪失败（值匹配时更新失败），性能更高，常用于循环结构；strong不允许失败，性能一般，但安全可靠。&lt;/p>&lt;/blockquote>
+&lt;h3 id="aba-problem">ABA Problem
+&lt;/h3>&lt;p>CAS会导致ABA问题，即一个变量的值从A变成B，然后又变回A，而CAS检查时只看到了“值还是A”，误以为没有变化，导致错误的原子更新。&lt;/p>
+&lt;p>在引用计数、资源管理（如从栈pop一个节点，然后被别的线程push回去，用旧指针处理时可能会重复删除或释放后访问）等场景，ABA问题会导致资源错误地释放或复用。一种比较简单易懂的解决方法是从“值比较”变成”值+标记比较”，可以通过DWCAS(Double-Width CAS)实现，在64-bit环境下，用双倍大小的指针，在原指针后附加计数器。另一种解决方法是提前分配内存的环形缓冲。&lt;/p>
+&lt;h3 id="atomic-operator">Atomic Operator
+&lt;/h3>&lt;p>原子操作（Atomic Operator）是指在多线程环境中执行的不可分割的操作，执行过程中不会被中断。这样可以避免竞态条件，实现线程安全。&lt;/p>
+&lt;ul>
+&lt;li>Test-And-Set, TAS&lt;/li>
+&lt;/ul>
+&lt;p>常见的原子加锁原语，如果为true则返回true，如果为false则设置为true并返回false，由&lt;code>__sync_lock_test_and_set&lt;/code>支持：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="kt">bool&lt;/span> &lt;span class="nf">TAS&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">bool&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">flag&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">flag&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">*&lt;/span>&lt;span class="n">flag&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">true&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">ret&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>
+&lt;p>Compared-And-Swap, CAS&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Atomic Exchange&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>用一个新值替换旧值，返回旧值，由&lt;code>__atomic_exchange_n&lt;/code>支持：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span> &lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">T&lt;/span> &lt;span class="n">Exchange&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">addr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="k">const&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">new_val&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">T&lt;/span> &lt;span class="n">old_val&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">*&lt;/span>&lt;span class="n">addr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">*&lt;/span>&lt;span class="n">addr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">new_val&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">old_val&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;ul>
+&lt;li>Atomic Load/Store&lt;/li>
+&lt;/ul>
+&lt;p>从共享变量中安全读取或写入数据，由&lt;code>__atomic_load_n&lt;/code>或&lt;code>atomic_store_n&lt;/code>支持：&lt;/p>
+&lt;ul>
+&lt;li>Atomic Clear&lt;/li>
+&lt;/ul>
+&lt;p>常与TAS配合使用，实现释放/复位（就是设置为false），由&lt;code>__sync_lock_release&lt;/code>支持。&lt;/p>
+&lt;ul>
+&lt;li>Atomic Fetch Add/Sub&lt;/li>
+&lt;/ul>
+&lt;p>对指定位置内存的值通过&lt;strong>传参&lt;/strong>进行加减，分别由&lt;code>__sync_fetch_and_add&lt;/code>和&lt;code>__sync_fetch_and_sub&lt;/code>支持，也可以用&lt;code>__atomic_fetch_add&lt;/code>和&lt;code>__atomic_fetch_sub&lt;/code>等价。乘和除似乎没有内建函数的支持。&lt;/p>
+&lt;h3 id="volatile-keyword">Volatile Keyword
+&lt;/h3>&lt;p>在C++中，&lt;code>volatile&lt;/code>是一个类型修饰符，用于高速编译器该变量的值可能在程序政策控制流程之外被改变（如多线程、硬件中断、特殊寄存器等），因此编译器不应对其进行某些优化，必须&lt;strong>每次都从内存中读取值&lt;/strong>，而不是使用寄存器中的缓存值（禁用常量优化）。&lt;/p>
+&lt;p>如在以下的基于CAS的无锁队列出队操作中，需要将&lt;code>_head&lt;/code>与&lt;code>head&lt;/code>声明为&lt;code>volatile&lt;/code>，否则可能会被编译器优化掉&lt;code>_head&lt;/code>与&lt;code>head&lt;/code>的比较：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="k">do&lt;/span>&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">res&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">head&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">newHead&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">res&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">!&lt;/span>&lt;span class="n">CAS&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">_head&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">head&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">newHead&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>在循环中，尝试获取头指针并后移（弹出当前头指针），&lt;code>CAS(_head, head, newHead)&lt;/code>尝试用原子操作将&lt;code>_head&lt;/code>从&lt;code>head&lt;/code>更新为&lt;code>newHead&lt;/code>，这个操作只有在&lt;code>_head == head&lt;/code>时才会成功；如果CAS失败（说明&lt;code>_head&lt;/code>被其他线程改动过），旧充新读取&lt;code>_head&lt;/code>并再次尝试，直到成功&lt;/p>&lt;/blockquote>
+&lt;h2 id="lock-free-queue">Lock-Free Queue
+&lt;/h2>&lt;p>接下来参考@Clawko和GPT-4o的思路，实现一个基于Double-Width CAS的无锁队列，但不局限于原作者基于Windows/x86-64指令的实现，主要基于Linux/x86-64环境。实现这个无锁队列的过程中也从前人的经验中学习到了很多。完整的实现和带锁队列并发测试代码在&lt;a class="link" href="https://github.com/KaigeZheng/LockFreeQueue" target="_blank" rel="noopener"
+>GitHub仓库&lt;/a>中，建议跳转阅读，欢迎参考与优化。&lt;/p>
+&lt;p>核心思路如下：&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>用&lt;code>__int128&lt;/code>打包队列元素指针（低64位）与计数器（高64位），在入队/出队操作中不会显示地判断计数器情况，而是通过CAS内建函数来隐式地判断&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>入队/出队时，当tail被其他线程更新的同时，会进行帮助tail推进的“Lazy Optimization”&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>入队/出队的主要实现是循环结构的CAS&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;span class="lnt">102
+&lt;/span>&lt;span class="lnt">103
+&lt;/span>&lt;span class="lnt">104
+&lt;/span>&lt;span class="lnt">105
+&lt;/span>&lt;span class="lnt">106
+&lt;/span>&lt;span class="lnt">107
+&lt;/span>&lt;span class="lnt">108
+&lt;/span>&lt;span class="lnt">109
+&lt;/span>&lt;span class="lnt">110
+&lt;/span>&lt;span class="lnt">111
+&lt;/span>&lt;span class="lnt">112
+&lt;/span>&lt;span class="lnt">113
+&lt;/span>&lt;span class="lnt">114
+&lt;/span>&lt;span class="lnt">115
+&lt;/span>&lt;span class="lnt">116
+&lt;/span>&lt;span class="lnt">117
+&lt;/span>&lt;span class="lnt">118
+&lt;/span>&lt;span class="lnt">119
+&lt;/span>&lt;span class="lnt">120
+&lt;/span>&lt;span class="lnt">121
+&lt;/span>&lt;span class="lnt">122
+&lt;/span>&lt;span class="lnt">123
+&lt;/span>&lt;span class="lnt">124
+&lt;/span>&lt;span class="lnt">125
+&lt;/span>&lt;span class="lnt">126
+&lt;/span>&lt;span class="lnt">127
+&lt;/span>&lt;span class="lnt">128
+&lt;/span>&lt;span class="lnt">129
+&lt;/span>&lt;span class="lnt">130
+&lt;/span>&lt;span class="lnt">131
+&lt;/span>&lt;span class="lnt">132
+&lt;/span>&lt;span class="lnt">133
+&lt;/span>&lt;span class="lnt">134
+&lt;/span>&lt;span class="lnt">135
+&lt;/span>&lt;span class="lnt">136
+&lt;/span>&lt;span class="lnt">137
+&lt;/span>&lt;span class="lnt">138
+&lt;/span>&lt;span class="lnt">139
+&lt;/span>&lt;span class="lnt">140
+&lt;/span>&lt;span class="lnt">141
+&lt;/span>&lt;span class="lnt">142
+&lt;/span>&lt;span class="lnt">143
+&lt;/span>&lt;span class="lnt">144
+&lt;/span>&lt;span class="lnt">145
+&lt;/span>&lt;span class="lnt">146
+&lt;/span>&lt;span class="lnt">147
+&lt;/span>&lt;span class="lnt">148
+&lt;/span>&lt;span class="lnt">149
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-cpp" data-lang="cpp">&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#ifndef LOCKFREEQUEUE_H
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#define LOCKFREEQUEUE_H
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;atomic&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;cstdint&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;cassert&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">/*
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm"> Double-Width CAS Pointer
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cm">*/&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">Pointer&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">ptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">uint64_t&lt;/span> &lt;span class="n">count&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">struct&lt;/span> &lt;span class="nc">Node&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">T&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">atomic&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Node&lt;/span>&lt;span class="o">*&amp;gt;&lt;/span> &lt;span class="n">next&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Node&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T&lt;/span> &lt;span class="n">val&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">data&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">val&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">next&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">nullptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Node&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="o">:&lt;/span> &lt;span class="n">next&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">nullptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{}&lt;/span> &lt;span class="c1">// dummy node
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">template&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="k">typename&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">class&lt;/span> &lt;span class="nc">LockFreeQueue&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">private&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 使用__int128作为双宽CAS数据载体
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">typedef&lt;/span> &lt;span class="n">__int128&lt;/span> &lt;span class="n">AtomicPointerType&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 头尾指针封装
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">struct&lt;/span> &lt;span class="nc">PtrCount&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;*&lt;/span> &lt;span class="n">ptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">uint64_t&lt;/span> &lt;span class="n">count&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">atomic&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">AtomicPointerType&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">head&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">atomic&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">AtomicPointerType&lt;/span>&lt;span class="o">&amp;gt;&lt;/span> &lt;span class="n">tail&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 将PtrCount打包成__int128
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">static&lt;/span> &lt;span class="n">AtomicPointerType&lt;/span> &lt;span class="nf">pack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">PtrCount&lt;/span> &lt;span class="n">pc&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AtomicPointerType&lt;/span> &lt;span class="n">val&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 低64位放指针， 高64位放计数器
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="kt">uint64_t&lt;/span> &lt;span class="n">ptrVal&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">reinterpret_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">uint64_t&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ptr&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">val&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">ptrVal&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">val&lt;/span> &lt;span class="o">|=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">AtomicPointerType&lt;/span>&lt;span class="p">)&lt;/span>&lt;span class="n">pc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">count&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="mi">64&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">val&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 将__int128拆成PtrCount
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">static&lt;/span> &lt;span class="n">PtrCount&lt;/span> &lt;span class="nf">unpack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">AtomicPointerType&lt;/span> &lt;span class="n">val&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PtrCount&lt;/span> &lt;span class="n">pc&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">reinterpret_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;*&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">static_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">uint64_t&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">val&lt;/span> &lt;span class="o">&amp;amp;&lt;/span> &lt;span class="mh">0xFFFFFFFFFFFFFFFF&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">pc&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">count&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">static_cast&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="kt">uint64_t&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">val&lt;/span> &lt;span class="o">&amp;gt;&amp;gt;&lt;/span> &lt;span class="mi">64&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span> &lt;span class="n">pc&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">public&lt;/span>&lt;span class="o">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">LockFreeQueue&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;*&lt;/span> &lt;span class="n">dummy&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PtrCount&lt;/span> &lt;span class="n">pc&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">dummy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">head&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">store&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pc&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tail&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">store&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">pc&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">~&lt;/span>&lt;span class="n">LockFreeQueue&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PtrCount&lt;/span> &lt;span class="n">h&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">unpack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">head&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">h&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ptr&lt;/span> &lt;span class="o">!=&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;*&lt;/span> &lt;span class="n">next&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">h&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ptr&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">delete&lt;/span> &lt;span class="n">h&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">h&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ptr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">next&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">void&lt;/span> &lt;span class="nf">enqueue&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="k">const&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">value&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;*&lt;/span> &lt;span class="n">newNode&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="k">new&lt;/span> &lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">value&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PtrCount&lt;/span> &lt;span class="n">tailOld&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="nb">true&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 加载当前的tail并解包为tailOld
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">AtomicPointerType&lt;/span> &lt;span class="n">tailVal&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tail&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_acquire&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tailOld&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">unpack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tailVal&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 查看当前尾节点的下一个节点
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;*&lt;/span> &lt;span class="n">tailPtr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tailOld&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;*&lt;/span> &lt;span class="n">nextPtr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tailPtr&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_acquire&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 检查tail是否在这段时间被其他线程更改
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">tailVal&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">tail&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_acquire&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// tail是尾节点
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">nextPtr&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 尾节点next为空，尝试插入
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">tailPtr&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">compare_exchange_weak&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">nextPtr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">newNode&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_release&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_relaxed&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PtrCount&lt;/span> &lt;span class="n">newTail&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">newNode&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tailOld&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">count&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tail&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">compare_exchange_strong&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tailVal&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">newTail&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_release&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_relaxed&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">return&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// tail不是尾节点，落后了 -&amp;gt; 帮助推进tail
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">PtrCount&lt;/span> &lt;span class="n">newTail&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">nextPtr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tailOld&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">count&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tail&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">compare_exchange_strong&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tailVal&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">newTail&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_release&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_relaxed&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="kt">bool&lt;/span> &lt;span class="nf">dequeue&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;amp;&lt;/span> &lt;span class="n">result&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PtrCount&lt;/span> &lt;span class="n">headOld&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">while&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">true&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AtomicPointerType&lt;/span> &lt;span class="n">headVal&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">head&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_acquire&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">AtomicPointerType&lt;/span> &lt;span class="n">tailVal&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tail&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_acquire&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">headOld&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">unpack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">headVal&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PtrCount&lt;/span> &lt;span class="n">tailOld&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">unpack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tailVal&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;*&lt;/span> &lt;span class="n">headPtr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">headOld&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;*&lt;/span> &lt;span class="n">tailPtr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">tailOld&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">ptr&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">Node&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="o">&amp;gt;*&lt;/span> &lt;span class="n">nextPtr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">headPtr&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">next&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_acquire&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">headVal&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">head&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">load&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_acquire&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">headPtr&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="n">tailPtr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">nextPtr&lt;/span> &lt;span class="o">==&lt;/span> &lt;span class="k">nullptr&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// head与tail指向同一节点，且dummy的next为空 -&amp;gt; 队列空
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nb">false&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 尾指针落后了，帮助推进tail
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">PtrCount&lt;/span> &lt;span class="n">newTail&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">nextPtr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">tailOld&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">count&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">tail&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">compare_exchange_strong&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">tailVal&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">newTail&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_release&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_relaxed&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span> &lt;span class="k">else&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1">// 读取数据准备出队
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">nextPtr&lt;/span>&lt;span class="o">-&amp;gt;&lt;/span>&lt;span class="n">data&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">PtrCount&lt;/span> &lt;span class="n">newHead&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">nextPtr&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">headOld&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">count&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">head&lt;/span>&lt;span class="p">.&lt;/span>&lt;span class="n">compare_exchange_strong&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">headVal&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">pack&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">newHead&lt;/span>&lt;span class="p">),&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_release&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">memory_order_relaxed&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">delete&lt;/span> &lt;span class="n">headPtr&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c1">// 释放旧dummy节点
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span> &lt;span class="k">return&lt;/span> &lt;span class="nb">true&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">};&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="cp">#endif
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>简单写了一个并发环境，能够比通过&lt;code>std::lock_guard&lt;/code>实现的&lt;code>LockedQueue&lt;/code>快一些，具体性能提升效果取决于并发压力：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>LockedQueue&lt;span class="o">]&lt;/span> Total consumed: 400000, time: 0.0363734 seconds
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">[&lt;/span>LockFreeQueue&lt;span class="o">]&lt;/span> Total consumed: 400000, time: 0.121427 seconds
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="reference">Reference
+&lt;/h2>&lt;p>&lt;a class="link" href="https://zhuanlan.zhihu.com/p/352723264" target="_blank" rel="noopener"
+>知乎：迈向多线程——解析无锁队列的原理与实现 - Clawko&lt;/a>&lt;/p></description></item></channel></rss>
