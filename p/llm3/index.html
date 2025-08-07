@@ -1,0 +1,385 @@
+<!doctype html><html lang=zh-cn dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="大模型学习笔记（三）"><title>Infra入门——An Overview of AI Infra</title><link rel=canonical href=https://kaigezheng.github.io/p/llm3/><link rel=stylesheet href=/scss/style.min.2fbdc9471cd5bbaa3a0cb8abfb63c984845457c0c3bfda807d2a806305907811.css><meta property='og:title' content="Infra入门——An Overview of AI Infra"><meta property='og:description' content="大模型学习笔记（三）"><meta property='og:url' content='https://kaigezheng.github.io/p/llm3/'><meta property='og:site_name' content="Kambri's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='文档'><meta property='article:tag' content='AI Infra'><meta property='article:published_time' content='2025-08-08T00:50:00+08:00'><meta property='article:modified_time' content='2025-08-08T00:50:00+08:00'><meta property='og:image' content='https://kaigezheng.github.io/p/llm3/img/cover.jpg'><meta name=twitter:title content="Infra入门——An Overview of AI Infra"><meta name=twitter:description content="大模型学习笔记（三）"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://kaigezheng.github.io/p/llm3/img/cover.jpg'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu_1eca3395e07e95de.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🫠</span></figure><div class=site-meta><h1 class=site-name><a href=/>Kambri's Blog</a></h1><h2 class=site-description>你好！这里是Kambri的技术&生活博客，我将在这里分享技术经验和记录生活。</h2></div></header><ol class=menu-social><li><a href=https://github.com/KaigeZheng target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=mailto:kambrikg@gmail.com target=_blank title=邮箱(kambrikg@gmail.com) rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M3 7l9 6 9-6"/></svg></a></li><li><a href=https://kaigezheng.github.io/index.xml target=_blank title=RSS rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-rss"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 19m-1 0a1 1 0 102 0 1 1 0 10-2 0"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页|Home</span></a></li><li><a href=/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档|Archives</span></a></li><li><a href=/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索|Search</span></a></li><li><a href=/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>友链|Links</span></a></li><li><a href=/devlog/><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logs"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 12h.01"/><path d="M4 6h.01"/><path d="M4 18h.01"/><path d="M8 18h2"/><path d="M8 12h2"/><path d="M8 6h2"/><path d="M14 6h6"/><path d="M14 12h6"/><path d="M14 18h6"/></svg>
+<span>日志|Logs</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#model-parameters>Model Parameters</a><ol><li><a href=#parameter-estimation>Parameter Estimation</a></li><li><a href=#computation-estimation>Computation Estimation</a></li></ol></li><li><a href=#memory-estimation>Memory Estimation</a></li><li><a href=#inference-optimization>Inference Optimization</a><ol><li><a href=#kv-cache-optimization>KV Cache OPtimization</a><ol><li><a href=#kv-cache>KV Cache</a></li><li><a href=#mqa>MQA</a></li><li><a href=#gqa>GQA</a></li></ol></li><li><a href=#flashattention>FlashAttention</a><ol><li><a href=#preliminaries-online-softmax>Preliminaries (Online Softmax)</a></li></ol></li></ol></li><li><a href=#training-optimization>Training Optimization</a><ol><li><a href=#parallel-computting-on-data>Parallel Computting (on Data)</a><ol><li><a href=#dp>DP</a></li><li><a href=#ddp>DDP</a></li><li><a href=#fsdp>FSDP</a></li></ol></li><li><a href=#parallel-computting-on-model>Parallel Computting (on Model)</a><ol><li><a href=#tp>TP</a></li><li><a href=#pp>PP</a></li></ol></li></ol></li><li><a href=#quantization>Quantization</a><ol><li><a href=#precision-formats>Precision Formats</a></li></ol></li><li><a href=#reference>Reference</a></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/llm3/><img src=/p/llm3/img/cover_hu_50e6243c42b531a7.jpg srcset="/p/llm3/img/cover_hu_50e6243c42b531a7.jpg 800w, /p/llm3/img/cover_hu_c64b02f4a7c4be03.jpg 1600w" width=800 height=419 loading=lazy alt="Featured image of post Infra入门——An Overview of AI Infra"></a></div><div class=article-details><header class=article-category><a href=/categories/%E6%96%87%E6%A1%A3/ style=background-color:#2a9d8f;color:#fff>文档
+</a><a href=/categories/ai-infra/ style=background-color:#7b79e6;color:#fff>AI Infra</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/llm3/>Infra入门——An Overview of AI Infra</a></h2><h3 class=article-subtitle>大模型学习笔记（三）</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Aug 08, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 13 分钟</time></div></footer></div></header><section class=article-content><p>计划在这篇博客里调研并粗略地学习一下到目前为止比较有影响力的AI Infra工作（类似Survey），并慢慢补充丰富。Anyway，迈出行动的第一步最难。</p><h2 id=model-parameters>Model Parameters</h2><h3 id=parameter-estimation>Parameter Estimation</h3><p>1B = 1 Billion = 十亿</p><p>假设模型层数为$N$，隐藏层维度为$H$，接下来考虑一层Transformer层的参数量估算：</p><ul><li>自注意力层：（不需要考虑MHA的情况，因为多头concat起来的为度就等于隐藏层维度）需要注意的是这里包括一次注意力计算和一次线性映射，因此涉及四个可训练参数$W_Q$、$W_K$、$W_V$和$W_O$，因此注意力层的可训练参数量为$4H^2 + 4H$。</li></ul>$$Attention(Q, K, V)=softmax(\frac{QK^{T}}{\sqrt[]{d_{k}} })V \newline Q=W_{Q}X+b_{Q}, K=W_{K}X+b_{K}, V=W_{V}X+b_{V}, O = W_{O}Attention_{O}+b_{O}$$<ul><li>前馈网络层：FFN层包括一次线性升维和一次线性降维，设计两个可训练参数$W_{1}$和$W_{2}$，可训练参数量为$(H\times 4H + 4H) + (4H \times H + H) = 8H^{2} + 5H$。</li></ul>$$FFN(x) = GeLU(xW_{1}+b_{1})W_{2}+b_{2}$$<ul><li>残差连接和层归一化：Add & Norm层（主要是LN层）涉及两个可训练向量参数$\alpha$和$b$，即2H。</li></ul>$$Y = Attention(X) + X \newline LN(Y) = \alpha \frac{Y - \mu}{\sigma} + b$$<p>综上，一层Transformer层由一层Attention层、一层FFN层和两层Add & Norm层组成，可训练参数量为$12H^{2} + 13H$，可以近似为$12H^{2}$。</p><h3 id=computation-estimation>Computation Estimation</h3><blockquote><p>AxB和BxC的矩阵相乘，每个输出元素需要进行$n$次乘法和$n-1$次加法，$\approx 2n FLOPs$；整个矩阵共有AxC个输出元素，因此总$FLOPs \approx 2ABC$，可以近似为$ABC$。因此估算参数时，主要关注矩阵乘或向量矩阵乘的维度即可。注意$W_{Q/K/V}$的维度是$HxH$，而$Q/K/V$的维度是$LxH$。</p></blockquote><p>接下来估算计算量，由于LayerNorm、Dropout等计算量较小，暂时不考虑。设模型层数为$N$，隐藏层维度为$H$，批量大小为$B$，序列长度为$L$：</p><ul><li>自注意力层</li></ul><ol><li><p>（LHxHH=LH）线性投影QKV：每个投影是$H\times H$，应用于每个token就是$BLH^{2}$，总共3个矩阵，因此$FLOPs=3BLH^{2}$</p></li><li><p>（LHxHL=LL）Attention Score ($QK^{T}$)：每个token对应一个$L\times L$的注意力矩阵，需要做$H$次乘加，约为$BHL^{2}$</p></li><li><p>（——————）Softmax和Scaling：Softmax涉及取指、求和、逐元素除和、数值稳定的计算，这里只能估计为$xBL^{2}$，相比SDPA可忽略不计</p></li><li><p>（LLxLH=LH）Attention Output与V相乘：显然是$BHL^{2}$</p></li><li><p>（LHxHH=LH）输出线性层$W_{O}$：显然是$BLH^{2}$</p></li></ol><p>因此，自注意力层的总FLOPs：</p>$$\approx (3BLH^{2})+(2BHL^{2})+(BLH^{2})=4BLH^{2}+2BHL^{2}$$<ul><li>前馈网络层：</li></ul><ol><li><p>升维（$H$->$4H$）：$FLOPs=BLH(4H)$</p></li><li><p>降维（$4H$->$H$）：$FLOPs=BL(4H)H$</p></li></ol><p>（当然还有GeLU激活，不过是线性的计算量，可以忽略不计）因此，FFN层的总Flops：</p>$$\approx 8BLH^{2}$$<p>综上，$Total\ FLOPs \approx 12BLH^{2} + 2BHL^{2}$$。（理论上应该再乘以2）</p><h2 id=memory-estimation>Memory Estimation</h2><h2 id=inference-optimization>Inference Optimization</h2><h3 id=kv-cache-optimization>KV Cache OPtimization</h3><h4 id=kv-cache>KV Cache</h4><p>KV (Key-Value) Cache是一种在自回归模型（如Decoder of Transformer）中常用的推理加速技术，通过在推理的注意力机制计算过程中缓存已计算过的$Key$和$Value$，减少重复的$K$、$V$与权重矩阵的projection计算。</p>$$Attention(Q, K, V)=softmax(\frac{QK^{T}}{\sqrt[]{d_{k}} })V$$<p>为什么可以缓存$K$和$V$？由于<strong>Casual Mask</strong>机制，当模型推理时当前token不需要与之后的token进行Attention计算，因此在计算第$t$个token的$Attention_{t}$时，只需要$Q_{0:t}$、$K_{0:t}$和$V_{0:t}$。而Decoder中的$Q$需要token在embedding后通过$W_q$投影，但$K_{0:t-1}$与$V_{0:t-1}$来自Encoder中，且在计算$Attention_{0:t-1}$时已被计算过，因此可以通过缓存已被计算过的历史$K$与$V$来节省这部分计算。</p><p>接下来参考<a class=link href=https://zhuanlan.zhihu.com/p/662498827 target=_blank rel=noopener>知乎@看图学</a>的公式推导，</p><p>计算第一个token时的Attention：</p>$$
+Attention(Q, K, V) = softmax(\frac{Q_{1}K_{1}^{T}}{\sqrt[]{d}})V_{1}
+$$<p>计算第二个token时的Attention（矩阵第二行对应$Attention_{2}$），$softmax(\frac{Q_{1}K_{2}}{\sqrt d})$项被mask掉了：</p>$$
+Attention(Q, K, V) = softmax(\frac{Q_{2}[K_{1}, K_{2}]^{T}}{\sqrt[]{d}})[V_{1}, V_{2}] \newline = \begin{pmatrix}
+softmax(\frac{Q_{1}K_{1}^{T}}{\sqrt d}) & softmax(-\infty )\\
+softmax(\frac{Q_{2}K_{1}^{T}}{\sqrt d}) & softmax(\frac{Q_{2}K_{2}^{T}}{\sqrt d})
+\end{pmatrix}[V_{1}, V_{2}] \newline =\begin{pmatrix}
+softmax(\frac{Q_{1}K_{1}^{T}}{\sqrt d})V_{1} + 0 \times V_{2} \\
+softmax(\frac{Q_{2}K_{1}^{T}}{\sqrt d})V_{1} + softmax(\frac{Q_{2}K_{2}^{T}}{\sqrt d})V_{2}
+\end{pmatrix}
+$$<p>以此类推，Attention矩阵的严格上三角部分都被mask掉了，因此<strong>计算第$t$个token的$Attention_{t}$时与$Q_{1:t-1}$无关</strong>：</p>$$
+Attention_{1} = softmax(\frac{Q_{1}K_{1}^{T}}{\sqrt[]{d}})V_{1} \newline Attention_{2} = softmax(\frac{Q_{1}[K_{1}, K_{2}]^{T}}{\sqrt[]{d}})[V_{1}, V_{2}] \newline ... \newline Attention_{t} = softmax(\frac{Q_{t}K_{1:t}^{T}}{\sqrt[]{d}})V_{1:t}
+$$<p>源码实现参考<a class=link href=https://github.com/huggingface/transformers/blob/c962f1515e40521c0b336877a64dc512da4f486d/src/transformers/models/gpt2/modeling_gpt2.py#L269-L360 target=_blank rel=noopener>Huggingface的GPT2推理实现</a>，KV Cache的逻辑核心思路如下：</p><ul><li><p>对于<code>Cross Attention</code>，$Q$来自decoder的当前token，$KV$来自encoder的全部输出。因此$KV$通常不变，只需生成一次并缓存。</p></li><li><p>对于<code>Self Attention</code>，$QKV$都来自decoder的当前token，因为decoder需要看过去所有的token，因此前面token的$KV$都需要缓存</p></li></ul><blockquote><p>看源码好难——</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>forward</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>hidden_states</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>tuple</span><span class=p>[</span><span class=n>torch</span><span class=o>.</span><span class=n>FloatTensor</span><span class=p>]],</span>
+</span></span><span class=line><span class=cl>        <span class=n>past_key_value</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>Cache</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>cache_position</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>torch</span><span class=o>.</span><span class=n>LongTensor</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>attention_mask</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>torch</span><span class=o>.</span><span class=n>FloatTensor</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>head_mask</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>torch</span><span class=o>.</span><span class=n>FloatTensor</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>encoder_hidden_states</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>torch</span><span class=o>.</span><span class=n>Tensor</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>encoder_attention_mask</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=n>torch</span><span class=o>.</span><span class=n>FloatTensor</span><span class=p>]</span> <span class=o>=</span> <span class=kc>None</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>output_attentions</span><span class=p>:</span> <span class=n>Optional</span><span class=p>[</span><span class=nb>bool</span><span class=p>]</span> <span class=o>=</span> <span class=kc>False</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=o>**</span><span class=n>kwargs</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>tuple</span><span class=p>[</span><span class=n>Union</span><span class=p>[</span><span class=n>torch</span><span class=o>.</span><span class=n>Tensor</span><span class=p>,</span> <span class=nb>tuple</span><span class=p>[</span><span class=n>torch</span><span class=o>.</span><span class=n>Tensor</span><span class=p>]],</span> <span class=o>...</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 判断是否是Cross Attention</span>
+</span></span><span class=line><span class=cl>        <span class=n>is_cross_attention</span> <span class=o>=</span> <span class=n>encoder_hidden_states</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Cross Attention使用cross_attention_cache</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Self Attention使用self_attention_cache</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 用is_updated表示当前层的KV是否已缓存 (用于Cross Attention)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>past_key_value</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>past_key_value</span><span class=p>,</span> <span class=n>EncoderDecoderCache</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>                <span class=n>is_updated</span> <span class=o>=</span> <span class=n>past_key_value</span><span class=o>.</span><span class=n>is_updated</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>layer_idx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=n>is_cross_attention</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>curr_past_key_value</span> <span class=o>=</span> <span class=n>past_key_value</span><span class=o>.</span><span class=n>cross_attention_cache</span>
+</span></span><span class=line><span class=cl>                <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>curr_past_key_value</span> <span class=o>=</span> <span class=n>past_key_value</span><span class=o>.</span><span class=n>self_attention_cache</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>curr_past_key_value</span> <span class=o>=</span> <span class=n>past_key_value</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>is_cross_attention</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># Cross Attention</span>
+</span></span><span class=line><span class=cl>            <span class=n>query_states</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>q_attn</span><span class=p>(</span><span class=n>hidden_states</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>attention_mask</span> <span class=o>=</span> <span class=n>encoder_attention_mask</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 尝试获取KV Cache</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>past_key_value</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=n>is_updated</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>key_states</span> <span class=o>=</span> <span class=n>curr_past_key_value</span><span class=o>.</span><span class=n>layers</span><span class=p>[</span><span class=bp>self</span><span class=o>.</span><span class=n>layer_idx</span><span class=p>]</span><span class=o>.</span><span class=n>keys</span>
+</span></span><span class=line><span class=cl>                <span class=n>value_states</span> <span class=o>=</span> <span class=n>curr_past_key_value</span><span class=o>.</span><span class=n>layers</span><span class=p>[</span><span class=bp>self</span><span class=o>.</span><span class=n>layer_idx</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>key_states</span><span class=p>,</span> <span class=n>value_states</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>c_attn</span><span class=p>(</span><span class=n>encoder_hidden_states</span><span class=p>)</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>split_size</span><span class=p>,</span> <span class=n>dim</span><span class=o>=</span><span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 变换成MHA的shape</span>
+</span></span><span class=line><span class=cl>                <span class=n>shape_kv</span> <span class=o>=</span> <span class=p>(</span><span class=o>*</span><span class=n>key_states</span><span class=o>.</span><span class=n>shape</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>],</span> <span class=o>-</span><span class=mi>1</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>head_dim</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>key_states</span> <span class=o>=</span> <span class=n>key_states</span><span class=o>.</span><span class=n>view</span><span class=p>(</span><span class=n>shape_kv</span><span class=p>)</span><span class=o>.</span><span class=n>transpose</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>value_states</span> <span class=o>=</span> <span class=n>value_states</span><span class=o>.</span><span class=n>view</span><span class=p>(</span><span class=n>shape_kv</span><span class=p>)</span><span class=o>.</span><span class=n>transpose</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># Self Attention</span>
+</span></span><span class=line><span class=cl>            <span class=n>query_states</span><span class=p>,</span> <span class=n>key_states</span><span class=p>,</span> <span class=n>value_states</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>c_attn</span><span class=p>(</span><span class=n>hidden_states</span><span class=p>)</span><span class=o>.</span><span class=n>split</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>split_size</span><span class=p>,</span> <span class=n>dim</span><span class=o>=</span><span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>shape_kv</span> <span class=o>=</span> <span class=p>(</span><span class=o>*</span><span class=n>key_states</span><span class=o>.</span><span class=n>shape</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>],</span> <span class=o>-</span><span class=mi>1</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>head_dim</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>key_states</span> <span class=o>=</span> <span class=n>key_states</span><span class=o>.</span><span class=n>view</span><span class=p>(</span><span class=n>shape_kv</span><span class=p>)</span><span class=o>.</span><span class=n>transpose</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>value_states</span> <span class=o>=</span> <span class=n>value_states</span><span class=o>.</span><span class=n>view</span><span class=p>(</span><span class=n>shape_kv</span><span class=p>)</span><span class=o>.</span><span class=n>transpose</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>shape_q</span> <span class=o>=</span> <span class=p>(</span><span class=o>*</span><span class=n>query_states</span><span class=o>.</span><span class=n>shape</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>],</span> <span class=o>-</span><span class=mi>1</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>head_dim</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>query_states</span> <span class=o>=</span> <span class=n>query_states</span><span class=o>.</span><span class=n>view</span><span class=p>(</span><span class=n>shape_q</span><span class=p>)</span><span class=o>.</span><span class=n>transpose</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># 更新缓存: 启动KV Cache，且是Self Attention，或Cross Attention没有缓存过的情况</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>past_key_value</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=ow>not</span> <span class=n>is_cross_attention</span><span class=p>)</span> <span class=ow>or</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>past_key_value</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span> <span class=ow>and</span> <span class=n>is_cross_attention</span> <span class=ow>and</span> <span class=ow>not</span> <span class=n>is_updated</span>
+</span></span><span class=line><span class=cl>        <span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=n>cache_position</span> <span class=o>=</span> <span class=n>cache_position</span> <span class=k>if</span> <span class=ow>not</span> <span class=n>is_cross_attention</span> <span class=k>else</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>            <span class=n>key_states</span><span class=p>,</span> <span class=n>value_states</span> <span class=o>=</span> <span class=n>curr_past_key_value</span><span class=o>.</span><span class=n>update</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>key_states</span><span class=p>,</span> <span class=n>value_states</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>layer_idx</span><span class=p>,</span> <span class=p>{</span><span class=s2>&#34;cache_position&#34;</span><span class=p>:</span> <span class=n>cache_position</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>is_cross_attention</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>past_key_value</span><span class=o>.</span><span class=n>is_updated</span><span class=p>[</span><span class=bp>self</span><span class=o>.</span><span class=n>layer_idx</span><span class=p>]</span> <span class=o>=</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># 判断是否是因果注意力 (Casual)</span>
+</span></span><span class=line><span class=cl>        <span class=n>is_causal</span> <span class=o>=</span> <span class=n>attention_mask</span> <span class=ow>is</span> <span class=kc>None</span> <span class=ow>and</span> <span class=n>query_states</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=o>-</span><span class=mi>2</span><span class=p>]</span> <span class=o>&gt;</span> <span class=mi>1</span> <span class=ow>and</span> <span class=ow>not</span> <span class=n>is_cross_attention</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># 选择注意力实现方式</span>
+</span></span><span class=line><span class=cl>        <span class=c1># [eager/flash_attention_2/sdpa/triton/xformers]</span>
+</span></span><span class=line><span class=cl>        <span class=n>using_eager</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>config</span><span class=o>.</span><span class=n>_attn_implementation</span> <span class=o>==</span> <span class=s2>&#34;eager&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>attention_interface</span><span class=p>:</span> <span class=n>Callable</span> <span class=o>=</span> <span class=n>eager_attention_forward</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>config</span><span class=o>.</span><span class=n>_attn_implementation</span> <span class=o>!=</span> <span class=s2>&#34;eager&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>attention_interface</span> <span class=o>=</span> <span class=n>ALL_ATTENTION_FUNCTIONS</span><span class=p>[</span><span class=bp>self</span><span class=o>.</span><span class=n>config</span><span class=o>.</span><span class=n>_attn_implementation</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># 选择精度提升(upcast)和重排(reorder)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>using_eager</span> <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>reorder_and_upcast_attn</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>attn_output</span><span class=p>,</span> <span class=n>attn_weights</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_upcast_and_reordered_attn</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>query_states</span><span class=p>,</span> <span class=n>key_states</span><span class=p>,</span> <span class=n>value_states</span><span class=p>,</span> <span class=n>attention_mask</span><span class=p>,</span> <span class=n>head_mask</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 调用注意力计算函数</span>
+</span></span><span class=line><span class=cl>            <span class=n>attn_output</span><span class=p>,</span> <span class=n>attn_weights</span> <span class=o>=</span> <span class=n>attention_interface</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=bp>self</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>query_states</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>key_states</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>value_states</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>attention_mask</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>head_mask</span><span class=o>=</span><span class=n>head_mask</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>dropout</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>attn_dropout</span><span class=o>.</span><span class=n>p</span> <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>training</span> <span class=k>else</span> <span class=mf>0.0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>is_causal</span><span class=o>=</span><span class=n>is_causal</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=o>**</span><span class=n>kwargs</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># 将Attention结果用线性层c_proj投影回原始维度</span>
+</span></span><span class=line><span class=cl>        <span class=n>attn_output</span> <span class=o>=</span> <span class=n>attn_output</span><span class=o>.</span><span class=n>reshape</span><span class=p>(</span><span class=o>*</span><span class=n>attn_output</span><span class=o>.</span><span class=n>shape</span><span class=p>[:</span><span class=o>-</span><span class=mi>2</span><span class=p>],</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span><span class=o>.</span><span class=n>contiguous</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>attn_output</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>c_proj</span><span class=p>(</span><span class=n>attn_output</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>attn_output</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>resid_dropout</span><span class=p>(</span><span class=n>attn_output</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>attn_output</span><span class=p>,</span> <span class=n>attn_weights</span>
+</span></span></code></pre></td></tr></table></div></div><p>同时，KV Cache在减少重复$KV$计算的同时会引入大量的Memory开销，可以粗略计算一下KV Cache的显存占用：</p>$$
+Memory = 2 \times batch\_size \times seq\_len \times num\_layers \times num\_heads \times head\_dims \times dtype\_size
+$$<h4 id=mqa>MQA</h4><p>Multi-Query Attention (MQA)是Google在2019年于<a class=link href=https://arxiv.org/abs/1911.02150 target=_blank rel=noopener>《Fast Transformer Decoding: One Write-Head is All You Need》</a>提出的一种高效注意力机制，旨在减少推理过程中的计算和内存开销。与传统MHA不同，MQA保留多个Query头，但所有注意力头共享同一组Key和Value，这种结构显著减少了KV Cache的Memory开销，同时保持了MHA相近的性能表现。</p><p>下面是基于PyTorch的一个简单实现（还没实现Casual Mask）：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>torch</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>torch.nn</span> <span class=k>as</span> <span class=nn>nn</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>torch.nn.functional</span> <span class=k>as</span> <span class=nn>F</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MultiQueryAttention</span><span class=p>(</span><span class=n>nn</span><span class=o>.</span><span class=n>Module</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>embed_dim</span><span class=p>,</span> <span class=n>num_heads</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>embed_dim</span> <span class=o>=</span> <span class=n>embed_dim</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>num_heads</span> <span class=o>=</span> <span class=n>num_heads</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>head_dim</span> <span class=o>=</span> <span class=n>embed_dim</span> <span class=o>//</span> <span class=n>num_heads</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># 多个Query头</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>q_proj</span> <span class=o>=</span> <span class=n>nn</span><span class=o>.</span><span class=n>Linear</span><span class=p>(</span><span class=n>embed_dim</span><span class=p>,</span> <span class=n>embed_dim</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 共享的Key和Value</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>k_proj</span> <span class=o>=</span> <span class=n>nn</span><span class=o>.</span><span class=n>Linear</span><span class=p>(</span><span class=n>embed_dim</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>head_dim</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>v_proj</span> <span class=o>=</span> <span class=n>nn</span><span class=o>.</span><span class=n>Linear</span><span class=p>(</span><span class=n>embed_dim</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>head_dim</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>out_proj</span> <span class=o>=</span> <span class=n>nn</span><span class=o>.</span><span class=n>Linear</span><span class=p>(</span><span class=n>embed_dim</span><span class=p>,</span> <span class=n>embed_dim</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>forward</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>x</span><span class=p>,</span> <span class=n>mask</span><span class=o>=</span><span class=kc>None</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>B</span><span class=p>,</span> <span class=n>T</span><span class=p>,</span> <span class=n>C</span> <span class=o>=</span> <span class=n>x</span><span class=o>.</span><span class=n>size</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Q: (B, T, num_heads, head_dim)</span>
+</span></span><span class=line><span class=cl>        <span class=n>q</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>q_proj</span><span class=p>(</span><span class=n>x</span><span class=p>)</span><span class=o>.</span><span class=n>view</span><span class=p>(</span><span class=n>B</span><span class=p>,</span> <span class=n>T</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>num_heads</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>head_dim</span><span class=p>)</span><span class=o>.</span><span class=n>transpose</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span> <span class=c1># (B, num_heads, T, head_dim)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># K, V: shared (B, T, head_dim)-&gt;(B, 1, T, head_dim)</span>
+</span></span><span class=line><span class=cl>        <span class=n>k</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>k_proj</span><span class=p>(</span><span class=n>x</span><span class=p>)</span><span class=o>.</span><span class=n>unsqueeze</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>v</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>v_proj</span><span class=p>(</span><span class=n>x</span><span class=p>)</span><span class=o>.</span><span class=n>unsqueeze</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Attention Score: (B, num_heads, T, T)</span>
+</span></span><span class=line><span class=cl>        <span class=n>attn_scores</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>matmul</span><span class=p>(</span><span class=n>q</span><span class=p>,</span> <span class=n>k</span><span class=o>.</span><span class=n>transpose</span><span class=p>(</span><span class=o>-</span><span class=mi>2</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>))</span> <span class=o>/</span> <span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>head_dim</span> <span class=o>**</span> <span class=mf>0.5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>mask</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>attn_scores</span> <span class=o>=</span> <span class=n>attn_scores</span><span class=o>.</span><span class=n>masked_fill</span><span class=p>(</span><span class=n>mask</span> <span class=o>==</span> <span class=mi>0</span><span class=p>,</span> <span class=nb>float</span><span class=p>(</span><span class=s1>&#39;-inf&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=n>attn_weights</span> <span class=o>=</span> <span class=n>F</span><span class=o>.</span><span class=n>softmax</span><span class=p>(</span><span class=n>attn_scores</span><span class=p>,</span> <span class=n>dim</span><span class=o>=-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Attention output: (B, num_heads, T, head_dim)</span>
+</span></span><span class=line><span class=cl>        <span class=n>attn_output</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>matmul</span><span class=p>(</span><span class=n>attn_weights</span><span class=p>,</span> <span class=n>v</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># 合并头-&gt;(B, T, embed_dim)</span>
+</span></span><span class=line><span class=cl>        <span class=n>attn_output</span> <span class=o>=</span> <span class=n>attn_output</span><span class=o>.</span><span class=n>transpose</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span><span class=o>.</span><span class=n>contiguous</span><span class=p>()</span><span class=o>.</span><span class=n>view</span><span class=p>(</span><span class=n>B</span><span class=p>,</span> <span class=n>T</span><span class=p>,</span> <span class=n>C</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>out_proj</span><span class=p>(</span><span class=n>attn_output</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=gqa>GQA</h4><p>Grouped-Query Attention (GQA)Google与在023年于<a class=link href=https://arxiv.org/abs/2305.13245 target=_blank rel=noopener>GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints</a>提出的一种介于MHA和MQA之间的注意力机制，让多个Query头共享同一组Key和Value，旨在保留部分表达能力的同时大幅减少计算和内存开销。</p><figure><img src=/p/llm3/img/1.jpg width='600px"'><figcaption><h4>Overview of grouped-query method</h4></figcaption></figure><p>源码上，只在Huggingface的仓库里找到了<a class=link href=https://github.com/huggingface/transformers/blob/6dfd561d9cd722dfc09f702355518c6d09b9b4e3/src/transformers/integrations/sdpa_paged.py#L6-L51 target=_blank rel=noopener>sdpa_attention_paged_forward</a>的实现，看上去挺GQA的。</p><p>核心思路是：</p><ul><li><p>先用<code>repeat_kv</code>将KV head复制<code>num_attention_heads // num_key_value_heads</code>次（从<code>(B, num_key_value_heads, L, D)</code>到<code>(B, num_attention_heads, L, D)</code>）</p></li><li><p>支持KV Cache的SDPA</p></li></ul><h3 id=flashattention>FlashAttention</h3><p><strong>FlashAttention</strong>由Tri Dao等在2022年于《FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness》提出，并在2023年于《FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning
+》提出v2版本，2024年于《FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision》提出v3版本。</p><h4 id=preliminaries-online-softmax>Preliminaries (Online Softmax)</h4><p><strong>Naive Softmax</strong>涉及两次read（遍历求sum和逐元素除sum(exp)）和一次write（结果写回），数学公式如下：</p>$$softmax(x_{i}) = \frac{e^{x_{i}}}{\Sigma _{j=1}^{n}e^{x_{j}}}$$<p>如果$x$太大，$e^x$会上溢，而safe softmax解决了这一问题。</p><p><strong>Safe Softmax</strong>涉及三次read（还需要遍历一次减去max）和一次write，目的是为了避免数值溢出，数学公式如下：</p>$$softmax(x_{i}) = \frac{e^{x_{i} - max(x)}}{\Sigma _{j=1}^{n}e^{x_{j} - max(x)}}$$<p>但是需要多次遍历数据，性能较差，而online softmax解决了这一问题。</p><p><strong>Online Softmax</strong>只需要两次read（遍历一次x并维护<strong>最大值</strong>和<strong>归一化因子</strong>）和一次write，核心思路如下：</p><ul><li><p><strong>在线维护</strong>变量（$m_t$，当前前$t$个元素的最大值；$d_t$，当前前$t$个元素的归一化因子）</p></li><li><p>初始化</p><p>$m_0=-\infty, d_0=0$</p></li><li><p>遍历并维护变量</p></li></ul><ol><li><p>更新最大值：</p><p>$m_t=max(m_{t-1}, x_t)$</p></li><li><p>更新归一化因子（递推）【难点】：</p><p>$d_t=d_{t-1}\cdot e^{m_{t-1}-m_t}+e^{x_t - m_t}(=\Sigma_{j=1}^{t-1}e^{x_j-m_{t-1}}\cdot e^{m_{t-1}-m_t}+e^{x_t - m_t})$</p></li></ol><p>这里的公式推导非常巧妙，应用了<strong>同底指数相乘等于两个指数幂相加</strong>，论文的推导如下，<strong>$d_{t}$代表前$t$个数与最大值（局部，即$m_t$）之差的指数和</strong>：</p>$$d_t = d_{t-1}\times e^{m_{t-1}-m_t} + e^{x_t-m_t} \newline =(\Sigma_{j=1}^{t-1}e^{x_j-m_{t-1}}) \times e^{m_{t-1}-m_t} + e^{x_t-m_t} \newline = \Sigma_{j=1}^{t-1}e^{x_j-m_t}+e^{x_t-m_t} \newline = \Sigma_{j=1}^{t}e^{x_j-m_t}$$<blockquote><p>可以这么理解：每次更新归一化因子时，都乘以了$e^{m_{t-1} - m_{t}}$，那么最后这个因子会是$e^{0-m_{global}}$，正是分母$e^{x_{t}-m_{global}}$的一部分，如此巧妙地将全局最大值保留到了遍历结束，而且在递推中的每一步都纠正了之前的局部最大值</p></blockquote><p>online softmax的伪代码如下，实现上还是比较简单的：</p><figure><img src=/p/llm3/img/4.jpg width='500px"'><figcaption><h4>Pseudocode of Online Softmax</h4></figcaption></figure><p>参考@TaurusMoon的实现写了C++的online softmax kernel：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>template</span><span class=o>&lt;</span><span class=k>typename</span> <span class=n>T</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=n>OnlineSoftmax</span><span class=p>(</span><span class=n>T</span><span class=o>*</span> <span class=n>dst</span><span class=p>,</span> <span class=k>const</span> <span class=n>T</span><span class=o>*</span> <span class=n>src</span><span class=p>,</span> <span class=kt>int</span> <span class=n>n</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>T</span> <span class=n>m</span> <span class=o>=</span> <span class=o>-</span><span class=n>numeric_limits</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;::</span><span class=n>infinity</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=n>T</span> <span class=n>d</span> <span class=o>=</span> <span class=mf>0.0f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=o>+</span><span class=n>i</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>T</span> <span class=n>m_update</span> <span class=o>=</span> <span class=n>max</span><span class=p>(</span><span class=n>m</span><span class=p>,</span> <span class=n>src</span><span class=p>[</span><span class=n>i</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>        <span class=n>d</span> <span class=o>=</span> <span class=n>d</span> <span class=o>*</span> <span class=n>exp</span><span class=p>(</span><span class=n>m</span> <span class=o>-</span> <span class=n>m_update</span><span class=p>)</span> <span class=o>+</span> <span class=n>exp</span><span class=p>(</span><span class=n>src</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>-</span> <span class=n>m_update</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>m</span> <span class=o>=</span> <span class=n>m_update</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>n</span><span class=p>;</span> <span class=o>++</span><span class=n>i</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>dst</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>=</span> <span class=n>exp</span><span class=p>(</span><span class=n>src</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>-</span> <span class=n>m</span><span class=p>)</span> <span class=o>/</span> <span class=n>d</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=training-optimization>Training Optimization</h2><h3 id=parallel-computting-on-data>Parallel Computting (on Data)</h3><h4 id=dp>DP</h4><p><strong>数据并行（DP, Data Parallel）</strong>：模型副本在每个GPU上各自独立地前向传播，梯度会聚合（AllReduce）到主GPU进行参数更新。缺点是非跨进程，只支持单机多卡；梯度聚合会发生在主设备，导致通信瓶颈和负载不均衡。</p><p>实现上较为简单:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>model</span> <span class=o>=</span> <span class=o>...</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>model</span> <span class=o>=</span> <span class=n>torch</span><span class=o>.</span><span class=n>nn</span><span class=o>.</span><span class=n>DataParallel</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>device_ids</span><span class=o>=</span><span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>])</span>
+</span></span></code></pre></td></tr></table></div></div><p>不过PyTorch建议多卡并行的时候使用DPP，即使只有一个节点（DP的性能较DDP更差，因为主卡负载很不均衡，单进程多线程环境下设计GIL竞争，且可扩展性不如DDP），源码实现见<a class=link href=https://github.com/pytorch/pytorch/blob/978e3a91421e82fc95b34e75efd6324e3e89e755/torch/nn/parallel/data_parallel.py#L53 target=_blank rel=noopener>这里</a>，更加底层的Operator在<code>torch.nn.parallel.scatter_gather/_functions/comm</code>下（如scatter、gather等）。</p><h4 id=ddp>DDP</h4><p><strong>分布式数据并行（DDP, Distributed Data Parallel）</strong>：每个进程对应一个GPU，每个GPU上都有模型副本，梯度通过AllReduce同步，每个金层都参与参数更新（每个GPU独立进行前向、计算loss、计算梯度，并在AllReduce后通过平均梯度更新）。</p><p>实现上可以通过手动设置并行（多个terminal设置RANK、WORLD_SIZE、MASTER_ADDR、MASTER_PORT等环境变量并启动脚本）或用<code>torchrun</code>自动管理环境变量（<code>torchrun --nproc_per_node=... &lt;script></code>）：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>os</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>torch.distributed</span> <span class=k>as</span> <span class=nn>dist</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>torch.nn.parallel</span> <span class=kn>import</span> <span class=n>DistributedDataParallel</span> <span class=k>as</span> <span class=n>DDP</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>os</span><span class=o>.</span><span class=n>environ</span><span class=p>[</span><span class=s1>&#39;MASTER_ADDR&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=s1>&#39;localhost&#39;</span>
+</span></span><span class=line><span class=cl><span class=n>os</span><span class=o>.</span><span class=n>environ</span><span class=p>[</span><span class=s1>&#39;MASTER_PORT&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=s1>&#39;...&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>dist</span><span class=o>.</span><span class=n>init_process_group</span><span class=p>(</span><span class=n>backend</span><span class=o>=</span><span class=s1>&#39;nccl&#39;</span><span class=p>,</span> <span class=n>rank</span><span class=o>=</span><span class=n>rank</span><span class=p>,</span> <span class=n>world_size</span><span class=o>=</span><span class=n>world_size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>model</span> <span class=o>=</span> <span class=o>...</span><span class=p>()</span><span class=o>.</span><span class=n>to</span><span class=p>(</span><span class=n>rank</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>model</span> <span class=o>=</span> <span class=n>DDP</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>device_ids</span><span class=o>=</span><span class=p>[</span><span class=n>rank</span><span class=p>])</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=n>dist</span><span class=o>.</span><span class=n>destroy_process_group</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>源码参考<a class=link href=https://github.com/pytorch/pytorch/blob/978e3a91421e82fc95b34e75efd6324e3e89e755/torch/nn/parallel/distributed.py#L327 target=_blank rel=noopener>这里</a>。DDP可以使用高效的通信后端（如NCCL），没有主从瓶颈（支持单机多卡/多机多卡），还是非常实用的。</p><h4 id=fsdp>FSDP</h4><p><strong>全分片数据并行（FSDP, Fully Sharded Data Parallel）</strong>：模型权重按参数维度切分到多个GPU上（shard），前向传播时重新聚合参数（gather），反向传播后再切分（reshard），大幅减少显存占用，主要通过<code>torch.nn.distributed.fsdp.FullyShardedDataParallel</code>来实现，源码参考<a class=link href=https://github.com/pytorch/pytorch/blob/978e3a91421e82fc95b34e75efd6324e3e89e755/torch/distributed/fsdp/fully_sharded_data_parallel.py#L116 target=_blank rel=noopener>这里</a>。</p><h3 id=parallel-computting-on-model>Parallel Computting (on Model)</h3><figure><img src=/p/llm3/img/2.jpg width='600px"'><figcaption><h4>Existing parallelism for distributed training (sorry我没找到图片来源)</h4></figcaption></figure><h4 id=tp>TP</h4><p><strong>张量并行（TP, Tensor Parallel）</strong>：是一种层内并行（Intra-Layer Parallelism）策略，将模型中的一个层（如MLP层、Attention层）的内部计算划分到多个设备上，多个设备共同完成该层前向和反向传播。这么做可以突破显存的限制，但是会对延迟较敏感。</p><ul><li>Column-wise Parallelism (切列，维度完整)</li></ul>$$W = [W_{1}, W_{2}] \newline Y_{i}=XW_{i}^{T}\ (on\ each\ GPU) \newline Y = Y_{1} + Y_{2}\ (AllReduce)$$<ul><li>Row-wise Parallelism (切行)</li></ul>$$W=\begin{bmatrix}W_{1} \\W_{2}\end{bmatrix} \newline Y_{i}=XW_{i}^{T}\ (on\ each \ GPU) \newline Y=concat(Y_{1}, Y_{2})\ (AllGather)$$<h4 id=pp>PP</h4><p><strong>流水线并行（PP, Pipeline Parallel）</strong>：是一种层间并行（Inter-Layer Parallelism）策略，将模型按顺序划分为多个stage，不同GPU执行不同的stage，多个micro-batch以流水线方式通过模型。</p><p>支持极大模型（层数多），显存需求分布在各stage，且跨GPU通信压力小；但是存在pipeline bubble（起始阶段GPU空闲，影响吞吐）</p><h2 id=quantization>Quantization</h2><h3 id=precision-formats>Precision Formats</h3><figure><img src=/p/llm3/img/3.png width='300px"'><figcaption><h4>TF32 strikes a balance that delivers performance with range and accuracy</h4></figcaption></figure><p>IEEE 754标准中浮点数由三部分组成：S符号位、E指数位、M尾数位，接下来介绍各种精度格式：</p><ul><li><p><code>FP32</code> 标准的IEEE 754单精度浮点格式，1位符号位+8位指数位+23位位数（下文用[S, E, M]来表示），精度较高，适用于所有主流硬件（CPU、GPU、TPU等）</p></li><li><p><code>TP32</code> NVIDIA在Ampere架构引入的混合格式，[1, 8, 10]，截断了尾数位（减少乘加复杂度），支持Tensor Core优化，精度介于FP32和FP16之间，常在训练时作为FP32替换</p></li><li><p><code>FP16</code> 16-bit半精度浮点数，[1, 5, 10]</p></li><li><p><code>BF16</code> Google TPU推出的Brain Float 16，[1, 8, 7]，常用于混合精度训练</p></li><li><p><code>FP8</code> [1, 4, 3]或[1, 5, 2]，需要Hopper架构GPU支持</p></li><li><p><code>INT8</code> 8-bit整型</p></li><li><p><code>FP4</code> [1, 2, 1]</p></li></ul><h2 id=reference>Reference</h2><p><a class=link href=https://zhuanlan.zhihu.com/p/662498827 target=_blank rel=noopener>大模型推理加速：看图学KV Cache</a></p><p><a class=link href=https://zhuanlan.zhihu.com/p/659770503 target=_blank rel=noopener>LM(20)：漫谈 KV Cache 优化方法，深度理解 StreamingLLM</a></p><p><a class=link href=https://arxiv.org/abs/1911.02150 target=_blank rel=noopener>Fast Transformer Decoding: One Write-Head is All You Need</a></p><p><a class=link href=https://arxiv.org/abs/2305.13245 target=_blank rel=noopener>GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints</a></p><p><a class=link href=https://pytorch.ac.cn/tutorials/beginner/dist_overview.html target=_blank rel=noopener>PyTorch 分布式概览</a></p><p><a class=link href=https://arxiv.org/abs/2205.14135 target=_blank rel=noopener>FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness</a></p><p><a class=link href=https://arxiv.org/abs/2307.08691 target=_blank rel=noopener>FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning</a></p><p><a class=link href=https://arxiv.org/abs/2407.08608 target=_blank rel=noopener>FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision</a></p><p><a class=link href=hhttps://arxiv.org/abs/1805.02867>Online normalizer calculation for softmax</a></p><p><a class=link href=https://zhuanlan.zhihu.com/p/638788074 target=_blank rel=noopener>一心二用的Online Softmax</a></p></section><footer class=article-footer><section class=article-tags><a href=/tags/%E6%96%87%E6%A1%A3/>文档</a>
+<a href=/tags/ai-infra/>AI Infra</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=document.querySelector(".main-article");renderMathInElement(e,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/p/llm2/><div class=article-image><img src=/p/llm2/img/cover.54ae66259e3c1b9a27ec946b3bb120cb_hu_193076430cfaf401.png width=250 height=150 loading=lazy alt="Featured image of post 手搓Transformer：深入架构细节" data-key=llm2 data-hash="md5-VK5mJZ48G5on7JRrO7Egyw=="></div><div class=article-details><h2 class=article-title>手搓Transformer：深入架构细节</h2></div></a></article><article class=has-image><a href=/p/llm1/><div class=article-image><img src=/p/llm1/img/cover.476a6e47d456e530769339129869e375_hu_c5178b381d2afeea.png width=250 height=150 loading=lazy alt="Featured image of post 从Transformer开始探索BERT" data-key=llm1 data-hash="md5-R2puR9RW5TB2kzkSmGnjdQ=="></div><div class=article-details><h2 class=article-title>从Transformer开始探索BERT</h2></div></a></article><article class=has-image><a href=/p/triton1/><div class=article-image><img src=/p/triton1/img/cover.67e39d5f04b0c7d5d295130692a51159_hu_77fc0469d240a9bf.jpg width=250 height=150 loading=lazy alt="Featured image of post Triton学习——Vector Addition, Fused Softmax, Matrix Multiplication" data-key=Triton1 data-hash="md5-Z+OdXwSwx9XSlRMGkqURWQ=="></div><div class=article-details><h2 class=article-title>Triton学习——Vector Addition, Fused Softmax, Matrix Multiplication</h2></div></a></article><article class=has-image><a href=/p/hpc1/><div class=article-image><img src=/p/hpc1/img/cover.71e6162ba557f0a391bc5e9e5533f13f_hu_1d611b1f82e6df7e.png width=250 height=150 loading=lazy alt="Featured image of post 并发环境下的队列优化——无锁队列" data-key=hpc1 data-hash="md5-ceYWK6VX8KORvF6eVTPxPw=="></div><div class=article-details><h2 class=article-title>并发环境下的队列优化——无锁队列</h2></div></a></article><article class=has-image><a href=/p/hello-world/><div class=article-image><img src=/p/hello-world/img/cover.875f03a2ec7ba6cf35d6c32b0e811dab_hu_1fb4a137c94a8ed9.jpg width=250 height=150 loading=lazy alt="Featured image of post Hello World" data-key=hello-world data-hash="md5-h18Doux7ps811sMrDoEdqw=="></div><div class=article-details><h2 class=article-title>Hello World</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=KaigeZheng/KaigeZheng.github.io issue-term=pathname crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2024 -
+2025 Kambri's Blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.30.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
