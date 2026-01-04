@@ -1,0 +1,54 @@
+{{ define "body-class" }}article-page keep-sidebar{{ end }}
+
+{{ define "main" }}
+    {{ partial "article/article.html" . }}
+
+    {{ $lang := .Site.Language.Lang }}
+
+    {{ $links := index .Site.Data (printf "links.%s" $lang) }}
+
+    {{ if not $links }}
+        {{ $links = .Site.Data.links }}
+    {{ end }}
+
+    {{ range $category := $links }}
+        <span class="article-list--title">{{ $category.title }}</span>
+
+        <div class="article-list--compact links">
+            {{ range $link := $category.links }}
+                <article>
+                    <a href="{{ $link.website }}" target="_blank" rel="noopener">
+                        <div class="article-details">
+                            <h2 class="article-title">
+                                {{ $link.title }}
+                            </h2>
+                            <footer class="article-time">
+                                {{ if $link.description }}
+                                    {{ $link.description }}
+                                {{ else }}
+                                    {{ $link.website }}
+                                {{ end }}
+                            </footer>
+                        </div>
+
+                        {{ if $link.image }}
+                            <div class="article-image">
+                                <img
+                                    src="{{ $link.image | relURL }}"
+                                    loading="lazy"
+                                    alt="{{ $link.title }}"
+                                >
+                            </div>
+                        {{ end }}
+                    </a>
+                </article>
+            {{ end }}
+        </div>
+    {{ end }}
+
+    {{ if not (eq .Params.comments false) }}
+        {{ partial "comments/include" . }}
+    {{ end }}
+
+    {{ partialCached "footer/footer" . }}
+{{ end }}

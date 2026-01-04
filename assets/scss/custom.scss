@@ -43,3 +43,11 @@
     object-fit: cover;
     border-radius: 10px;
 }
+
+/* accent color for links caption */
+.article-list--title {
+    color: var(--accent-color);
+    font-weight: 700;
+    font-size: 1.6rem;
+    margin-left: 10px;
+}

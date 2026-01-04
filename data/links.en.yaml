@@ -1,0 +1,20 @@
+- title: Related Links
+  links:
+    - title: GitHub Repository of This Site
+      description: This site is hosted on GitHub Pages
+      website: https://github.com/KaigeZheng/KaigeZheng.github.io
+      image: links/img/github.png
+    - title: QHU
+      description: Qinghai University
+      website: https://www.qhu.edu.cn/
+      image: links/img/qhu.png
+    - title: UESTC
+      description: University of Electronic Science and Technology of China
+      website: https://www.uestc.edu.cn/
+      image: links/img/uestc.png
+- title: Friend Links
+  links:
+    - title: Blog by Wu Kuangzheng
+      description: Ridiculous' Blog
+      website: https://ridiculous-ops.github.io/
+      image: https://ridiculous-ops.github.io/img/logo.jpg

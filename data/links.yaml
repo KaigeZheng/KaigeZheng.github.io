@@ -1,0 +1,20 @@
+- title: 相关链接
+  links:
+    - title: 本站点的GitHub仓库
+      description: 本站点托管于GitHub Pages
+      website: https://github.com/KaigeZheng/KaigeZheng.github.io
+      image: links/img/github.png
+    - title: 青海大学
+      description: Qinghai University, QHU
+      website: https://www.qhu.edu.cn/
+      image: links/img/qhu.png
+    - title: 电子科技大学
+      description: University of Electronic Science and Technology of China, UESTC
+      website: https://www.uestc.edu.cn/
+      image: links/img/uestc.png
+- title: 友情链接
+  links:
+    - title: 吴匡正的博客
+      description: Ridiculous' Blog
+      website: https://ridiculous-ops.github.io/
+      image: https://ridiculous-ops.github.io/img/logo.jpg
