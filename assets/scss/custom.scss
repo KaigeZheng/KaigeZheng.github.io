@@ -51,3 +51,31 @@
     font-size: 1.6rem;
     margin-left: 10px;
 }
+
+/* MacOS style code block header */
+.article-content {
+  .highlight {
+    padding: 1.0em 1.0em;
+  }
+
+  .highlight:before {
+    content: '';
+    display: block;
+    background: url(/code-header.svg);
+    height: 32px;
+    width: 100%;
+    background-size: 57px;
+    background-repeat: no-repeat;
+    margin-bottom: 5px;
+    background-position: -1px 2px;
+  }
+}
+
+[data-scheme="light"] .article-content .highlight {
+  background-color: #fdf4eb;
+}
+
+[data-scheme="light"] .chroma {
+  color: #ff6f00;
+  background-color: #fcf0e4cc;
+}
