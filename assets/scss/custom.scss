@@ -1,1 +1,45 @@
 /* Place your custom SCSS in HUGO_SITE_FOLDER/assets/scss/custom.scss */
+
+/* avatar spinning */
+.sidebar header .site-avatar .site-logo {
+  transition: transform 1.25s ease-in-out;
+}
+
+.sidebar header .site-avatar .site-logo:hover {
+  transform: rotate(360deg);
+}
+
+/* multiple columns for links */
+@media (min-width: 1024px) {
+  .article-list--compact.links {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    background: none;
+    box-shadow: none;
+    gap: 1rem;
+
+    article {
+      background: var(--card-background);
+      border: none;
+      box-shadow: var(--shadow-l2);
+      margin-bottom: 8px;
+      margin-right: 8px;
+      border-radius: 16px;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-l3);
+    }
+    }
+  }
+}
+
+/* rounded corners for images */
+.article-image>img {
+    border-radius: 10px;
+}
+
+.section-image>img {
+    object-fit: cover;
+    border-radius: 10px;
+}
