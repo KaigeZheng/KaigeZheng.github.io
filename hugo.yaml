@@ -84,8 +84,8 @@ params:
             default: Licensed under CC BY-NC-SA 4.0
 
     comments:
-        enabled: false
-        provider: disqus
+        enabled: true
+        provider: utterances
 
         disqusjs:
             shortname:
@@ -95,9 +95,9 @@ params:
             adminLabel:
 
         utterances:
-            repo:
+            repo: KaigeZheng/KaigeZheng.github.io
             issueTerm: pathname
-            label:
+            label: comment
 
         beaudar:
             repo:
