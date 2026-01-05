@@ -79,3 +79,18 @@
   color: #ff6f00;
   background-color: #fcf0e4cc;
 }
+
+// /* rounded corners for gallery images */
+// .article-page article img,
+// .article-page article img.gallery-image {
+//     border-radius: 1.5%;
+// }
+
+/* archives page adjustments */
+.template-archives main > header {
+    margin-bottom: -5rem;
+}
+
+.template-archives .widget.tagCloud {
+    margin-bottom: 0rem;
+}

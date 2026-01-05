@@ -65,3 +65,10 @@
         }
     }
 }
+
+/* Tag cloud count color */
+.tagCloud {
+    .tagCloud-count {
+        color: var(--body-text-color);
+    }
+}
