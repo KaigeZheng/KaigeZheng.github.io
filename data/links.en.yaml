@@ -4,6 +4,10 @@
       description: This site is hosted on GitHub Pages
       website: https://github.com/KaigeZheng/KaigeZheng.github.io
       image: links/img/github.png
+    - title: Kambri's Gallery
+      description: A place to record some memorable photos
+      website: https://gallery.kambri.top
+      image: http://gallery.kambri.top/images/favicon.svg
     - title: QHU
       description: Qinghai University
       website: https://www.qhu.edu.cn/

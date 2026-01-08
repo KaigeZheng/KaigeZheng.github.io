@@ -4,6 +4,10 @@
       description: 当サイトはGitHub Pagesでホストされています
       website: https://github.com/KaigeZheng/KaigeZheng.github.io
       image: links/img/github.png
+    - title: Kambri's Gallery
+      description: ここでは、いくつかの記念的な写真を記録しています
+      website: https://gallery.kambri.top
+      image: http://gallery.kambri.top/images/favicon.svg
     - title: 青海大学
       description: 青海大学, QHU
       website: https://www.qhu.edu.cn/
