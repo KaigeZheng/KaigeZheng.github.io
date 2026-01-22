@@ -1,3 +1,3 @@
 ## Introduction
 
-This repository contains the source code for Kambri’s personal blog. The site is built with Hugo, uses the Stack theme, and is deployed via GitHub Pages.
+This repository contains the source code of Kambri’s personal blog, built using Hugo with the Stack theme and deployed on GitHub Pages. The blog includes English and Japanese versions, which are regularly reviewed and updated using automated scripts. The site is indexed by Bing and Google. For contact, you can reach me at `kambrikg AT gmail DOT com`. If you find this repository helpful, feel free to give it a star.
