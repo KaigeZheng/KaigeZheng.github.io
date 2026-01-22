@@ -216,6 +216,14 @@ def main():
     candidates = {"index.md", "_index.md"}
 
     for dirpath, _, filenames in os.walk(root):
+        # Skip the root directory itself (e.g., content/_index.md)
+        if os.path.abspath(dirpath) == root:
+            continue
+        # Only process post, page, and categories subdirectories
+        rel_path = os.path.relpath(dirpath, root)
+        first_part = rel_path.split(os.sep)[0]
+        if first_part not in ("post", "page", "categories"):
+            continue
         for name in candidates:
             if name in filenames:
                 process_file(
