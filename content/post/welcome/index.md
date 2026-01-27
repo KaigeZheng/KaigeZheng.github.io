@@ -9,7 +9,7 @@ categories:
     - 持续更新
 tags:
     - 生活
-weight: 0
+weight: 1
 draft: false
 ---
 
