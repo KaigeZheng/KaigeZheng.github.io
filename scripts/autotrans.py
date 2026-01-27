@@ -48,8 +48,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--model",
-        default="gpt-4o",
-        help="Model name. Default: gpt-4o.",
+        default="gpt-4.1-nano",
+        help="Model name. Default: gpt-4.1-nano.",
     )
     parser.add_argument(
         "--retry",
@@ -85,12 +85,22 @@ def translate_text(
             {
                 "role": "system",
                 "content": (
-                    "You are a professional translator. Translate user-provided text "
-                    f"into {lang_name(target_lang)}. Preserve Markdown structure, code "
-                    "blocks, and links. Output only the translated text."
+                    "You are a professional translator. Your task is to translate the "
+                    "user-provided text into "
+                    f"{lang_name(target_lang)}.\n\n"
+                    "Requirements:\n"
+                    "1. Preserve the original meaning accurately.\n"
+                    "2. Keep the original Markdown structure, including headings, lists, "
+                    "links, inline code, and code blocks, unchanged.\n"
+                    "3. Do not translate code blocks, inline code, or URLs.\n"
+                    "4. Do not add, remove, or reorder any content.\n"
+                    "5. Output only the translated text, without explanations or comments."
                 ),
             },
-            {"role": "user", "content": text},
+            {
+                "role": "user",
+                "content": text
+            },
         ],
         "temperature": 0,
     }
