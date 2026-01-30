@@ -3,7 +3,7 @@ title: First encounter with Kansai's流水账
 description: Documenting a trip to Osaka, Kyoto, Nara, and Hyogo
 date: 2026-01-22
 lastmod: 2026-01-27
-slug: travel_1
+slug: travel
 image: img/cover.jpg
 categories:
 - 旅行日记

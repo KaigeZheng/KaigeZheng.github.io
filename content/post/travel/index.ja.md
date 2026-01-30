@@ -3,7 +3,7 @@ title: 初めての関西の雑記帳
 description: 大阪、京都、奈良、兵庫での旅行の記録
 date: 2026-01-22
 lastmod: 2026-01-27
-slug: travel_1
+slug: travel
 image: img/cover.jpg
 categories:
 - 旅行日记

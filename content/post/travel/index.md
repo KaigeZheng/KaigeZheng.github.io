@@ -3,7 +3,7 @@ title: 初见关西流水账
 description:  记录一次在大阪、京都、奈良、兵库的旅行
 date: 2026-01-22
 lastmod: 2026-01-27
-slug: travel_1
+slug: travel
 image: img/cover.jpg
 categories:
     - 旅行日记
