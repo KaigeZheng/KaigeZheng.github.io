@@ -1,0 +1,819 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>技術 on Kambriのブログ</title><link>https://kambri.top/ja/tags/%E6%8A%80%E8%A1%93/</link><description>Recent content in 技術 on Kambriのブログ</description><generator>Hugo -- gohugo.io</generator><language>ja</language><copyright>Kaige ZHENG</copyright><lastBuildDate>Sun, 11 May 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://kambri.top/ja/tags/%E6%8A%80%E8%A1%93/index.xml" rel="self" type="application/rss+xml"/><item><title>高性能クラスター運用管理——セットアップ</title><link>https://kambri.top/ja/p/ops/</link><pubDate>Wed, 23 Apr 2025 00:00:00 +0000</pubDate><guid>https://kambri.top/ja/p/ops/</guid><description>&lt;img src="https://kambri.top/p/ops/img/cover.png" alt="Featured image of post 高性能クラスター運用管理——セットアップ" /&gt;&lt;blockquote&gt;
+&lt;p&gt;⚠️ご注意ください、ここにある内容は大規模言語モデルによって翻訳されたものです。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;この期間、機房とのやり取りが多く、三江源データ分析センターに新しい購入機器を設置するエンジニアや学院の運用担当の先生方と連携してきました。そこで、高性能クラスター構築の経験をまとめます。&lt;/p&gt;
+&lt;h2 id="ハードウェア"&gt;ハードウェア
+&lt;/h2&gt;&lt;h3 id="組み立て"&gt;組み立て
+&lt;/h3&gt;&lt;p&gt;新たに購入した整備済みサーバーには、ハードディスク、メモリ、ネットワークカード（Ethernet）、RAIDカードが揃っています。起動時には、メイン電源と予備電源の両方が点灯していることを必ず確認してください。構成は、Intelのデュアルソケットマシン2台とAMDのデュアルソケットマシン2台です。RDMAネットワークカードは別途調達し、Mellanox MT28908（ConnectX-6）を使用しています。高性能計算センターからNVIDIA A800 80GB PCIEカード8枚を借用し、トポロジーは4台のマシンに8枚のカードを配置する予定です。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="text-align: center"&gt;サーバー&lt;/th&gt;
+&lt;th style="text-align: center"&gt;CPU&lt;/th&gt;
+&lt;th style="text-align: center"&gt;メモリ&lt;/th&gt;
+&lt;th style="text-align: center"&gt;ハードディスク&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center"&gt;H3C UniServer R4900 G6&lt;/td&gt;
+&lt;td style="text-align: center"&gt;Intel(R) Xeon(R) GOLD 6542Y(250w)×2&lt;/td&gt;
+&lt;td style="text-align: center"&gt;32G DDR5 5600×8&lt;/td&gt;
+&lt;td style="text-align: center"&gt;960G SSD×2 + 4TB SATA×3 + RAID PM8204-2G&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align: center"&gt;H3C UniServer R4950 G6&lt;/td&gt;
+&lt;td style="text-align: center"&gt;AMD EPYC 9654 96コアプロセッサ(360w)×2&lt;/td&gt;
+&lt;td style="text-align: center"&gt;32G DDR5 4800×8&lt;/td&gt;
+&lt;td style="text-align: center"&gt;960G SSD×2 + 4TB SATA×3 + RAID PM8204-2G&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;img src="https://kambri.top/p/ops/img/1.jpg"
+width="1706"
+height="1279"
+srcset="https://kambri.top/p/ops/img/1_hu_bb1e35933ff472ee.jpg 480w, https://kambri.top/p/ops/img/1_hu_62c9eb2d339f6923.jpg 1024w"
+loading="lazy"
+alt="サーバー内部"
+class="gallery-image"
+data-flex-grow="133"
+data-flex-basis="320px"
+&gt;&lt;/p&gt;
+&lt;h3 id="起動ディスクの作成"&gt;起動ディスクの作成
+&lt;/h3&gt;&lt;p&gt;ブート可能なISOイメージ、書き込みソフト（&lt;a class="link" href="https://rufus.ie/en/" target="_blank" rel="noopener"
+&gt;Rufus&lt;/a&gt;または&lt;a class="link" href="https://ultraiso.net/" target="_blank" rel="noopener"
+&gt;UltraISO&lt;/a&gt;）、およびUSBメモリ（できればUSB3.0推奨）を準備します。ここではサーバー側の&lt;code&gt;Ubuntu Server 22.04.5 LTS&lt;/code&gt;（長期サポート版、2027年4月までサポート）を選択し、&lt;a class="link" href="https://cn.ubuntu.com/download" target="_blank" rel="noopener"
+&gt;Ubuntu公式サイト&lt;/a&gt;からブート可能なISOファイルを取得します。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kambri.top/p/ops/img/2.png"
+width="1021"
+height="168"
+srcset="https://kambri.top/p/ops/img/2_hu_251188e3c06ef52f.png 480w, https://kambri.top/p/ops/img/2_hu_768c422f8277994a.png 1024w"
+loading="lazy"
+alt="ISOファイル"
+class="gallery-image"
+data-flex-grow="607"
+data-flex-basis="1458px"
+&gt;&lt;/p&gt;
+&lt;p&gt;次に、書き込みソフトを使ってハードディスクにイメージを書き込みます。UltraISOでは書き込み方式を&lt;code&gt;USB-HDD+&lt;/code&gt;に設定し、Rufusではターゲットシステムタイプを&lt;code&gt;BIOSまたはUEFI&lt;/code&gt;に設定します。必要に応じてファイルシステムやその他の設定を調整してください。フォーマット後、システムイメージを書き込み（約2〜3分）ます。&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://kambri.top/p/ops/img/3.png"
+width="594"
+height="872"
+srcset="https://kambri.top/p/ops/img/3_hu_28e743b8c1b2b821.png 480w, https://kambri.top/p/ops/img/3_hu_20f4ccebb4416ce6.png 1024w"
+loading="lazy"
+alt="Rufusで起動ディスク作成"
+class="gallery-image"
+data-flex-grow="68"
+data-flex-basis="163px"
+&gt; &lt;img src="https://kambri.top/p/ops/img/4.png"
+width="465"
+height="432"
+srcset="https://kambri.top/p/ops/img/4_hu_65c97b132529007e.png 480w, https://kambri.top/p/ops/img/4_hu_6c791af9e004dbfb.png 1024w"
+loading="lazy"
+alt="UltraISOで起動ディスク作成"
+class="gallery-image"
+data-flex-grow="107"
+data-flex-basis="258px"
+&gt;&lt;/p&gt;
+&lt;h2 id="ソフトウェア"&gt;ソフトウェア
+&lt;/h2&gt;&lt;h3 id="ネットワーク設定"&gt;ネットワーク設定
+&lt;/h3&gt;&lt;p&gt;通常、システムインストール時には設定しません。インストール完了後に&lt;code&gt;ip link show&lt;/code&gt;コマンドでネットワークインターフェース名を確認します。次に&lt;code&gt;vim /etc/netplan/50-cloud-init.yaml&lt;/code&gt;を編集し、以下のように設定します。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;# ...&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nt"&gt;network&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;ethernets&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;ens16f0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;addresses&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;- &lt;span class="l"&gt;&amp;lt;A.B.C.D&amp;gt;/24&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;nameservers&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;addresses&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;search&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;routes&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;- &lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;to&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;default&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;via&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="l"&gt;&amp;lt;A.B.C.D&amp;gt;&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nt"&gt;version&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;&lt;span class="w"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="rootパスワードの設定"&gt;rootパスワードの設定
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;su root
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;passwd root
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="linuxカーネルの自動更新を無効化"&gt;Linuxカーネルの自動更新を無効化
+&lt;/h3&gt;&lt;p&gt;無効にしないと、&lt;code&gt;apt update&lt;/code&gt;後にサービスの再起動や更新を促す通知が出続けます。&lt;code&gt;/etc/apt/apt.conf.d/&lt;/code&gt;内の&lt;code&gt;10periodic&lt;/code&gt;と&lt;code&gt;20auto-upgrades&lt;/code&gt;のパラメータを&lt;code&gt;0&lt;/code&gt;に変更します。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sudo vim /etc/apt/apt.conf.d/10periodic&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;内容を以下に更新：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;APT::Periodic::Update-Package-Lists &lt;span class="s2"&gt;&amp;#34;0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;APT::Periodic::Download-Upgradeable-Packages &lt;span class="s2"&gt;&amp;#34;0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;APT::Periodic::AutocleanInterval &lt;span class="s2"&gt;&amp;#34;0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;sudo vim /etc/apt/apt.conf.d/20auto-upgrades&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;内容を以下に更新：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;APT::Periodic::Update-Package-Lists &lt;span class="s2"&gt;&amp;#34;0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;APT::Periodic::Unattended-Upgrade &lt;span class="s2"&gt;&amp;#34;0&amp;#34;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="リバースプロキシ設定"&gt;リバースプロキシ設定
+&lt;/h3&gt;&lt;p&gt;計算ノードはインターネットに接続しないため、ローカルを踏み台としてリバースプロキシを設定します。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Users/username/.ssh/config&lt;/code&gt;に以下を追加：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Host &amp;lt;hostname&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; HostName &amp;lt;IP&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; Port &amp;lt;port&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; User &amp;lt;username&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; RemoteForward &amp;lt;Port1&amp;gt; 127.0.0.1:&amp;lt;Port2&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;最近学んだ方法として、&lt;code&gt;.ssh/config&lt;/code&gt;内で&lt;code&gt;ProxyJump&lt;/code&gt;を設定し、シームレスに踏み台接続を行うことも可能です。パスワード不要にするには、接続先ホストの&lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt;に&lt;strong&gt;ローカルの公開鍵&lt;/strong&gt;を登録してください。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Host &amp;lt;hostname&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; HostName &amp;lt;IP&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; Port &amp;lt;port&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; User &amp;lt;username&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; RemoteForward &amp;lt;Port1&amp;gt; 127.0.0.1:&amp;lt;Port2&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;Host &amp;lt;destination&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; HostName &amp;lt;IP&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; Port &amp;lt;port&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; User &amp;lt;username&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; ProxyJump &amp;lt;hostname&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; RemoteForward &amp;lt;Port1&amp;gt; 127.0.0.1:&amp;lt;Port2&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="事前準備のポイント"&gt;事前準備のポイント
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Linuxの自動休眠を無効化&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;\$nrconf{kernelhints} = 0;&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; /etc/needrestart/needrestart.conf
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;#34;\$nrconf{restart} = &amp;#39;l&amp;#39;;&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; /etc/needrestart/needrestart.conf
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# aptとapt-getの更新&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;apt update
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;apt upgrade
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;apt-get update
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;apt-get upgrade
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 必要なパッケージのインストール&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;apt install git wget vim curl htop net-tools pciutils build-essential
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="パーティション設定"&gt;パーティション設定
+&lt;/h3&gt;&lt;p&gt;ディスクが認識されない場合、システムインストール時にエラー&lt;code&gt;block probing did not discover any disks&lt;/code&gt;が出ることがあります。ハードディスクやRAIDカードの点灯状態を確認してください。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt; 1
+&lt;/span&gt;&lt;span class="lnt"&gt; 2
+&lt;/span&gt;&lt;span class="lnt"&gt; 3
+&lt;/span&gt;&lt;span class="lnt"&gt; 4
+&lt;/span&gt;&lt;span class="lnt"&gt; 5
+&lt;/span&gt;&lt;span class="lnt"&gt; 6
+&lt;/span&gt;&lt;span class="lnt"&gt; 7
+&lt;/span&gt;&lt;span class="lnt"&gt; 8
+&lt;/span&gt;&lt;span class="lnt"&gt; 9
+&lt;/span&gt;&lt;span class="lnt"&gt;10
+&lt;/span&gt;&lt;span class="lnt"&gt;11
+&lt;/span&gt;&lt;span class="lnt"&gt;12
+&lt;/span&gt;&lt;span class="lnt"&gt;13
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;lsblk &lt;span class="c1"&gt;# 新しいディスクのデバイス名を確認（例：/dev/sdX）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo pvcreate /dev/sdb /dev/sdc /dev/sdd &lt;span class="c1"&gt;# 物理ボリュームの作成&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo vgcreate vg_home /dev/sdb /dev/sdc /dev/sdd &lt;span class="c1"&gt;# ボリュームグループの作成&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;vgdisplay &lt;span class="c1"&gt;# ボリュームグループ情報を確認&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo lvcreate -l 100%FREE -n lv_home vg_home &lt;span class="c1"&gt;# 全容量を使った論理ボリューム作成&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo mkfs.ext4 /dev/vg_home/lv_home &lt;span class="c1"&gt;# ext4ファイルシステムでフォーマット&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo mount /dev/vg_home/lv_home /home &lt;span class="c1"&gt;# /homeにマウント&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 自動マウント設定&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo blkid /dev/vg_home/lv_home &lt;span class="c1"&gt;# UUIDを取得&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo vim /etc/fstab
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;span class="nv"&gt;UUID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;UUID&amp;gt; /home ext4 defaults &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo mount -a
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;df -a &lt;span class="c1"&gt;# 正常にマウントされたか確認&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="nfs共有ファイルシステム"&gt;NFS共有ファイルシステム
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install nfs-kernel-server nfs-common rdma-core &lt;span class="c1"&gt;# 全ノードで実行&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="nfsサーバー設定"&gt;NFSサーバー設定
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo mkdir -p /home
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo chmod &lt;span class="m"&gt;777&lt;/span&gt; /home
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo vim /etc/exports
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;gt;&amp;gt;&amp;gt; /home *&lt;span class="o"&gt;(&lt;/span&gt;rw,sync,no_root_squash&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo vim /etc/nfs.conf &lt;span class="c1"&gt;# RDMAを有効化&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;span class="o"&gt;[&lt;/span&gt;nfsd&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;span class="nv"&gt;rdma&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;y
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl restart nfs-kernel-server
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl &lt;span class="nb"&gt;enable&lt;/span&gt; nfs-kernel-server
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="クライアント設定"&gt;クライアント設定
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo mount -o rdma,vers&lt;span class="o"&gt;=&lt;/span&gt;4.2 &amp;lt;server_ip&amp;gt;:/home /home
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;df -h &lt;span class="p"&gt;|&lt;/span&gt; grep /home &lt;span class="c1"&gt;# マウント成功を確認&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo vim /etc/fstab
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;gt;&amp;gt;&amp;gt; &amp;lt;server_ip&amp;gt;:/home /home nfs4 rdma,vers&lt;span class="o"&gt;=&lt;/span&gt;4.2 &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="rdma伝送の検証"&gt;RDMA伝送の検証
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;mount &lt;span class="p"&gt;|&lt;/span&gt; grep /home
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;cat /proc/fs/nfsfs/servers &lt;span class="c1"&gt;# transport列がrdmaになっているか確認&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="infinibandドライバ"&gt;InfiniBandドライバ
+&lt;/h3&gt;&lt;p&gt;ドライバのダウンロード：&lt;a class="link" href="https://developer.nvidia.com/networking/infiniband-software" target="_blank" rel="noopener"
+&gt;NVIDIA InfiniBand Software | NVIDIA | NVIDIA Developer&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;MLNX_OFED：&lt;a class="link" href="https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/" target="_blank" rel="noopener"
+&gt;Linux InfiniBand Drivers&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;古いバージョンのIBを使用する場合は、リリースノートでサポート状況を確認してください。&lt;/p&gt;
+&lt;p&gt;IBデバイスの確認：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;lspci &lt;span class="p"&gt;|&lt;/span&gt; grep -i mell
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;IBのopensmサービスを起動：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# 未インストールの場合&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt update &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; sudo apt upgrade -y
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo apt install opensm infiniband-diags ibutils perftest -y
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl start opensm
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;systemctl status opensm
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo systemctl &lt;span class="nb"&gt;enable&lt;/span&gt; opensm &lt;span class="c1"&gt;# 自動起動設定&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;IBデバイスの認識状況を確認：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ibv_devinfo
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ibstat
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;サーバーとクライアントのIB帯域をテスト：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ibv_devices &lt;span class="c1"&gt;# デバイス名を確認（例：mlx5_0）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ib_read_bw -a -d &amp;lt;device_name&amp;gt; --report_gbits &lt;span class="c1"&gt;# サーバー側&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ib_read_bw -a -F &amp;lt;ip_addr&amp;gt; -d &amp;lt;device_name&amp;gt; --report_gbits &lt;span class="c1"&gt;# クライアント側（-aは全メッセージサイズ、-Fはサーバーへの接続を強制、--report_gbitsはGbps単位で表示）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;img src="https://kambri.top/p/ops/img/5.png"
+width="963"
+height="519"
+srcset="https://kambri.top/p/ops/img/5_hu_f8e8a75cb7118797.png 480w, https://kambri.top/p/ops/img/5_hu_74fb876c2119a040.png 1024w"
+loading="lazy"
+alt="サーバー"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="445px"
+&gt; &lt;img src="https://kambri.top/p/ops/img/6.png"
+width="970"
+height="453"
+srcset="https://kambri.top/p/ops/img/6_hu_7e1ab7d68969d9d7.png 480w, https://kambri.top/p/ops/img/6_hu_7220da68564e190e.png 1024w"
+loading="lazy"
+alt="クライアント"
+class="gallery-image"
+data-flex-grow="214"
+data-flex-basis="513px"
+&gt;&lt;/p&gt;
+&lt;p&gt;MTU（最大伝送単位）の設定：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ifconfig &lt;span class="p"&gt;|&lt;/span&gt; grep ib &lt;span class="c1"&gt;# IBインターフェースを確認&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;ifconfig ib0 mtu &lt;span class="m"&gt;65520&lt;/span&gt; &lt;span class="c1"&gt;# 両方のマシンで同じMTU値に設定&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;簡単なテスト：&lt;code&gt;ibping&lt;/code&gt;または&lt;code&gt;ibping &amp;lt;ip_addr&amp;gt;&lt;/code&gt;を実行&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id="cuda"&gt;CUDA
+&lt;/h3&gt;&lt;h4 id="nouveauドライバの無効化アンインストール必要に応じて"&gt;Nouveauドライバの無効化/アンインストール（必要に応じて）
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo vim /etc/modprobe.d/blacklist.conf
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;最後に以下を追加：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;blacklist nouveau
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;options nouveau &lt;span class="nv"&gt;modeset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;initramfsを再構築し、サーバーを再起動して反映させます。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo update-initramfs -u
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo reboot
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;lsmod | grep nouveau&lt;/code&gt;で確認し、出力がなければ無効化成功です。&lt;/p&gt;
+&lt;h4 id="ドライバのインストール"&gt;ドライバのインストール
+&lt;/h4&gt;&lt;p&gt;GPUモデルを確認：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;lspci &lt;span class="p"&gt;|&lt;/span&gt; grep -i nvidia
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;ドライバのダウンロード：&lt;a class="link" href="https://www.nvidia.com/en-us/drivers/" target="_blank" rel="noopener"
+&gt;NVIDIA Driver&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;A800/V100用CUDA12.6ドライバ例：
+&lt;a class="link" href="https://www.nvidia.com/en-us/drivers/details/231430/" target="_blank" rel="noopener"
+&gt;Data Center Driver for Linux x64 560.35.03 | Linux 64-bit | NVIDIA&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;ドライバのアンインストール：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo /usr/bin/nvidia-uninstall
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;CUDAのインストール：&lt;a class="link" href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="noopener"
+&gt;CUDA Toolkit 12.6 Update 3&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;CUDA Toolkitのアーカイブ：&lt;a class="link" href="https://developer.nvidia.com/cuda-toolkit-archive" target="_blank" rel="noopener"
+&gt;CUDA Toolkit Archive&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;NVCC&lt;/code&gt;はCUDA Toolkitに含まれるため、&lt;a class="link" href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="noopener"
+&gt;公式サイト&lt;/a&gt;から対応バージョンの&lt;code&gt;runfile&lt;/code&gt;をダウンロードし、以下のようにインストールします。&lt;/p&gt;
+&lt;p&gt;例：CUDA Toolkit 12.2の場合&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;wget https://developer.download.nvidia.com/compute/cuda/12.9.1/local_installers/cuda_12.9.1_575.57.08_linux.run
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo sh cuda_12.9.1_575.57.08_linux.run
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;ドライバの再インストールは不要です。インストール後、環境変数を設定します。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;export PATH=/usr/local/cuda-12.2/bin:$PATH&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; ~/.bashrc
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;export LD_LIBRARY_PATH=/usr/local/cuda-12.2/lib64:$LD_LIBRARY_PATH&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; ~/.bashrc
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;source&lt;/span&gt; ~/.bashrc
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;/usr/local/cuda&lt;/code&gt;をデフォルトパスとして使いたい場合は、シンボリックリンクを作成します。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo ln -s /usr/local/cuda-12.2 /usr/local/cuda
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;export PATH=/usr/local/cuda/bin:$PATH&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; ~/.bashrc
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; ~/.bashrc
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;source&lt;/span&gt; ~/.bashrc
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item><item><title>高性能クラスター運用管理——ソフトウェア環境（Modules、MPI、oneAPI）</title><link>https://kambri.top/ja/p/ops_2/</link><pubDate>Sun, 11 May 2025 00:00:00 +0000</pubDate><guid>https://kambri.top/ja/p/ops_2/</guid><description>&lt;img src="https://kambri.top/p/ops_2/img/cover2.png" alt="Featured image of post 高性能クラスター運用管理——ソフトウェア環境（Modules、MPI、oneAPI）" /&gt;&lt;blockquote&gt;
+&lt;p&gt;⚠️ご注意ください、ここにある内容は大規模言語モデルによって翻訳されたものです。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;本記事では、クラスターでよく使われるバージョン管理ソフトウェアMODULESと、MPIの2つの実装（UCX+OpenMPI/MPICH）、Intel oneAPIのインストールと設定について紹介します。MODULES（最新版は2024年11月リリース）はソフトウェア依存関係が複雑で、modulefileはTCLで記述する必要があります（生成AIを活用可能）。将来的には、より使いやすいspackの学習も検討します。&lt;/p&gt;
+&lt;h2 id="modules-v540"&gt;MODULES (v5.4.0)
+&lt;/h2&gt;&lt;p&gt;&lt;img src="https://kambri.top/p/ops_2/img/1.png"
+width="423"
+height="135"
+srcset="https://kambri.top/p/ops_2/img/1_hu_6b9a266d4a59a1f4.png 480w, https://kambri.top/p/ops_2/img/1_hu_8720d42839a3a9c4.png 1024w"
+loading="lazy"
+alt="ENVIRONMENT MODULES"
+class="gallery-image"
+data-flex-grow="313"
+data-flex-basis="752px"
+&gt;&lt;/p&gt;
+&lt;h3 id="参考資料"&gt;参考資料
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://www.tcl.tk/" target="_blank" rel="noopener"
+&gt;TCL公式サイト&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://modules.readthedocs.io/en/latest/INSTALL.html#installation-instructions" target="_blank" rel="noopener"
+&gt;MODULESインストールドキュメント&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://gcc.gnu.org/mirrors.html" target="_blank" rel="noopener"
+&gt;GCC公式ミラーサイト&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://gcc.gnu.org/install/build.html" target="_blank" rel="noopener"
+&gt;GCCビルドガイド&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a class="link" href="https://www.cnblogs.com/yeungchie/p/16268954.html" target="_blank" rel="noopener"
+&gt;[ Module ] 環境変数管理ツール Modulesのインストールと使い方 - YEUNGCHIE&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://hpc.pku.edu.cn/ug/guide/module/#:~:text=Module%E4%BD%BF%E7%94%A8" target="_blank" rel="noopener"
+&gt;module使用例 - 北京大学高性能計算校級公共プラットフォームユーザードキュメント&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="依存関係のインストール"&gt;依存関係のインストール
+&lt;/h3&gt;&lt;h4 id="tcl-v85"&gt;TCL (&amp;gt;=v8.5)
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo wget http://prdownloads.sourceforge.net/tcl/tcl8.6.14-src.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo tar -zxvf tcl8.6.14-src.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; tcl8.6.14/unix
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo ./configure --prefix&lt;span class="o"&gt;=&lt;/span&gt;/usr/local
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo make
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo make install
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo whereis tcl
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo ln /usr/local/bin/tclsh8.6 /usr/bin/tclsh
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="gmp"&gt;GMP
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo wget ftp://ftp.gnu.org/gnu/gmp/gmp-5.0.1.tar.bz2
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo tar -vxf gmp-5.0.1.tar.bz2
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; gmp-5.0.1/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo ./configure --prefix&lt;span class="o"&gt;=&lt;/span&gt;/usr/local/gmp-5.0.1
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo make
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo make install
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo make check
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&amp;gt;&amp;gt;&amp;gt; 全30テスト成功...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="mpfrバグありだが許容範囲"&gt;MPFR（バグありだが許容範囲）
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo wget https://ftp.gnu.org/gnu/mpfr/mpfr-3.1.5.tar.xz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo tar -vxf mpfr-3.1.5.tar.xz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; mpfr-3.1.5/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo ./configure --prefix&lt;span class="o"&gt;=&lt;/span&gt;/usr/local/mpfr-3.1.5 --with-gmp&lt;span class="o"&gt;=&lt;/span&gt;/usr/local/gmp-5.0.1
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo make
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo make install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id="mpc"&gt;MPC
+&lt;/h4&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo wget http://www.multiprecision.org/downloads/mpc-0.9.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo tar -vxf mpc-0.9.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; mpc-0.9/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo ./configure --prefix&lt;span class="o"&gt;=&lt;/span&gt;/usr/local/mpc-0.9 --with-gmp&lt;span class="o"&gt;=&lt;/span&gt;/usr/local/gmp-5.0.1/ --with-mpfr&lt;span class="o"&gt;=&lt;/span&gt;/usr/local/mpfr-3.1.5/
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo make
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo make install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="modulesのインストール"&gt;MODULESのインストール
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;span class="lnt"&gt;8
+&lt;/span&gt;&lt;span class="lnt"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo curl -LJO https://github.com/cea-hpc/modules/releases/download/v5.4.0/modules-5.4.0.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo tar xfz modules-5.4.0.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo ./configure --with-tcl&lt;span class="o"&gt;=&lt;/span&gt;/usr/local/lib --prefix&lt;span class="o"&gt;=&lt;/span&gt;/home/Modules --modulefilesdir&lt;span class="o"&gt;=&lt;/span&gt;/home/modulefiles
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo make
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo make install
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo ln -s /home/Modules/init/profile.sh /etc/profile.d/module.sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo ln -s /home/Modules/init/profile.csh /etc/profile.d/module.csh
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;source&lt;/span&gt; /home/Modules/init/profile.sh &lt;span class="c1"&gt;# 推奨：/etc/profileに書き込み、シェル起動時に自動読み込み（`source /home/Modules/init/profile.sh`は手動実行）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：特別な事情により、MODULESと他のソフトウェアは&lt;code&gt;/home&lt;/code&gt;ディレクトリにインストールしています。
+&lt;code&gt;/home/moduledownload/&lt;/code&gt;にTCL（8.6）とMODULE（5.4.0）のインストールパッケージを一時保存。
+&lt;code&gt;/home/Module/&lt;/code&gt;にModuleの実ファイル群（初期化ファイルのシンボリックリンク含む）。
+&lt;code&gt;/home/modulefiles/&lt;/code&gt;に各ソフトウェアのバージョンファイル（modulefile）。2階層目はソフト名、3階層目はバージョン番号のテキスト。
+&lt;code&gt;/home/apps/&lt;/code&gt;に実際のソフトウェア。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="mpi"&gt;MPI
+&lt;/h2&gt;&lt;h3 id="参考資料-1"&gt;参考資料
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://www.mpich.org/static/downloads/" target="_blank" rel="noopener"
+&gt;MPICH公式ミラーサイト&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.0.tar.gz" target="_blank" rel="noopener"
+&gt;OpenMPI v5.0.0&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://github.com/openucx/ucx" target="_blank" rel="noopener"
+&gt;UCXリポジトリ&lt;/a&gt;&lt;/p&gt;
+&lt;!-- [ucxリリース v1.15.0](https://github.com/openucx/ucx/releases/download/v1.15.0/ucx-1.15.0.tar.gz)
+[ucxリリース v1.17.0](https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz) --&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a class="link" href="https://cuterwrite.top/p/openmpi-with-ucx/" target="_blank" rel="noopener"
+&gt;UCX 1.15.0とOpenMPI 5.0.0のビルド・インストール：詳細ガイド&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="ucxのインストール任意"&gt;UCXのインストール（任意）
+&lt;/h3&gt;&lt;figure&gt;&lt;img src="https://kambri.top/p/ops_2/img/2.png" width="200px&amp;#34;"&gt;&lt;figcaption&gt;
+&lt;h4&gt;Unified Communication X&lt;/h4&gt;
+&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;!-- ![Unified Communication X](img/2.png?w=300) --&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;span class="lnt"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;wget https://github.com/openucx/ucx/releases/download/v1.15.0/ucx-1.15.0.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tar -xvzf ucx-1.15.0.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ucx-1.15.0
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;mkdir build &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; build
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;../configure --prefix&lt;span class="o"&gt;=&lt;/span&gt;/home/zhengkaige/ucx
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;make -j N
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;make install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="mpich-v422のインストール"&gt;MPICH (v4.2.2)のインストール
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tar -xvzf mpich-4.2.2.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; mpich-4.2.2
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;./configure --prefix&lt;span class="o"&gt;=&lt;/span&gt;/home/apps/MPICH/4.2.2
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;make
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;make install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;エラー例：&lt;code&gt;configure: error: UCX installation does not meet minimum version requirement (v1.9.0). Please upgrade your installation, or use --with-ucx=embedded.&lt;/code&gt;&lt;/p&gt;
+&lt;h3 id="openmpi-v500のインストール"&gt;OpenMPI (v5.0.0)のインストール
+&lt;/h3&gt;&lt;p&gt;&lt;img src="https://kambri.top/p/ops_2/img/3.png"
+width="1110"
+height="198"
+srcset="https://kambri.top/p/ops_2/img/3_hu_f22737ea3fc3efd9.png 480w, https://kambri.top/p/ops_2/img/3_hu_5aa6261488386eb7.png 1024w"
+loading="lazy"
+alt="OpenMPI"
+class="gallery-image"
+data-flex-grow="560"
+data-flex-basis="1345px"
+&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.0.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;tar -xzvf openmpi-5.0.0.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; openmpi-5.0.0
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;mkdir build &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; build
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;code&gt;vim ~/.bashrc&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/kambri/software/openmpi/5.0.0-ucx-1.15.0/bin:&lt;span class="nv"&gt;$PATH&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;LD_LIBRARY_PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/kambri/software/openmpi/5.0.0-ucx-1.15.0/lib:&lt;span class="nv"&gt;$LD_LIBRARY_PATH&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id="modulefileの作成例"&gt;Modulefileの作成例
+&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-TCL" data-lang="TCL"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c"&gt;#%Module
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;set&lt;/span&gt; version &lt;span class="mf"&gt;4.2&lt;/span&gt;.2
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="k"&gt;set&lt;/span&gt; MPI_HOME &lt;span class="o"&gt;/&lt;/span&gt;home&lt;span class="o"&gt;/&lt;/span&gt;apps&lt;span class="o"&gt;/&lt;/span&gt;MPICH&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mf"&gt;4.2&lt;/span&gt;.2
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;prepend-path&lt;/span&gt; PATH &lt;span class="s2"&gt;&amp;#34;${MPI_HOME}/bin&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;prepend-path&lt;/span&gt; LD_LIBRARY_PATH &lt;span class="s2"&gt;&amp;#34;${MPI_HOME}/lib&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nv"&gt;prepend-path&lt;/span&gt; MANPATH &lt;span class="s2"&gt;&amp;#34;${MPI_HOME}/share/man&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id="intel-oneapi"&gt;Intel oneAPI
+&lt;/h2&gt;&lt;h3 id="参考資料-2"&gt;参考資料
+&lt;/h3&gt;&lt;p&gt;&lt;a class="link" href="https://www.intel.cn/content/www/cn/zh/developer/tools/oneapi/toolkits.html" target="_blank" rel="noopener"
+&gt;Developer Toolkits&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://www.intel.cn/content/www/cn/zh/developer/tools/oneapi/base-toolkit-download.html?packages=oneapi-toolkit&amp;amp;oneapi-toolkit-os=linux" target="_blank" rel="noopener"
+&gt;Intel® oneAPI Base Toolkitの入手&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://www.intel.cn/content/www/cn/zh/developer/tools/oneapi/hpc-toolkit-download.html?packages=hpc-toolkit&amp;amp;hpc-toolkit-os=linux" target="_blank" rel="noopener"
+&gt;Intel® oneAPI HPC Toolkitの入手&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class="link" href="https://get.hpc.dev/vault/intel/" target="_blank" rel="noopener"
+&gt;Intel oneAPIミラーサイト&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="intel-oneapiのインストール2025年版base-toolkitとhpc-toolkit含む"&gt;Intel oneAPIのインストール（2025年版、Base ToolkitとHPC Toolkit含む）
+&lt;/h3&gt;&lt;p&gt;&lt;img src="https://kambri.top/p/ops_2/img/4.png"
+width="165"
+height="139"
+srcset="https://kambri.top/p/ops_2/img/4_hu_1ecc03b3f532dd25.png 480w, https://kambri.top/p/ops_2/img/4_hu_197907fd4b7b62e9.png 1024w"
+loading="lazy"
+alt="Intel oneAPI"
+class="gallery-image"
+data-flex-grow="118"
+data-flex-basis="284px"
+&gt;&lt;/p&gt;
+&lt;p&gt;公式のオフラインインストール方式に従ってインストールしてください。注意点として、IntelはoneAPIの更新時に古いバージョンのUIを削除するため、旧バージョンのインストールにはミラーサイト等を利用します。ただし、新バージョンは使い勝手が悪く、例えば2025.0の&lt;code&gt;mpiicc&lt;/code&gt;は依然として&lt;code&gt;icc&lt;/code&gt;をコンパイラとして使用していますが、2025.0（2023後半や2024.xも含む）には&lt;code&gt;icc&lt;/code&gt;が含まれていません。&lt;code&gt;icc&lt;/code&gt;は2023年後半にリリースされたoneAPIから削除済みです。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div class="chroma"&gt;
+&lt;table class="lntable"&gt;&lt;tr&gt;&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code&gt;&lt;span class="lnt"&gt;1
+&lt;/span&gt;&lt;span class="lnt"&gt;2
+&lt;/span&gt;&lt;span class="lnt"&gt;3
+&lt;/span&gt;&lt;span class="lnt"&gt;4
+&lt;/span&gt;&lt;span class="lnt"&gt;5
+&lt;/span&gt;&lt;span class="lnt"&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class="lntd"&gt;
+&lt;pre tabindex="0" class="chroma"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# Base Toolkitのインストール&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/dfc4a434-838c-4450-a6fe-2fa903b75aa7/intel-oneapi-base-toolkit-2025.0.1.46_offline.sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo sh ./intel-oneapi-base-toolkit-2025.0.1.46_offline.sh -a --silent --cli --eula accept
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="c1"&gt;# HPC Toolkitのインストール&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;wget https://registrationcenter-download.intel.com/akdlm/IRC_NAS/b7f71cf2-8157-4393-abae-8cea815509f7/intel-oneapi-hpc-toolkit-2025.0.1.47_offline.sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;sudo sh ./intel-oneapi-hpc-toolkit-2025.0.1.47_offline.sh -a --silent --cli --eula accept
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>
