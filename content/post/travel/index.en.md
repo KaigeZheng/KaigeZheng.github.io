@@ -192,7 +192,7 @@ We first enjoyed a delicious breakfast (buffet style) at the hotel, then headed 
 
 Then went to Todai-ji, where I met very cute little deer on the way. The exterior of Todai-ji looks very grand—worthy of being a UNESCO World Heritage site.
 
-![Nice weather](img/6/6_3.jpg) ![Adorable little deer 🦌](img/6/6_4.jpg) ![Group photo at Todai-ji](img/6/6_5.jpg)
+![Nice weather](img/6/6_3.jpg) ![Adorable little deer 🦌](img/6/6_4.jpg)
 
 Throughout the day, I saw many elementary and middle school groups visiting for educational tours. I envy them from the bottom of my heart—my school days only involved studying.
 
