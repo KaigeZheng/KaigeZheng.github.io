@@ -1,0 +1,238 @@
+<!doctype html><html lang=ja dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="運用ノート（1）"><title>高性能クラスター運用管理——セットアップ</title><link rel=canonical href=https://kambri.top/ja/p/ops/><link rel=stylesheet href=/scss/style.min.5ddd542b2cd6066914e4a64996346500a32dfd34939de4daba8897189d97b3b0.css><meta property='og:title' content="高性能クラスター運用管理——セットアップ"><meta property='og:description' content="運用ノート（1）"><meta property='og:url' content='https://kambri.top/ja/p/ops/'><meta property='og:site_name' content='Kambriのブログ'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='技術'><meta property='article:tag' content='運用管理'><meta property='article:published_time' content='2025-04-23T00:00:00+00:00'><meta property='article:modified_time' content='2025-04-23T00:00:00+00:00'><meta property='og:image' content='https://kambri.top/p/ops/img/cover.png'><meta name=twitter:title content="高性能クラスター運用管理——セットアップ"><meta name=twitter:description content="運用ノート（1）"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://kambri.top/p/ops/img/cover.png'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=メニューを開く・閉じる>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/ja/><img src=/img/avatar_hu_98fe1fefb25c1393.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🥲</span></figure><div class=site-meta><h1 class=site-name><a href=/ja>Kambriのブログ</a></h1><h2 class=site-description>こんにちは！ここはKambriのブログです。技術的な経験や生活の瞬間を共有します。</h2></div></header><ol class=menu-social><li><a href=https://github.com/KaigeZheng target=_blank title=GitHub rel=me><svg class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li><li><a href=https://x.com/kgzheng2003 target=_blank title=Twitter rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4l11.733 16H20L8.267 4H4"/><path d="M4 20l6.768-6.768m2.46-2.46L20 4"/></svg></a></li><li><a href=mailto:kambrikg@gmail.com target=_blank title=Email rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-mail"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/><path d="M3 7l9 6 9-6"/></svg></a></li><li><a href=https://www.linkedin.com/in/kgzheng target=_blank title=LinkedIn rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-linkedin"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 10-4 0"/><path d="M3 7a4 4 0 014-4h10a4 4 0 014 4v10a4 4 0 01-4 4H7a4 4 0 01-4-4V7"/></svg></a></li><li><a href=https://kaigezheng.github.io/index.xml target=_blank title=RSS rel=me><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-rss"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 19m-1 0a1 1 0 102 0 1 1 0 10-2 0"/><path d="M4 4a16 16 0 0116 16"/><path d="M4 11a9 9 0 019 9"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/ja/><svg class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>ホーム</span></a></li><li><a href=/ja/about/><svg class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+<span>について</span></a></li><li><a href=/ja/archives/><svg class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>アーカイブ</span></a></li><li><a href=/ja/search/><svg class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>検索</span></a></li><li><a href=/ja/links/><svg class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>リンク</span></a></li><li class=menu-bottom-section><ol class=menu><li id=i18n-switch><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language title=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://kambri.top/>简体中文</option><option value=https://kambri.top/en/>English</option><option value=https://kambri.top/ja/ selected>日本語</option></select></li><li id=dark-mode-toggle><svg class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>ダークモード</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目次</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#ハードウェア>ハードウェア</a><ol><li><a href=#組み立て>組み立て</a></li><li><a href=#起動ディスクの作成>起動ディスクの作成</a></li></ol></li><li><a href=#ソフトウェア>ソフトウェア</a><ol><li><a href=#ネットワーク設定>ネットワーク設定</a></li><li><a href=#rootパスワードの設定>rootパスワードの設定</a></li><li><a href=#linuxカーネルの自動更新を無効化>Linuxカーネルの自動更新を無効化</a></li><li><a href=#リバースプロキシ設定>リバースプロキシ設定</a></li><li><a href=#事前準備のポイント>事前準備のポイント</a></li><li><a href=#パーティション設定>パーティション設定</a></li><li><a href=#nfs共有ファイルシステム>NFS共有ファイルシステム</a><ol><li><a href=#nfsサーバー設定>NFSサーバー設定</a></li><li><a href=#クライアント設定>クライアント設定</a></li><li><a href=#rdma伝送の検証>RDMA伝送の検証</a></li></ol></li><li><a href=#infinibandドライバ>InfiniBandドライバ</a></li><li><a href=#cuda>CUDA</a><ol><li><a href=#nouveauドライバの無効化アンインストール必要に応じて>Nouveauドライバの無効化/アンインストール（必要に応じて）</a></li><li><a href=#ドライバのインストール>ドライバのインストール</a></li></ol></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/ja/p/ops/><img src=/p/ops/img/cover_hu_f437f78a1a4c19ce.png srcset="/p/ops/img/cover_hu_f437f78a1a4c19ce.png 800w, /p/ops/img/cover_hu_a2b1f9076c301d67.png 1600w" width=800 height=830 loading=lazy alt="Featured image of post 高性能クラスター運用管理——セットアップ"></a></div><div class=article-details><header class=article-category><a href=/ja/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3/ style=background-color:;color:># 技術ドキュメント</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/ja/p/ops/>高性能クラスター運用管理——セットアップ</a></h2><h3 class=article-subtitle>運用ノート（1）</h3></div><footer class=article-time><div><svg class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published datetime=2025-04-23T00:00:00Z>4月 23, 2025</time></div><div><svg class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>読了時間: 6分</time></div></footer><footer class=article-translations><svg class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg><div><a href=https://kambri.top/p/ops/ class=link>简体中文</a>
+<a href=https://kambri.top/en/p/ops/ class=link>English</a></div></footer></div></header><section class=article-content><blockquote><p>⚠️ご注意ください、ここにある内容は大規模言語モデルによって翻訳されたものです。</p></blockquote><p>この期間、機房とのやり取りが多く、三江源データ分析センターに新しい購入機器を設置するエンジニアや学院の運用担当の先生方と連携してきました。そこで、高性能クラスター構築の経験をまとめます。</p><h2 id=ハードウェア>ハードウェア</h2><h3 id=組み立て>組み立て</h3><p>新たに購入した整備済みサーバーには、ハードディスク、メモリ、ネットワークカード（Ethernet）、RAIDカードが揃っています。起動時には、メイン電源と予備電源の両方が点灯していることを必ず確認してください。構成は、Intelのデュアルソケットマシン2台とAMDのデュアルソケットマシン2台です。RDMAネットワークカードは別途調達し、Mellanox MT28908（ConnectX-6）を使用しています。高性能計算センターからNVIDIA A800 80GB PCIEカード8枚を借用し、トポロジーは4台のマシンに8枚のカードを配置する予定です。</p><div class=table-wrapper><table><thead><tr><th style=text-align:center>サーバー</th><th style=text-align:center>CPU</th><th style=text-align:center>メモリ</th><th style=text-align:center>ハードディスク</th></tr></thead><tbody><tr><td style=text-align:center>H3C UniServer R4900 G6</td><td style=text-align:center>Intel(R) Xeon(R) GOLD 6542Y(250w)×2</td><td style=text-align:center>32G DDR5 5600×8</td><td style=text-align:center>960G SSD×2 + 4TB SATA×3 + RAID PM8204-2G</td></tr><tr><td style=text-align:center>H3C UniServer R4950 G6</td><td style=text-align:center>AMD EPYC 9654 96コアプロセッサ(360w)×2</td><td style=text-align:center>32G DDR5 4800×8</td><td style=text-align:center>960G SSD×2 + 4TB SATA×3 + RAID PM8204-2G</td></tr></tbody></table></div><p><img src=/p/ops/img/1.jpg width=1706 height=1279 srcset="/p/ops/img/1_hu_bb1e35933ff472ee.jpg 480w, /p/ops/img/1_hu_62c9eb2d339f6923.jpg 1024w" loading=lazy alt=サーバー内部 class=gallery-image data-flex-grow=133 data-flex-basis=320px></p><h3 id=起動ディスクの作成>起動ディスクの作成</h3><p>ブート可能なISOイメージ、書き込みソフト（<a class=link href=https://rufus.ie/en/ target=_blank rel=noopener>Rufus</a>または<a class=link href=https://ultraiso.net/ target=_blank rel=noopener>UltraISO</a>）、およびUSBメモリ（できればUSB3.0推奨）を準備します。ここではサーバー側の<code>Ubuntu Server 22.04.5 LTS</code>（長期サポート版、2027年4月までサポート）を選択し、<a class=link href=https://cn.ubuntu.com/download target=_blank rel=noopener>Ubuntu公式サイト</a>からブート可能なISOファイルを取得します。</p><p><img src=/p/ops/img/2.png width=1021 height=168 srcset="/p/ops/img/2_hu_251188e3c06ef52f.png 480w, /p/ops/img/2_hu_768c422f8277994a.png 1024w" loading=lazy alt=ISOファイル class=gallery-image data-flex-grow=607 data-flex-basis=1458px></p><p>次に、書き込みソフトを使ってハードディスクにイメージを書き込みます。UltraISOでは書き込み方式を<code>USB-HDD+</code>に設定し、Rufusではターゲットシステムタイプを<code>BIOSまたはUEFI</code>に設定します。必要に応じてファイルシステムやその他の設定を調整してください。フォーマット後、システムイメージを書き込み（約2〜3分）ます。</p><p><img src=/p/ops/img/3.png width=594 height=872 srcset="/p/ops/img/3_hu_28e743b8c1b2b821.png 480w, /p/ops/img/3_hu_20f4ccebb4416ce6.png 1024w" loading=lazy alt=Rufusで起動ディスク作成 class=gallery-image data-flex-grow=68 data-flex-basis=163px> <img src=/p/ops/img/4.png width=465 height=432 srcset="/p/ops/img/4_hu_65c97b132529007e.png 480w, /p/ops/img/4_hu_6c791af9e004dbfb.png 1024w" loading=lazy alt=UltraISOで起動ディスク作成 class=gallery-image data-flex-grow=107 data-flex-basis=258px></p><h2 id=ソフトウェア>ソフトウェア</h2><h3 id=ネットワーク設定>ネットワーク設定</h3><p>通常、システムインストール時には設定しません。インストール完了後に<code>ip link show</code>コマンドでネットワークインターフェース名を確認します。次に<code>vim /etc/netplan/50-cloud-init.yaml</code>を編集し、以下のように設定します。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># ...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=nt>network</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ethernets</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>ens16f0</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>addresses</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span>- <span class=l>&lt;A.B.C.D&gt;/24</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>nameservers</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>addresses</span><span class=p>:</span><span class=w> </span><span class=p>[]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>search</span><span class=p>:</span><span class=w> </span><span class=p>[]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>routes</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span>- <span class=w>  </span><span class=nt>to</span><span class=p>:</span><span class=w> </span><span class=l>default</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>via</span><span class=p>:</span><span class=w> </span><span class=l>&lt;A.B.C.D&gt;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>version</span><span class=p>:</span><span class=w> </span><span class=m>2</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=rootパスワードの設定>rootパスワードの設定</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>su root
+</span></span><span class=line><span class=cl>passwd root
+</span></span></code></pre></td></tr></table></div></div><h3 id=linuxカーネルの自動更新を無効化>Linuxカーネルの自動更新を無効化</h3><p>無効にしないと、<code>apt update</code>後にサービスの再起動や更新を促す通知が出続けます。<code>/etc/apt/apt.conf.d/</code>内の<code>10periodic</code>と<code>20auto-upgrades</code>のパラメータを<code>0</code>に変更します。</p><p><code>sudo vim /etc/apt/apt.conf.d/10periodic</code></p><p>内容を以下に更新：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>APT::Periodic::Update-Package-Lists <span class=s2>&#34;0&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>APT::Periodic::Download-Upgradeable-Packages <span class=s2>&#34;0&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>APT::Periodic::AutocleanInterval <span class=s2>&#34;0&#34;</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>sudo vim /etc/apt/apt.conf.d/20auto-upgrades</code></p><p>内容を以下に更新：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>APT::Periodic::Update-Package-Lists <span class=s2>&#34;0&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>APT::Periodic::Unattended-Upgrade <span class=s2>&#34;0&#34;</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=リバースプロキシ設定>リバースプロキシ設定</h3><p>計算ノードはインターネットに接続しないため、ローカルを踏み台としてリバースプロキシを設定します。</p><p><code>Users/username/.ssh/config</code>に以下を追加：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Host &lt;hostname&gt;
+</span></span><span class=line><span class=cl>  HostName &lt;IP&gt;
+</span></span><span class=line><span class=cl>  Port &lt;port&gt;
+</span></span><span class=line><span class=cl>  User &lt;username&gt;
+</span></span><span class=line><span class=cl>  RemoteForward &lt;Port1&gt; 127.0.0.1:&lt;Port2&gt;
+</span></span></code></pre></td></tr></table></div></div><p>最近学んだ方法として、<code>.ssh/config</code>内で<code>ProxyJump</code>を設定し、シームレスに踏み台接続を行うことも可能です。パスワード不要にするには、接続先ホストの<code>~/.ssh/authorized_keys</code>に<strong>ローカルの公開鍵</strong>を登録してください。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>Host &lt;hostname&gt;
+</span></span><span class=line><span class=cl>  HostName &lt;IP&gt;
+</span></span><span class=line><span class=cl>  Port &lt;port&gt;
+</span></span><span class=line><span class=cl>  User &lt;username&gt;
+</span></span><span class=line><span class=cl>  RemoteForward &lt;Port1&gt; 127.0.0.1:&lt;Port2&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Host &lt;destination&gt;
+</span></span><span class=line><span class=cl>  HostName &lt;IP&gt;
+</span></span><span class=line><span class=cl>  Port &lt;port&gt;
+</span></span><span class=line><span class=cl>  User &lt;username&gt;
+</span></span><span class=line><span class=cl>  ProxyJump &lt;hostname&gt;
+</span></span><span class=line><span class=cl>  RemoteForward &lt;Port1&gt; 127.0.0.1:&lt;Port2&gt;
+</span></span></code></pre></td></tr></table></div></div><h3 id=事前準備のポイント>事前準備のポイント</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># Linuxの自動休眠を無効化</span>
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;\$nrconf{kernelhints} = 0;&#34;</span> &gt;&gt; /etc/needrestart/needrestart.conf
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s2>&#34;\$nrconf{restart} = &#39;l&#39;;&#34;</span> &gt;&gt; /etc/needrestart/needrestart.conf
+</span></span><span class=line><span class=cl>systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+</span></span><span class=line><span class=cl><span class=c1># aptとapt-getの更新</span>
+</span></span><span class=line><span class=cl>apt update
+</span></span><span class=line><span class=cl>apt upgrade
+</span></span><span class=line><span class=cl>apt-get update
+</span></span><span class=line><span class=cl>apt-get upgrade
+</span></span><span class=line><span class=cl><span class=c1># 必要なパッケージのインストール</span>
+</span></span><span class=line><span class=cl>apt install git wget vim curl htop net-tools pciutils build-essential 
+</span></span></code></pre></td></tr></table></div></div><h3 id=パーティション設定>パーティション設定</h3><p>ディスクが認識されない場合、システムインストール時にエラー<code>block probing did not discover any disks</code>が出ることがあります。ハードディスクやRAIDカードの点灯状態を確認してください。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>lsblk <span class=c1># 新しいディスクのデバイス名を確認（例：/dev/sdX）</span>
+</span></span><span class=line><span class=cl>sudo pvcreate /dev/sdb /dev/sdc /dev/sdd <span class=c1># 物理ボリュームの作成</span>
+</span></span><span class=line><span class=cl>sudo vgcreate vg_home /dev/sdb /dev/sdc /dev/sdd <span class=c1># ボリュームグループの作成</span>
+</span></span><span class=line><span class=cl>vgdisplay <span class=c1># ボリュームグループ情報を確認</span>
+</span></span><span class=line><span class=cl>sudo lvcreate -l 100%FREE -n lv_home vg_home <span class=c1># 全容量を使った論理ボリューム作成</span>
+</span></span><span class=line><span class=cl>sudo mkfs.ext4 /dev/vg_home/lv_home <span class=c1># ext4ファイルシステムでフォーマット</span>
+</span></span><span class=line><span class=cl>sudo mount /dev/vg_home/lv_home /home <span class=c1># /homeにマウント</span>
+</span></span><span class=line><span class=cl><span class=c1># 自動マウント設定</span>
+</span></span><span class=line><span class=cl>sudo blkid /dev/vg_home/lv_home <span class=c1># UUIDを取得</span>
+</span></span><span class=line><span class=cl>sudo vim /etc/fstab
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; <span class=nv>UUID</span><span class=o>=</span>&lt;UUID&gt; /home ext4 defaults <span class=m>0</span> <span class=m>2</span>
+</span></span><span class=line><span class=cl>sudo mount -a
+</span></span><span class=line><span class=cl>df -a <span class=c1># 正常にマウントされたか確認</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=nfs共有ファイルシステム>NFS共有ファイルシステム</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo apt install nfs-kernel-server nfs-common rdma-core <span class=c1># 全ノードで実行</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=nfsサーバー設定>NFSサーバー設定</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo mkdir -p /home
+</span></span><span class=line><span class=cl>sudo chmod <span class=m>777</span> /home
+</span></span><span class=line><span class=cl>sudo vim /etc/exports
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; /home *<span class=o>(</span>rw,sync,no_root_squash<span class=o>)</span> 
+</span></span><span class=line><span class=cl>sudo vim /etc/nfs.conf <span class=c1># RDMAを有効化</span>
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; <span class=o>[</span>nfsd<span class=o>]</span>
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; <span class=nv>rdma</span><span class=o>=</span>y
+</span></span><span class=line><span class=cl>sudo systemctl restart nfs-kernel-server
+</span></span><span class=line><span class=cl>sudo systemctl <span class=nb>enable</span> nfs-kernel-server
+</span></span></code></pre></td></tr></table></div></div><h4 id=クライアント設定>クライアント設定</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo mount -o rdma,vers<span class=o>=</span>4.2 &lt;server_ip&gt;:/home /home
+</span></span><span class=line><span class=cl>df -h <span class=p>|</span> grep /home <span class=c1># マウント成功を確認</span>
+</span></span><span class=line><span class=cl>sudo vim /etc/fstab
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; &lt;server_ip&gt;:/home /home nfs4 rdma,vers<span class=o>=</span>4.2 <span class=m>0</span> <span class=m>0</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=rdma伝送の検証>RDMA伝送の検証</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mount <span class=p>|</span> grep /home
+</span></span><span class=line><span class=cl>cat /proc/fs/nfsfs/servers <span class=c1># transport列がrdmaになっているか確認</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=infinibandドライバ>InfiniBandドライバ</h3><p>ドライバのダウンロード：<a class=link href=https://developer.nvidia.com/networking/infiniband-software target=_blank rel=noopener>NVIDIA InfiniBand Software | NVIDIA | NVIDIA Developer</a></p><p>MLNX_OFED：<a class=link href=https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/ target=_blank rel=noopener>Linux InfiniBand Drivers</a></p><p>古いバージョンのIBを使用する場合は、リリースノートでサポート状況を確認してください。</p><p>IBデバイスの確認：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>lspci <span class=p>|</span> grep -i mell
+</span></span></code></pre></td></tr></table></div></div><p>IBのopensmサービスを起動：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 未インストールの場合</span>
+</span></span><span class=line><span class=cl>sudo apt update <span class=o>&amp;&amp;</span> sudo apt upgrade -y
+</span></span><span class=line><span class=cl>sudo apt install opensm infiniband-diags ibutils perftest -y
+</span></span><span class=line><span class=cl>sudo systemctl start opensm
+</span></span><span class=line><span class=cl>systemctl status opensm
+</span></span><span class=line><span class=cl>sudo systemctl <span class=nb>enable</span> opensm <span class=c1># 自動起動設定</span>
+</span></span></code></pre></td></tr></table></div></div><p>IBデバイスの認識状況を確認：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ibv_devinfo
+</span></span><span class=line><span class=cl>ibstat
+</span></span></code></pre></td></tr></table></div></div><p>サーバーとクライアントのIB帯域をテスト：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ibv_devices <span class=c1># デバイス名を確認（例：mlx5_0）</span>
+</span></span><span class=line><span class=cl>ib_read_bw -a -d &lt;device_name&gt; --report_gbits <span class=c1># サーバー側</span>
+</span></span><span class=line><span class=cl>ib_read_bw -a -F &lt;ip_addr&gt; -d &lt;device_name&gt; --report_gbits <span class=c1># クライアント側（-aは全メッセージサイズ、-Fはサーバーへの接続を強制、--report_gbitsはGbps単位で表示）</span>
+</span></span></code></pre></td></tr></table></div></div><p><img src=/p/ops/img/5.png width=963 height=519 srcset="/p/ops/img/5_hu_f8e8a75cb7118797.png 480w, /p/ops/img/5_hu_74fb876c2119a040.png 1024w" loading=lazy alt=サーバー class=gallery-image data-flex-grow=185 data-flex-basis=445px> <img src=/p/ops/img/6.png width=970 height=453 srcset="/p/ops/img/6_hu_7e1ab7d68969d9d7.png 480w, /p/ops/img/6_hu_7220da68564e190e.png 1024w" loading=lazy alt=クライアント class=gallery-image data-flex-grow=214 data-flex-basis=513px></p><p>MTU（最大伝送単位）の設定：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ifconfig <span class=p>|</span> grep ib <span class=c1># IBインターフェースを確認</span>
+</span></span><span class=line><span class=cl>ifconfig ib0 mtu <span class=m>65520</span> <span class=c1># 両方のマシンで同じMTU値に設定</span>
+</span></span></code></pre></td></tr></table></div></div><blockquote><p>簡単なテスト：<code>ibping</code>または<code>ibping &lt;ip_addr></code>を実行</p></blockquote><h3 id=cuda>CUDA</h3><h4 id=nouveauドライバの無効化アンインストール必要に応じて>Nouveauドライバの無効化/アンインストール（必要に応じて）</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo vim /etc/modprobe.d/blacklist.conf
+</span></span></code></pre></td></tr></table></div></div><p>最後に以下を追加：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>blacklist nouveau
+</span></span><span class=line><span class=cl>options nouveau <span class=nv>modeset</span><span class=o>=</span><span class=m>0</span>
+</span></span></code></pre></td></tr></table></div></div><p>initramfsを再構築し、サーバーを再起動して反映させます。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo update-initramfs -u
+</span></span><span class=line><span class=cl>sudo reboot
+</span></span></code></pre></td></tr></table></div></div><p><code>lsmod | grep nouveau</code>で確認し、出力がなければ無効化成功です。</p><h4 id=ドライバのインストール>ドライバのインストール</h4><p>GPUモデルを確認：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>lspci <span class=p>|</span> grep -i nvidia
+</span></span></code></pre></td></tr></table></div></div><p>ドライバのダウンロード：<a class=link href=https://www.nvidia.com/en-us/drivers/ target=_blank rel=noopener>NVIDIA Driver</a></p><blockquote><p>A800/V100用CUDA12.6ドライバ例：
+<a class=link href=https://www.nvidia.com/en-us/drivers/details/231430/ target=_blank rel=noopener>Data Center Driver for Linux x64 560.35.03 | Linux 64-bit | NVIDIA</a></p></blockquote><p>ドライバのアンインストール：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo /usr/bin/nvidia-uninstall
+</span></span></code></pre></td></tr></table></div></div><p>CUDAのインストール：<a class=link href=https://developer.nvidia.com/cuda-downloads target=_blank rel=noopener>CUDA Toolkit 12.6 Update 3</a></p><p>CUDA Toolkitのアーカイブ：<a class=link href=https://developer.nvidia.com/cuda-toolkit-archive target=_blank rel=noopener>CUDA Toolkit Archive</a></p><p><code>NVCC</code>はCUDA Toolkitに含まれるため、<a class=link href=https://developer.nvidia.com/cuda-downloads target=_blank rel=noopener>公式サイト</a>から対応バージョンの<code>runfile</code>をダウンロードし、以下のようにインストールします。</p><p>例：CUDA Toolkit 12.2の場合</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>wget https://developer.download.nvidia.com/compute/cuda/12.9.1/local_installers/cuda_12.9.1_575.57.08_linux.run
+</span></span><span class=line><span class=cl>sudo sh cuda_12.9.1_575.57.08_linux.run
+</span></span></code></pre></td></tr></table></div></div><p>ドライバの再インストールは不要です。インストール後、環境変数を設定します。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>echo</span> <span class=s1>&#39;export PATH=/usr/local/cuda-12.2/bin:$PATH&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s1>&#39;export LD_LIBRARY_PATH=/usr/local/cuda-12.2/lib64:$LD_LIBRARY_PATH&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span class=line><span class=cl><span class=nb>source</span> ~/.bashrc
+</span></span></code></pre></td></tr></table></div></div><p><code>/usr/local/cuda</code>をデフォルトパスとして使いたい場合は、シンボリックリンクを作成します。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sudo ln -s /usr/local/cuda-12.2 /usr/local/cuda
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s1>&#39;export PATH=/usr/local/cuda/bin:$PATH&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span class=line><span class=cl><span class=nb>echo</span> <span class=s1>&#39;export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH&#39;</span> &gt;&gt; ~/.bashrc
+</span></span><span class=line><span class=cl><span class=nb>source</span> ~/.bashrc
+</span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-tags><a href=/ja/tags/%E6%8A%80%E8%A1%93/>技術</a>
+<a href=/ja/tags/%E9%81%8B%E7%94%A8%E7%AE%A1%E7%90%86/>運用管理</a></section><section class=article-copyright><svg class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{const e=[".main-article",".widget--toc"];e.forEach(e=>{const t=document.querySelector(e);t&&renderMathInElement(t,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})})</script></article><aside class=related-content--wrapper><h2 class=section-title>関連するコンテンツ</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/ja/p/ops_2/><div class=article-image><img src=/p/ops_2/img/cover2.d5f8171993ade52fb351a98fb568d7cf_hu_5822e24e3dfba3fd.png width=250 height=150 loading=lazy alt="Featured image of post 高性能クラスター運用管理——ソフトウェア環境（Modules、MPI、oneAPI）" data-key=ops_2 data-hash="md5-1fgXGZOt5S+zUamPtWjXzw=="></div><div class=article-details><h2 class=article-title>高性能クラスター運用管理——ソフトウェア環境（Modules、MPI、oneAPI）</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=KaigeZheng/KaigeZheng.github.io issue-term=pathname label=comment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2024 -
+2026 Kaige ZHENG</section><section class=powerby><a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> で構築されています。<br>テーマ <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.33.0>Stack</a></b> は <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> によって設計されています。</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.c922af694cc257bf1ecc41c0dd7b0430f9114ec280ccf67cd2c6ad55f5316c4e.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
